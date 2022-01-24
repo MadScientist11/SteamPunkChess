@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UI Text_uk
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: uk
+  m_SharedData: {fileID: 11400000, guid: a93613f3218ca6f47ade975f8287f92e, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 247994505977856
+    m_Localized: "\u041F\u0440\u0438\u0432\u0456\u0442"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 696006080421888
+    m_Localized: "\u0423\u0432\u0456\u0439\u0442\u0438"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 696006080421889
+    m_Localized: "\u0420\u0435\u0454\u0441\u0442\u0440\u0430\u0446\u0456\u044F"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 696006080421890
+    m_Localized: "\u041B\u043E\u0433\u0456\u043D"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 696006080421891
+    m_Localized: "\u041F\u0430\u0440\u043E\u043B\u044C"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 696006080421892
+    m_Localized: "\u0415\u043B\u0435\u043A\u0442\u0440\u043E\u043D\u043D\u0430 \u043F\u043E\u0448\u0442\u0430"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 696006080421893
+    m_Localized: "\u0417\u0430\u043F\u0430\u043C'\u044F\u0442\u0430\u0442\u0438 \u043C\u0435\u043D\u0435?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 696006080421894
+    m_Localized: "\u041D\u0430\u0433\u0430\u0434\u0430\u0442\u0438 \u043F\u0430\u0440\u043E\u043B\u044C?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 696006080421895
+    m_Localized: "\u0412\u0436\u0435 \u0454 \u0430\u043A\u043A\u0430\u0443\u043D\u0442?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 696006084616192
+    m_Localized: "\u0412\u0456\u0434\u043F\u0440\u0430\u0432\u0438\u0442\u0438"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 1
