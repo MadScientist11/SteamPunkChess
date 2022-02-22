@@ -1,0 +1,32 @@
+{
+    "name": "Tests",
+    "rootNamespace": "",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Castle.Core.dll",
+        "FluentAssertions.dll",
+        "NSubstitute.dll",
+        "System.Collections.NonGeneric.dll",
+        "System.Collections.Specialized.dll",
+        "System.ComponentModel.TypeConverter.dll",
+        "System.Reflection.TypeExtensions.dll",
+        "System.Runtime.CompilerServices.Unsafe.dll",
+        "System.Text.RegularExpressions.dll",
+        "System.Threading.Tasks.Extensions.dll",
+        "System.Xml.ReaderWriter.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

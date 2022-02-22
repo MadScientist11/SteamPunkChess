@@ -1,0 +1,10 @@
+C:\Unity Projects\SteampunkChess\Dependencies\Dependencies\Depends\bin\Release\netstandard2.0\Depends.deps.json
+C:\Unity Projects\SteampunkChess\Dependencies\Dependencies\Depends\bin\Release\netstandard2.0\Depends.dll
+C:\Unity Projects\SteampunkChess\Dependencies\Dependencies\Depends\bin\Release\netstandard2.0\Depends.pdb
+C:\Unity Projects\SteampunkChess\Dependencies\Dependencies\Depends\obj\Release\netstandard2.0\Depends.csproj.AssemblyReference.cache
+C:\Unity Projects\SteampunkChess\Dependencies\Dependencies\Depends\obj\Release\netstandard2.0\Depends.GeneratedMSBuildEditorConfig.editorconfig
+C:\Unity Projects\SteampunkChess\Dependencies\Dependencies\Depends\obj\Release\netstandard2.0\Depends.AssemblyInfoInputs.cache
+C:\Unity Projects\SteampunkChess\Dependencies\Dependencies\Depends\obj\Release\netstandard2.0\Depends.AssemblyInfo.cs
+C:\Unity Projects\SteampunkChess\Dependencies\Dependencies\Depends\obj\Release\netstandard2.0\Depends.csproj.CoreCompileInputs.cache
+C:\Unity Projects\SteampunkChess\Dependencies\Dependencies\Depends\obj\Release\netstandard2.0\Depends.dll
+C:\Unity Projects\SteampunkChess\Dependencies\Dependencies\Depends\obj\Release\netstandard2.0\Depends.pdb

@@ -4,16 +4,16 @@
 #
 /tools
 /artifacts
-/[Ll]ibrary/
-/[Tt]emp/
-/[Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
-/[Ll]ogs/
-/[Mm]emoryCaptures/
+/Chess-Unity-Project/[Ll]ibrary/
+/Chess-Unity-Project/[Tt]emp/
+/Chess-Unity-Project/[Oo]bj/
+/Chess-Unity-Project/[Bb]uild/
+/Chess-Unity-Project/[Bb]uilds/
+/Chess-Unity-Project/[Ll]ogs/
+/Chess-Unity-Project/[Mm]emoryCaptures/
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
-!/[Aa]ssets/**/*.meta
+!/Project/[Aa]ssets/**/*.meta
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # /[Aa]ssets/AssetStoreTools*
