@@ -1,11 +1,7 @@
-﻿#if UNITY_EDITOR
-#define ENABLE_LOGS
-#endif
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace SteampunkChess
 {
-
     public static class Logger
     {
         static Logger()

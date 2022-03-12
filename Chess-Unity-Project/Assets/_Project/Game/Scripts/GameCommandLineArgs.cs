@@ -10,17 +10,14 @@ namespace SteampunkChess
 
         private static IReadOnlyList<string> _gameArgs;
 
-        private static IReadOnlyList<string> GameArgs
+        public static IReadOnlyList<string> GameArgs
         {
-            get
-            {
-                if(_gameArgs == null)
-                {
-                   _gameArgs = ParseCustomArguments(Environment.GetCommandLineArgs()).ToList();
-                }
+            get { return _gameArgs; }
+        }
 
-                return _gameArgs;
-            }
+        static GameCommandLineArgs()
+        {
+            _gameArgs = ParseCustomArguments(Environment.GetCommandLineArgs()).ToList();
         }
 
         public static bool Contains(string arg)
@@ -28,21 +25,21 @@ namespace SteampunkChess
             return GameArgs.Contains(arg);
         }
 
-        private static IEnumerable<string> ParseCustomArguments(string[] args)
+        public static IEnumerable<string> ParseCustomArguments(string[] args)
         {
+            // ReSharper disable once ForCanBeConvertedToForeach
             for (int i = 0; i < args.Length; i++)
             {
                 if (!TryParseArgument(args[i], out string result))
                     continue;
 
                 yield return result;
-
             }
         }
 
         private static bool TryParseArgument(string arg, out string result)
         {
-            result = String.Empty;
+            result = string.Empty;
 
             if (string.IsNullOrWhiteSpace(arg))
                 return false;
@@ -55,7 +52,6 @@ namespace SteampunkChess
             result = semiParsedArg.Substring(2);
 
             return true;
-
         }
     }
 }

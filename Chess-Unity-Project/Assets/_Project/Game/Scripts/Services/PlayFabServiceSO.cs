@@ -60,7 +60,7 @@ namespace SteampunkChess.CloudService
         {
             _onSuccess?.Invoke();
             _onSuccess = null;
-            Debug.Log("Recovery email successully sent!");
+            Logger.Debug("Recovery email successfully sent!");
         }
 
         private void OnRegisterSuccess(RegisterPlayFabUserResult result)
@@ -68,8 +68,6 @@ namespace SteampunkChess.CloudService
             _onSuccess?.Invoke();
             _onSuccess = null;
             Logger.Debug("Register success");
-            Debug.Log("Register success");
-
         }
 
         private void OnLogInSuccess(LoginResult loginResult)
@@ -77,7 +75,7 @@ namespace SteampunkChess.CloudService
             _onSuccess?.Invoke();
             _onSuccess = null;
             Logger.Debug("LogIn success");
-            Debug.Log("LogIn success");
+ 
         }
 
         private void OnError(PlayFabError error)
@@ -85,7 +83,7 @@ namespace SteampunkChess.CloudService
             _onError?.Invoke(error.GenerateErrorReport());
             _onError = null;
             Logger.Debug(error.GenerateErrorReport());
-            Debug.Log(error.GenerateErrorReport());
+   
         }
     }
 }

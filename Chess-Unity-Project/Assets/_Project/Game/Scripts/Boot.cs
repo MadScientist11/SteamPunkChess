@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -10,8 +11,7 @@ namespace SteampunkChess
 
         private void Start()
         {
-            if (GameCommandLineArgs.Contains(GameConstants.GameCLIArgs.SkipUserValidation))
-                _mainMenuScene.LoadSceneAsync();
+            _mainMenuScene.LoadSceneAsync();
         }
     }
 }

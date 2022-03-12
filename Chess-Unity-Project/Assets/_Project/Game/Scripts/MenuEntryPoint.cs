@@ -1,5 +1,6 @@
-using PlayFab;
-using PlayFab.ClientModels;
+using System.Linq;
+using SteampunkChess.CloudService;
+using SteampunkChess.CloudService.Models;
 using SteampunkChess.PopUpService;
 using SteampunkChess.SignalSystem;
 using UnityEngine;
@@ -12,42 +13,44 @@ namespace SteampunkChess
         [SerializeField] private Signal _onLogInSignal;
 
         private IPopUpService _popUpService;
+        private ICloudService _cloudService;
 
         [Inject]
-        private void Construct(IPopUpService popUpService)
+        private void Construct(IPopUpService popUpService, ICloudService cloudService)
         {
+            _cloudService = cloudService;
             _popUpService = popUpService;
-
         }
 
         private void Start()
         {
+            ProcessUserValidation();
+        }
+
+        private void ProcessUserValidation()
+        {
+            if (GameCommandLineArgs.GameArgs.Contains(GameConstants.GameCLIArgs.SkipUserValidation))
+                return;
+
             if (!Prefs.RememberMe)
             {
                 _popUpService.ShowPopUp(GameConstants.PopUps.LogInWindow);
                 return;
             }
-            var request = new LoginWithPlayFabRequest()
-            {
-                Username = Prefs.Username,
-                Password = Prefs.Password
-            };
 
-            PlayFabClientAPI.LoginWithPlayFab(request, OnLogInSuccess, OnLogInError);
+            var userParams = new LogInUserParams(Prefs.Username, Prefs.Password);
+            _cloudService.LogInUser(userParams, OnLogInSuccess, OnLogInError);
         }
 
-        private void OnLogInSuccess(LoginResult loginResult)
+
+        private void OnLogInSuccess()
         {
+            if (_onLogInSignal != null) _onLogInSignal.Raise();
             Logger.Debug("LogIn Success");
-            Debug.Log("LogIn Success");
-            _onLogInSignal?.Raise();
-
         }
 
-        private void OnLogInError(PlayFabError error)
+        private void OnLogInError(string error)
         {
-            Logger.Debug(error.GenerateErrorReport());
-            Debug.Log(error.GenerateErrorReport());
             _popUpService.ShowPopUp(GameConstants.PopUps.LogInWindow);
         }
     }
