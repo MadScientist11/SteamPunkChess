@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace SteampunkChess
 {
-    [CreateAssetMenu(fileName = "PiecesPrefabsSO", menuName = "ScriptableObjects/PiecesPrefabsSO")]
+    [CreateAssetMenu(fileName = "PiecesPrefabs", menuName = "ScriptableObjects/PiecesPrefabs")]
     public class PiecesPrefabsSO : ScriptableObject
     {
         public GameObject[] piecesPrefabs;

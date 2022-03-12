@@ -28,15 +28,24 @@ namespace SteampunkChess
         //    return new NoneSpecialMove();
         //}
 
-        public void SetPosition(Vector3 position, bool force = false)
+        private void SetPosition(Vector3 position, bool force = false)
         {
             if (force)
             {
                 PieceTransform.position = position;
+                Debug.Log(PieceTransform.position.ToString());
                 return;
             }
 
            // MoveSequence = tweener.MoveTo(transform, position);
+        }
+        public void PositionPiece(int x, int y, bool force = false)
+        {
+            CurrentX = x;
+            CurrentY = y;
+            Vector3 tileCenter = TileSet.GetTileCenter(x, y);
+            Debug.Log(tileCenter.ToString());
+            SetPosition(tileCenter, true);
         }
 
         public bool IsFromSameTeam(ChessPiece piece)

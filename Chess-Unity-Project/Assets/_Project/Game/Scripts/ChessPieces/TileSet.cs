@@ -6,7 +6,7 @@ namespace SteampunkChess
     {
         private const string TilesParent = "TilesParent";
         private readonly ChessBoardInfoSO _chessBoardInfoSO;
-        private readonly TileInfoSO _tileInfoSO;
+        private static TileInfoSO _tileInfoSO;
         private readonly GameObject[,] _tiles;
         private readonly Transform _tilesParentTransform;
 
@@ -53,7 +53,7 @@ namespace SteampunkChess
             return -Vector2Int.one;
         }
 
-        public Vector3 GetTileCenter(int x, int y)
+        public static Vector3 GetTileCenter(int x, int y)
         {
             return _tileInfoSO.startingSpawnPoint + new Vector3(x * (_tileInfoSO.tileDimensionSize * 2) + _tileInfoSO.zOffset * x,
                 _tileInfoSO.yOffset, y * (_tileInfoSO.tileDimensionSize * 2) + _tileInfoSO.zOffset * y) + new Vector3(_tileInfoSO.tileDimensionSize, 0, _tileInfoSO.tileDimensionSize);

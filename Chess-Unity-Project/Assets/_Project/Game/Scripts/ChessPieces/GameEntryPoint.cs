@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GameEntryPoint : MonoBehaviour
 {
-    private void Awake()
+    private void Start()
     {
         ChessBoard board = BoardFactory.Create();
 
