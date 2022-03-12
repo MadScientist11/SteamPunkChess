@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e3d14847d474b00820db46f9c0588d5, type: 3}
+  m_Name: ChessBoardInfo
+  m_EditorClassIdentifier: 
+  boardPrefab: {fileID: 4464227730072253838, guid: b86d4da409fc15740be69c0245117ed8, type: 3}
+  boardSizeX: 8
+  boardSizeY: 8
+  tileInfoSO: {fileID: 11400000, guid: 5afb43f8387c1ae4bb2748aa1e8a0eb2, type: 2}

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d68c3e544de1438cbda66430f69fcc3f, type: 3}
+  m_Name: TileInfo
+  m_EditorClassIdentifier: 
+  tilePrefab: {fileID: 3536395989746451100, guid: c24bd1f6a78c83245890d709b9ae0518, type: 3}
+  tileDimensionSize: 0.115
+  yOffset: 0.01
+  zOffset: 0.02
+  startingSpawnPoint: {x: -0.9846895, y: 0.3339299, z: -0.9846898}
