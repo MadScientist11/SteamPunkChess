@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 4204142988848551974}
   - component: {fileID: 1006491103090399107}
   - component: {fileID: 3031820964965622601}
-  m_Layer: 0
+  - component: {fileID: 7887937957105047984}
+  m_Layer: 10
   m_Name: ChessTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,3 +82,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7887937957105047984
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3536395989746451100}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 0, z: 2}
+  m_Center: {x: 1, y: 0, z: 1}

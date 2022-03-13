@@ -33,7 +33,6 @@ namespace SteampunkChess
             if (force)
             {
                 PieceTransform.position = position;
-                Debug.Log(PieceTransform.position.ToString());
                 return;
             }
 
@@ -44,7 +43,6 @@ namespace SteampunkChess
             CurrentX = x;
             CurrentY = y;
             Vector3 tileCenter = TileSet.GetTileCenter(x, y);
-            Debug.Log(tileCenter.ToString());
             SetPosition(tileCenter, true);
         }
 

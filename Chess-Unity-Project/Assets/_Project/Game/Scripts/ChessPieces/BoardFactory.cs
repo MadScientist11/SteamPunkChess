@@ -11,7 +11,7 @@ public class BoardFactory : MonoBehaviour
 
     public static ChessBoard Create()
     {
-        ChessBoard board = DIContainer.Resolve<ChessBoard>();
+        ChessBoard board = DIContainer.Instantiate<ChessBoard>();
         return board;
     }
 }

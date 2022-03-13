@@ -1,20 +1,27 @@
 ﻿using UnityEngine;
+using Zenject;
 
 namespace SteampunkChess
 {
-    public class TileSet
+    public class TileSet : IInitializable
     {
-        private const string TilesParent = "TilesParent";
+        private const string TilesParent = "Tiles";
         private readonly ChessBoardInfoSO _chessBoardInfoSO;
         private static TileInfoSO _tileInfoSO;
         private readonly GameObject[,] _tiles;
-        private readonly Transform _tilesParentTransform;
+        private Transform _tilesParentTransform;
 
         public TileSet(ChessBoardInfoSO chessBoardInfoSO)
         {
             _chessBoardInfoSO = chessBoardInfoSO;
             _tileInfoSO = chessBoardInfoSO.tileInfoSO;
             _tiles = new GameObject[chessBoardInfoSO.boardSizeX, chessBoardInfoSO.boardSizeY];
+
+            
+        }
+        
+        public void Initialize()
+        {
             _tilesParentTransform = new GameObject(TilesParent).transform;
             CreateTilesGO();
         }
@@ -58,6 +65,6 @@ namespace SteampunkChess
             return _tileInfoSO.startingSpawnPoint + new Vector3(x * (_tileInfoSO.tileDimensionSize * 2) + _tileInfoSO.zOffset * x,
                 _tileInfoSO.yOffset, y * (_tileInfoSO.tileDimensionSize * 2) + _tileInfoSO.zOffset * y) + new Vector3(_tileInfoSO.tileDimensionSize, 0, _tileInfoSO.tileDimensionSize);
         }
-        
+
     }
 }

@@ -8,7 +8,7 @@ namespace SteampunkChess
 {
     public static class ChessGameUtility
     {
-        private const string PiecesParent = "PiecesParent";
+        private const string PiecesParent = "Pieces";
 
         private static readonly Dictionary<ChessPieceType, Func<ChessPiece>> Pieces =
             new Dictionary<ChessPieceType, Func<ChessPiece>>()
