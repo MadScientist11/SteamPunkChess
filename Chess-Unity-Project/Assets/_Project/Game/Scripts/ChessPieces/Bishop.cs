@@ -8,21 +8,21 @@ namespace SteamPunkChess
     {
       
         
-        public override List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board, int tileCountX, int tileCountY)
+        public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY)
         {
-            List<Vector2Int> r = new List<Vector2Int>();
+            List<Movement> r = new List<Movement>();
             
             //Top right 
             for (int x = CurrentX + 1, y = CurrentY + 1; x < tileCountX && y < tileCountY; x++, y++)
             {
-                if (board[x, y] == null)
+                if (pieceArrangement[x, y] == null)
                 {
-                    r.Add(new Vector2Int(x, y));
+                    r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(x, y), pieceArrangement));
                 }
                 else
                 {
-                    if (!IsFromSameTeam(board[x, y]))
-                        r.Add(new Vector2Int(x, y));
+                    if (!IsFromSameTeam(pieceArrangement[x, y]))
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(x, y), pieceArrangement));
 
                     break;
                 }
@@ -31,14 +31,14 @@ namespace SteamPunkChess
             //Top left 
             for (int x = CurrentX - 1, y = CurrentY + 1; x >= 0 && y < tileCountY; x--, y++)
             {
-                if (board[x, y] == null)
+                if (pieceArrangement[x, y] == null)
                 {
-                    r.Add(new Vector2Int(x, y));
+                    r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(x, y), pieceArrangement));
                 }
                 else
                 {
-                    if (!IsFromSameTeam(board[x, y]))
-                        r.Add(new Vector2Int(x, y));
+                    if (!IsFromSameTeam(pieceArrangement[x, y]))
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(x, y), pieceArrangement));
 
                     break;
                 }
@@ -46,14 +46,14 @@ namespace SteamPunkChess
             //Bottom right 
             for (int x = CurrentX + 1, y = CurrentY - 1; x < tileCountX && y >= 0; x++, y--)
             {
-                if (board[x, y] == null)
+                if (pieceArrangement[x, y] == null)
                 {
-                    r.Add(new Vector2Int(x, y));
+                    r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(x, y), pieceArrangement));
                 }
                 else
                 {
-                    if (!IsFromSameTeam(board[x, y]))
-                        r.Add(new Vector2Int(x, y));
+                    if (!IsFromSameTeam(pieceArrangement[x, y]))
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(x, y), pieceArrangement));
 
                     break;
                 }
@@ -62,21 +62,19 @@ namespace SteamPunkChess
             //Bottom left 
             for (int x = CurrentX - 1, y = CurrentY - 1; x >= 0 && y >= 0; x--, y--)
             {
-                if (board[x, y] == null)
+                if (pieceArrangement[x, y] == null)
                 {
-                    r.Add(new Vector2Int(x, y));
+                    r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(x, y), pieceArrangement));
                 }
                 else
                 {
-                    if (!IsFromSameTeam(board[x, y]))
-                        r.Add(new Vector2Int(x, y));
+                    if (!IsFromSameTeam(pieceArrangement[x, y]))
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(x, y), pieceArrangement));
 
                     break;
                 }
             }
             return r;
         }
-
-        
     }
 }

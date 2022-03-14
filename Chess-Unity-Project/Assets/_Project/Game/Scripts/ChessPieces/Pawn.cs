@@ -7,35 +7,35 @@ namespace SteamPunkChess
     public class Pawn : ChessPiece
     { 
 
-        public override List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board, int tileCountX, int tileCountY)
+        public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY)
         {
             //one in front
-            List<Vector2Int> r = new List<Vector2Int>();
+            List<Movement> r = new List<Movement>();
             int direction = Team == 0 ? 1 : -1;
             if (CurrentY + direction < tileCountY)
             {
-                if (board[CurrentX, CurrentY + direction] == null)
-                    r.Add(new Vector2Int(CurrentX, CurrentY + direction));
+                if (pieceArrangement[CurrentX, CurrentY + direction] == null)
+                    r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX, CurrentY + direction), pieceArrangement));
 
                 // two in front
-                if (board[CurrentX, CurrentY + direction] == null)
+                if (pieceArrangement[CurrentX, CurrentY + direction] == null)
                 {
-                    if (Team == Team.White && CurrentY == 1 && board[CurrentX, CurrentY + direction * 2] == null)
-                        r.Add(new Vector2Int(CurrentX, CurrentY + direction * 2));
+                    if (Team == Team.White && CurrentY == 1 && pieceArrangement[CurrentX, CurrentY + direction * 2] == null)
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX, CurrentY + direction * 2), pieceArrangement));
 
-                    if (Team == Team.Black && CurrentY == 6 && board[CurrentX, CurrentY + direction * 2] == null)
-                        r.Add(new Vector2Int(CurrentX, CurrentY + direction * 2));
+                    if (Team == Team.Black && CurrentY == 6 && pieceArrangement[CurrentX, CurrentY + direction * 2] == null)
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX, CurrentY + direction * 2), pieceArrangement));
 
                 }
 
 
                 //Diagonal move
                 if (CurrentX != tileCountX - 1)
-                    if (board[CurrentX + 1, CurrentY + direction] != null && !IsFromSameTeam(board[CurrentX + 1, CurrentY + direction]))
-                        r.Add(new Vector2Int(CurrentX + 1, CurrentY + direction));
+                    if (pieceArrangement[CurrentX + 1, CurrentY + direction] != null && !IsFromSameTeam(pieceArrangement[CurrentX + 1, CurrentY + direction]))
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX + 1, CurrentY + direction), pieceArrangement));
                 if (CurrentX != 0)
-                    if (board[CurrentX - 1, CurrentY + direction] != null && !IsFromSameTeam(board[CurrentX - 1, CurrentY + direction]))
-                        r.Add(new Vector2Int(CurrentX - 1, CurrentY + direction));
+                    if (pieceArrangement[CurrentX - 1, CurrentY + direction] != null && !IsFromSameTeam(pieceArrangement[CurrentX - 1, CurrentY + direction]))
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX - 1, CurrentY + direction), pieceArrangement));
             }
             return r;
         }

@@ -8,7 +8,7 @@ public class GameEntryPoint : MonoBehaviour
 {
     private void Start()
     {
-        ChessBoard board = BoardFactory.Create();
+        ChessBoard board = BoardFactory.CreateBoard();
 
     }
 }

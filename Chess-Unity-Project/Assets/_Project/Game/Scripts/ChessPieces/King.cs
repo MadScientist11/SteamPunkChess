@@ -8,64 +8,63 @@ namespace SteamPunkChess
     public class King : ChessPiece
     {
         //[SerializeField] private SOGameFenDataSO gameFenDataSO;
-        
-
-        public override List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board, int tileCountX, int tileCountY)
+      
+        public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY)
         {
-            List<Vector2Int> r = new List<Vector2Int>();
+            List<Movement> r = new List<Movement>();
 
             // Right
             if (CurrentX + 1 < tileCountX)
             {
-                if (board[CurrentX + 1, CurrentY] == null)
-                    r.Add(new Vector2Int(CurrentX + 1, CurrentY));
-                else if (!IsFromSameTeam(board[CurrentX + 1, CurrentY]))
-                    r.Add(new Vector2Int(CurrentX + 1, CurrentY));
+                if (pieceArrangement[CurrentX + 1, CurrentY] == null)
+                    r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX + 1, CurrentY), pieceArrangement));
+                else if (!IsFromSameTeam(pieceArrangement[CurrentX + 1, CurrentY]))
+                    r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX + 1, CurrentY), pieceArrangement));
 
                 // Top right
                 if (CurrentY + 1 < tileCountY)
-                    if (board[CurrentX + 1, CurrentY + 1] == null)
-                        r.Add(new Vector2Int(CurrentX + 1, CurrentY + 1));
-                    else if (!IsFromSameTeam(board[CurrentX + 1, CurrentY + 1]))
-                        r.Add(new Vector2Int(CurrentX + 1, CurrentY + 1));
+                    if (pieceArrangement[CurrentX + 1, CurrentY + 1] == null)
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX + 1, CurrentY + 1), pieceArrangement));
+                    else if (!IsFromSameTeam(pieceArrangement[CurrentX + 1, CurrentY + 1]))
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX + 1, CurrentY + 1), pieceArrangement));
 
                 // Bottom right
                 if (CurrentY - 1 >= 0)
-                    if (board[CurrentX + 1, CurrentY - 1] == null)
-                        r.Add(new Vector2Int(CurrentX + 1, CurrentY - 1));
-                    else if (!IsFromSameTeam(board[CurrentX + 1, CurrentY - 1]))
-                        r.Add(new Vector2Int(CurrentX + 1, CurrentY - 1));
+                    if (pieceArrangement[CurrentX + 1, CurrentY - 1] == null)
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX + 1, CurrentY - 1), pieceArrangement));
+                    else if (!IsFromSameTeam(pieceArrangement[CurrentX + 1, CurrentY - 1]))
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX + 1, CurrentY - 1), pieceArrangement));
             }
             // Left
             if (CurrentX - 1 >= 0)
             {
-                if (board[CurrentX - 1, CurrentY] == null)
-                    r.Add(new Vector2Int(CurrentX - 1, CurrentY));
-                else if (!IsFromSameTeam(board[CurrentX - 1, CurrentY]))
-                    r.Add(new Vector2Int(CurrentX - 1, CurrentY));
+                if (pieceArrangement[CurrentX - 1, CurrentY] == null)
+                    r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX - 1, CurrentY), pieceArrangement));
+                else if (!IsFromSameTeam(pieceArrangement[CurrentX - 1, CurrentY]))
+                    r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX - 1, CurrentY), pieceArrangement));
 
                 // Top right
                 if (CurrentY + 1 < tileCountY)
-                    if (board[CurrentX - 1, CurrentY + 1] == null)
-                        r.Add(new Vector2Int(CurrentX - 1, CurrentY + 1));
-                    else if (!IsFromSameTeam(board[CurrentX - 1, CurrentY + 1]))
-                        r.Add(new Vector2Int(CurrentX - 1, CurrentY + 1));
+                    if (pieceArrangement[CurrentX - 1, CurrentY + 1] == null)
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX - 1, CurrentY + 1), pieceArrangement));
+                    else if (!IsFromSameTeam(pieceArrangement[CurrentX - 1, CurrentY + 1]))
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX - 1, CurrentY + 1), pieceArrangement));
 
                 // Bottom right
                 if (CurrentY - 1 >= 0)
-                    if (board[CurrentX - 1, CurrentY - 1] == null)
-                        r.Add(new Vector2Int(CurrentX - 1, CurrentY - 1));
-                    else if (!IsFromSameTeam(board[CurrentX - 1, CurrentY - 1]))
-                        r.Add(new Vector2Int(CurrentX - 1, CurrentY - 1));
+                    if (pieceArrangement[CurrentX - 1, CurrentY - 1] == null)
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX - 1, CurrentY - 1), pieceArrangement));
+                    else if (!IsFromSameTeam(pieceArrangement[CurrentX - 1, CurrentY - 1]))
+                        r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX - 1, CurrentY - 1), pieceArrangement));
             }
             //Up
             if (CurrentY + 1 < tileCountY)
-                if (board[CurrentX, CurrentY + 1] == null || !IsFromSameTeam(board[CurrentX, CurrentY + 1]))
-                    r.Add(new Vector2Int(CurrentX, CurrentY + 1));
+                if (pieceArrangement[CurrentX, CurrentY + 1] == null || !IsFromSameTeam(pieceArrangement[CurrentX, CurrentY + 1]))
+                    r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX, CurrentY + 1), pieceArrangement));
             //Down
             if (CurrentY - 1 >= 0)
-                if (board[CurrentX, CurrentY - 1] == null || !IsFromSameTeam(board[CurrentX, CurrentY - 1]))
-                    r.Add(new Vector2Int(CurrentX, CurrentY - 1));
+                if (pieceArrangement[CurrentX, CurrentY - 1] == null || !IsFromSameTeam(pieceArrangement[CurrentX, CurrentY - 1]))
+                    r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX, CurrentY - 1), pieceArrangement));
             return r;
         }
 

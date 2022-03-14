@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DG.Tweening;
+using SteamPunkChess;
 using UnityEngine;
 
 namespace SteampunkChess
 {
-    public abstract class ChessPiece 
+    public abstract class ChessPiece
     {
         public Sequence MoveSequence { get; set; }
-  
+
         public int CurrentX;
         public int CurrentY;
         public Team Team;
@@ -16,11 +18,18 @@ namespace SteampunkChess
         public Transform PieceTransform { get; set; }
 
 
-        //private IObjectTweener tweener;
-     
-        
+        protected IObjectTweener Tweener;
 
-        public abstract List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board, int tileCountX, int tileCountY);
+        public ChessPiece()
+        {
+            if (this is Knight)
+                Tweener = new ArcTweener(1, .65f);
+            else
+                Tweener = new LineTweener(1);
+        }
+
+
+        public abstract List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY);
 
         //public virtual ISpecialMove GetSpecialMove(ref ChessPiece[,] board, ref List<Vector2Int[]> moveList,
         //    ref List<Vector2Int> availableMoves)
@@ -28,22 +37,19 @@ namespace SteampunkChess
         //    return new NoneSpecialMove();
         //}
 
-        private void SetPosition(Vector3 position, bool force = false)
-        {
-            if (force)
-            {
-                PieceTransform.position = position;
-                return;
-            }
-
-           // MoveSequence = tweener.MoveTo(transform, position);
-        }
-        public void PositionPiece(int x, int y, bool force = false)
+        public Task PositionPiece(int x, int y, bool force = false)
         {
             CurrentX = x;
             CurrentY = y;
-            Vector3 tileCenter = TileSet.GetTileCenter(x, y);
-            SetPosition(tileCenter, true);
+            Vector3 tile = TileSet.GetTileCenter(x, y);
+
+            if (force)
+            {
+                PieceTransform.position = tile;
+                return Task.CompletedTask;
+            }
+
+            return Tweener.MoveTo(PieceTransform, tile);
         }
 
         public bool IsFromSameTeam(ChessPiece piece)

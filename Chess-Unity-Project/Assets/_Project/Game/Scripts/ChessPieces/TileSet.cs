@@ -8,20 +8,18 @@ namespace SteampunkChess
         private const string TilesParent = "Tiles";
         private readonly ChessBoardInfoSO _chessBoardInfoSO;
         private static TileInfoSO _tileInfoSO;
-        private readonly GameObject[,] _tiles;
+        private GameObject[,] _tiles;
         private Transform _tilesParentTransform;
 
         public TileSet(ChessBoardInfoSO chessBoardInfoSO)
         {
             _chessBoardInfoSO = chessBoardInfoSO;
             _tileInfoSO = chessBoardInfoSO.tileInfoSO;
-            _tiles = new GameObject[chessBoardInfoSO.boardSizeX, chessBoardInfoSO.boardSizeY];
-
-            
         }
         
         public void Initialize()
         {
+            _tiles = new GameObject[_chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY];
             _tilesParentTransform = new GameObject(TilesParent).transform;
             CreateTilesGO();
         }
