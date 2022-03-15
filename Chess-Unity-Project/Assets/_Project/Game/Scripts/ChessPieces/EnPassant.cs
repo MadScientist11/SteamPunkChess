@@ -6,11 +6,7 @@ namespace SteampunkChess
     {
         private readonly List<Movement> _moveList;
         private readonly PieceArrangement _pieceArrangement;
-
-        //public SpecialMoveStringBuilder GetStringBuilder(MoveInfo moveInfo)
-       //{
-       //    return new EnPassantSpecialMoveStringBuilder(moveInfo);
-       //}
+        
        public EnPassant(List<Movement> moveList, PieceArrangement pieceArrangement)
        {
            _moveList = moveList;

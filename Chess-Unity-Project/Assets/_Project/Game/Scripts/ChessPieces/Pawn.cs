@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ModestTree;
 using SteampunkChess;
 using UnityEngine;
 
@@ -45,10 +46,14 @@ namespace SteamPunkChess
             int direction = Team == 0 ? 1 : -1;
             if (Team == Team.White && CurrentY == 6 || Team == Team.Black && CurrentY == 1)
             {
-                int promotionMoveIndex = moveHistory.FindIndex(x => x.Destination.y == 7 || x.Destination.y == 0);
-                moveHistory[promotionMoveIndex] = new Movement(new Vector2Int(CurrentX, CurrentY),
-                    new Vector2Int(moveHistory[promotionMoveIndex].Destination.x, moveHistory[promotionMoveIndex].Destination.y), pieceArrangement);
-                //return new Promotion();
+                int promotionMoveIndex = availableMoves.FindIndex(x => x.Destination.y == 7 || x.Destination.y == 0);
+                Debug.Assert(promotionMoveIndex != -1, "Cannot find available move for promotion");
+                var promotion = new Promotion(moveHistory, pieceArrangement);
+                availableMoves[promotionMoveIndex] = new Movement(new Vector2Int(CurrentX, CurrentY), 
+                    new Vector2Int(availableMoves[promotionMoveIndex].Destination.x, availableMoves[promotionMoveIndex].Destination.y), 
+                    pieceArrangement,
+                    promotion
+                    );
             }
                 
 
@@ -64,24 +69,25 @@ namespace SteamPunkChess
                         {
                             if (lastMove.Destination.y == CurrentY)
                             {
-                                Debug.Log("7");
+                                
                                 if (lastMove.Destination.x == CurrentX - 1)
                                 {
-                                    Debug.Log("7");
                                     var enPassant = new EnPassant(moveHistory, pieceArrangement);
                                     var movement = new Movement(new Vector2Int(CurrentX, CurrentY),
-                                        new Vector2Int(CurrentX - 1, CurrentY + direction), pieceArrangement);
-                                    movement.SpecialMove = enPassant;
+                                        new Vector2Int(CurrentX - 1, CurrentY + direction), 
+                                        pieceArrangement, 
+                                        enPassant);
+                                   
                                     availableMoves.Add(movement);
-                                    
                                 }
                                 if (lastMove.Destination.x == CurrentX + 1)
                                 {
-                                    Debug.Log("7");
                                     var enPassant = new EnPassant(moveHistory, pieceArrangement);
                                     Movement movement = new Movement(new Vector2Int(CurrentX, CurrentY),
-                                        new Vector2Int(CurrentX + 1, CurrentY + direction), pieceArrangement);
-                                    movement.SpecialMove = enPassant;
+                                        new Vector2Int(CurrentX + 1, CurrentY + direction), 
+                                        pieceArrangement, 
+                                        enPassant);
+                                    
                                     availableMoves.Add(movement);
                                 }
                             }

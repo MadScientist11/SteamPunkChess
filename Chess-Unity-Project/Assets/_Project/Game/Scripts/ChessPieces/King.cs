@@ -68,60 +68,72 @@ namespace SteamPunkChess
             return r;
         }
 
-        /*
-        public override ISpecialMove GetSpecialMove(ref ChessPiece[,] board, ref List<Vector2Int[]> moveList, ref List<Vector2Int> availableMoves)
+        public override void GetSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
         {
-            ISpecialMove r = new NoneSpecialMove(); 
-            int ourY = (team == 0) ? 0 : 7;
-            var kingMove = moveList.Find(m => m[0].x == 4 && m[0].y == ourY);
-            var leftRook = moveList.Find(m => m[0].x == 0 && m[0].y == ourY);
-            var rightRook = moveList.Find(m => m[0].x == 7 && m[0].y == ourY);
+           
+            int ourY = (Team == 0) ? 0 : 7;
+            var kingMove = moveHistory.Find(m => m.Start.x == 4 && m.Start.y == ourY);
+            var leftRook = moveHistory.Find(m => m.Start.x == 0 && m.Start.y == ourY);
+            var rightRook = moveHistory.Find(m => m.Start.x == 7 && m.Start.y == ourY);
             if (kingMove == null && CurrentX == 4)
             {
-                if (team == 0)
+                if (Team == 0)
                 {
                     if (leftRook == null)
-                        if (board[0, ourY].chessType == ChessPieceType.Rook)
-                            if (board[0, ourY].team == Team.White)
-                                if (board[3, ourY] == null && board[2, ourY] == null && board[1, ourY] == null && gameFenDataSO.GameFenData.CanWhiteCastleQueenSide)
+                        if (pieceArrangement[0, ourY].ChessType == ChessPieceType.Rook)
+                            if (pieceArrangement[0, ourY].Team == Team.White)
+                                if (pieceArrangement[3, ourY] == null && pieceArrangement[2, ourY] == null && pieceArrangement[1, ourY] == null)
                                 {
-                                    availableMoves.Add(new Vector2Int(2, ourY));
-                                    r = new Castling();
+                                    var movement = new Movement(new Vector2Int(CurrentX, CurrentY),
+                                        new Vector2Int(2, ourY), 
+                                        pieceArrangement, 
+                                        new Castling(moveHistory, pieceArrangement));
+                                    availableMoves.Add(movement);
+                                     
                                 }
                     if (rightRook == null)
-                        if (board[7, ourY].chessType == ChessPieceType.Rook)
-                            if (board[7, ourY].team == Team.White   )
-                                if (board[5, ourY] == null && board[6, ourY] == null && gameFenDataSO.GameFenData.CanWhiteCastleKingSide)
+                        if (pieceArrangement[7, ourY].ChessType == ChessPieceType.Rook)
+                            if (pieceArrangement[7, ourY].Team == Team.White   )
+                                if (pieceArrangement[5, ourY] == null && pieceArrangement[6, ourY] == null)
                                 {
-                                    availableMoves.Add(new Vector2Int(6, ourY));
-                                    r = new Castling();
+                                    var movement = new Movement(new Vector2Int(CurrentX, CurrentY),
+                                        new Vector2Int(6, ourY), 
+                                        pieceArrangement, 
+                                        new Castling(moveHistory, pieceArrangement));
+                                    availableMoves.Add(movement);
+                                   
                                 }
                 }
                 else
                 {
                     if (leftRook == null)
-                        if (board[0, ourY].chessType == ChessPieceType.Rook)
-                            if (board[0, ourY].team == Team.Black)
-                                if (board[3, ourY] == null && board[2, ourY] == null && board[1, ourY] == null && gameFenDataSO.GameFenData.CanBlackCastleQueenSide)
+                        if (pieceArrangement[0, ourY].ChessType == ChessPieceType.Rook)
+                            if (pieceArrangement[0, ourY].Team == Team.Black)
+                                if (pieceArrangement[3, ourY] == null && pieceArrangement[2, ourY] == null && pieceArrangement[1, ourY] == null)
                                 {
-                                    availableMoves.Add(new Vector2Int(2, ourY));
-                                    r = new Castling();
+                                    var movement = new Movement(new Vector2Int(CurrentX, CurrentY),
+                                        new Vector2Int(2, ourY), 
+                                        pieceArrangement, 
+                                        new Castling(moveHistory, pieceArrangement));
+                                    availableMoves.Add(movement);
                                 }
                     if (rightRook == null)
-                        if (board[7, ourY].chessType == ChessPieceType.Rook)
-                            if (board[7, ourY].team == Team.Black)
-                                if (board[5, ourY] == null && board[6, ourY] == null && gameFenDataSO.GameFenData.CanBlackCastleKingSide)
+                        if (pieceArrangement[7, ourY].ChessType == ChessPieceType.Rook)
+                            if (pieceArrangement[7, ourY].Team == Team.Black)
+                                if (pieceArrangement[5, ourY] == null && pieceArrangement[6, ourY] == null)
                                 {
-                                    availableMoves.Add(new Vector2Int(6, ourY));
-                                    r = new Castling();
+                                    var movement = new Movement(new Vector2Int(CurrentX, CurrentY),
+                                        new Vector2Int(6, ourY), 
+                                        pieceArrangement, 
+                                        new Castling(moveHistory, pieceArrangement));
+                                    availableMoves.Add(movement);
                                 }
 
                 }
             }
-
-            return r;
+     
         }
-        */
+        
 
         
     }

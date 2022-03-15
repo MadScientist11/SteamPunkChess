@@ -30,7 +30,7 @@ namespace SteampunkChess
 
         private readonly PieceArrangement _pieceArrangement;
 
-        public ISpecialMove SpecialMove { get; set; }
+        private readonly ISpecialMove _specialMove;
 
         public Movement(Vector2Int start, Vector2Int destination, PieceArrangement pieceArrangement)
         {
@@ -38,19 +38,24 @@ namespace SteampunkChess
             Destination = destination;
             _pieceArrangement = pieceArrangement;
         }
+        
+        public Movement(Vector2Int start, Vector2Int destination, PieceArrangement pieceArrangement, ISpecialMove specialMove)
+        {
+            Start = start;
+            Destination = destination;
+            _specialMove = specialMove;
+            _pieceArrangement = pieceArrangement;
+        }
      
 
         public async void Process()
         {
-            Debug.Log("8");
-            Debug.Log(SpecialMove);
             ChessPiece pieceToMove = _pieceArrangement[Start.x, Start.y];
            
             _pieceArrangement[Start.x, Start.y] = null;
             _pieceArrangement[Destination.x, Destination.y] = pieceToMove;
             await pieceToMove.PositionPiece(Destination.x, Destination.y);
-            SpecialMove?.ProcessSpecialMove();
-            Debug.Log("Move is done");
+            _specialMove?.ProcessSpecialMove();
         }
         
         public async void ProcessBackwards()
@@ -170,6 +175,7 @@ namespace SteampunkChess
         private PiecesPrefabsSO _piecesPrefabsSO;
         
         private const string PiecesParent = "Pieces";
+        private GameObject _piecesParentGO;
 
         private readonly Dictionary<ChessPieceType, Func<ChessPiece>> Pieces =
             new Dictionary<ChessPieceType, Func<ChessPiece>>()
@@ -208,23 +214,21 @@ namespace SteampunkChess
         {
             GameDataFen fenData = FenUtility.GameFenDataFromStringFen(gameFen);
             ChessPiece[,] chessPieces = new ChessPiece[chessBoardSize.boardSizeX, chessBoardSize.boardSizeY];
-            GameObject piecesParent = new GameObject(PiecesParent);
+            _piecesParentGO = new GameObject(PiecesParent);
 
             for (int x = 0; x < chessBoardSize.boardSizeX; x++)
             for (int y = 0; y < chessBoardSize.boardSizeY; y++)
                 if (fenData.piecesInfo[x][y] != null)
-                {
-                    chessPieces[x, y] = SpawnSinglePiece(fenData.piecesInfo[x][y].type, fenData.piecesInfo[x][y].team,
-                        piecesPrefabsSO, piecesParent.transform);
+                    chessPieces[x, y] = SpawnSinglePiece(fenData.piecesInfo[x][y].type, fenData.piecesInfo[x][y].team);
                     
-                }
+                
 
             return chessPieces;
         }
         
-        private ChessPiece SpawnSinglePiece(ChessPieceType type, Team team, PiecesPrefabsSO piecesPrefabsSO, Transform piecesParent)
+        public ChessPiece SpawnSinglePiece(ChessPieceType type, Team team)
         {
-            GameObject pieceGO = Object.Instantiate(piecesPrefabsSO.piecesPrefabs[(int)type - 1], piecesParent);
+            GameObject pieceGO = Object.Instantiate(_piecesPrefabsSO.piecesPrefabs[(int)type - 1], _piecesParentGO.transform);
             ChessPiece cp = Pieces[type].Invoke();
             cp.ChessType = type;
             cp.Team = team;

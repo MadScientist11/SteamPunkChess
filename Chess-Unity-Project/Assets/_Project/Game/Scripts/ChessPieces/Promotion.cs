@@ -6,13 +6,38 @@ namespace SteampunkChess
 {
     public class Promotion : ISpecialMove
     {
+        private readonly List<Movement> _moveList;
+        private readonly PieceArrangement _pieceArrangement;
+
+        //public SpecialMoveStringBuilder GetStringBuilder(MoveInfo moveInfo)
+        //{
+        //    return new EnPassantSpecialMoveStringBuilder(moveInfo);
+        //}
+        public Promotion(List<Movement> moveList, PieceArrangement pieceArrangement)
+        {
+            _moveList = moveList;
+            _pieceArrangement = pieceArrangement;
+        }
         public void ProcessSpecialMove()
         {
-            //GameObject promotionPanel = Resources.Load<GameObject>("PromotionPanel");
-            //Transform canvas = Object.FindObjectOfType<MainCanvas>().gameObject.transform;
-            //FactoryInjector.gameController.WaitingForUserInput = true;
-            //PromotionHelper promotionHelper = Object.Instantiate(promotionPanel, canvas).GetComponent<PromotionHelper>();
-            //promotionHelper.ProcessPromotion(ref moveList,ref chessPieces, pieceCreator);
+            Movement lastMove = _moveList[_moveList.Count - 1];
+            ChessPiece targetPawn = _pieceArrangement[lastMove.Destination.x, lastMove.Destination.y];
+            Debug.Log("Promotion");
+
+            if (targetPawn.Team == Team.White && lastMove.Destination.y == 7)
+            {
+                ChessPiece promQueen = _pieceArrangement.SpawnSinglePiece(ChessPieceType.Queen, Team.White);
+                targetPawn.Dispose();
+                _pieceArrangement[lastMove.Destination.x, lastMove.Destination.y] = promQueen;
+                promQueen.PositionPiece(lastMove.Destination.x, lastMove.Destination.y, true);
+            }
+            else if (targetPawn.Team == Team.Black && lastMove.Destination.y == 0)
+            {
+                ChessPiece promQueen = _pieceArrangement.SpawnSinglePiece(ChessPieceType.Queen, Team.Black);
+                targetPawn.Dispose();
+                _pieceArrangement[lastMove.Destination.x, lastMove.Destination.y] = promQueen;
+                promQueen.PositionPiece(lastMove.Destination.x, lastMove.Destination.y, true);
+            }
         }
         //public SpecialMoveStringBuilder GetStringBuilder(MoveInfo moveInfo)
         //{
