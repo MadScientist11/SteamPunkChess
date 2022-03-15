@@ -7,7 +7,7 @@ namespace SteamPunkChess
 {
     public class Pawn : ChessPiece
     {
-        public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY)
+        public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY, List<Movement> moveHistory, List<Movement> availableMoves)
         {
             //one in front
             List<Movement> r = new List<Movement>();
@@ -37,11 +37,12 @@ namespace SteamPunkChess
                     if (pieceArrangement[CurrentX - 1, CurrentY + direction] != null && !IsFromSameTeam(pieceArrangement[CurrentX - 1, CurrentY + direction]))
                         r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX - 1, CurrentY + direction), pieceArrangement));
             }
-       
+
+            UpdateWithSpecialMove(pieceArrangement, moveHistory, r);
             return r;
         }
         
-        public override void GetSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
+        public override void UpdateWithSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
         {
             int direction = Team == 0 ? 1 : -1;
             if (Team == Team.White && CurrentY == 6 || Team == Team.Black && CurrentY == 1)
@@ -95,7 +96,6 @@ namespace SteamPunkChess
                     }
                 }
             }
-            //return new NoneSpecialMove();
         }
     }
 }

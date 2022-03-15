@@ -9,7 +9,7 @@ namespace SteamPunkChess
     {
         //[SerializeField] private SOGameFenDataSO gameFenDataSO;
       
-        public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY)
+        public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY, List<Movement> moveHistory, List<Movement> availableMoves)
         {
             List<Movement> r = new List<Movement>();
 
@@ -65,10 +65,12 @@ namespace SteamPunkChess
             if (CurrentY - 1 >= 0)
                 if (pieceArrangement[CurrentX, CurrentY - 1] == null || !IsFromSameTeam(pieceArrangement[CurrentX, CurrentY - 1]))
                     r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX, CurrentY - 1), pieceArrangement));
+
+            UpdateWithSpecialMove(pieceArrangement, moveHistory, r);
             return r;
         }
 
-        public override void GetSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
+        public override void UpdateWithSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
         {
            
             int ourY = (Team == 0) ? 0 : 7;

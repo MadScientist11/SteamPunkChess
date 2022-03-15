@@ -7,7 +7,7 @@ namespace SteamPunkChess
     public class Knight : ChessPiece
     {
 
-        public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY)
+        public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY, List<Movement> moveHistory, List<Movement> availableMoves)
         {
             List<Movement> r = new List<Movement>();
 

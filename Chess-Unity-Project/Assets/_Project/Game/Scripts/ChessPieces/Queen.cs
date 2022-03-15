@@ -6,7 +6,7 @@ namespace SteampunkChess
     public class Queen : ChessPiece
     {
  
-        public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY)
+        public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY, List<Movement> moveHistory, List<Movement> availableMoves)
         {
             List<Movement> r = new List<Movement>();
 

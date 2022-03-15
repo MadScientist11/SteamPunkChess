@@ -148,10 +148,9 @@ namespace SteampunkChess
         protected void OnSelectPieceAndShowAvailableMoves(Vector2Int hitPosition)
         {
             ActivePiece = _pieceArrangement[hitPosition.x, hitPosition.y];
-            _availableMoves = ActivePiece.GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY);
-            ActivePiece.GetSpecialMove(_pieceArrangement, _moveHistory, _availableMoves);
+            _availableMoves = ActivePiece.GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY, _moveHistory, _availableMoves);
             
-            
+
         }
         
         
