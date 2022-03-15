@@ -1,13 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DG.Tweening;
 using SteamPunkChess;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace SteampunkChess
 {
-    public abstract class ChessPiece
+    public abstract class ChessPiece : IDisposable
     {
         public Sequence MoveSequence { get; set; }
 
@@ -31,11 +33,10 @@ namespace SteampunkChess
 
         public abstract List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY);
 
-        //public virtual ISpecialMove GetSpecialMove(ref ChessPiece[,] board, ref List<Vector2Int[]> moveList,
-        //    ref List<Vector2Int> availableMoves)
-        //{
-        //    return new NoneSpecialMove();
-        //}
+        public virtual void GetSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
+        {
+            
+        }
 
         public Task PositionPiece(int x, int y, bool force = false)
         {
@@ -55,6 +56,11 @@ namespace SteampunkChess
         public bool IsFromSameTeam(ChessPiece piece)
         {
             return Team == piece.Team;
+        }
+
+        public void Dispose()
+        {
+            Object.Destroy(PieceTransform.gameObject);
         }
     }
 }

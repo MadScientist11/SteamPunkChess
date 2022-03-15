@@ -25,34 +25,41 @@ namespace SteampunkChess
 //
     public class Movement
     {
-        public Vector2Int _from;
-        public Vector2Int _to;
+        public Vector2Int Start { get; }
+        public Vector2Int Destination { get; }
+
         private readonly PieceArrangement _pieceArrangement;
 
-        public Movement(Vector2Int from, Vector2Int to, PieceArrangement pieceArrangement)
+        public ISpecialMove SpecialMove { get; set; }
+
+        public Movement(Vector2Int start, Vector2Int destination, PieceArrangement pieceArrangement)
         {
-            _from = from;
-            _to = to;
+            Start = start;
+            Destination = destination;
             _pieceArrangement = pieceArrangement;
         }
+     
 
         public async void Process()
         {
-            //_pieceToMove.GetSpec
-            ChessPiece pieceToMove = _pieceArrangement[_from.x, _from.y];
-            _pieceArrangement[_from.x, _from.y] = null;
-            _pieceArrangement[_to.x, _to.y] = pieceToMove;
-            await pieceToMove.PositionPiece(_to.x, _to.y);
+            Debug.Log("8");
+            Debug.Log(SpecialMove);
+            ChessPiece pieceToMove = _pieceArrangement[Start.x, Start.y];
+           
+            _pieceArrangement[Start.x, Start.y] = null;
+            _pieceArrangement[Destination.x, Destination.y] = pieceToMove;
+            await pieceToMove.PositionPiece(Destination.x, Destination.y);
+            SpecialMove?.ProcessSpecialMove();
             Debug.Log("Move is done");
         }
         
         public async void ProcessBackwards()
         {
             //_pieceToMove.GetSpec
-            ChessPiece pieceToMove = _pieceArrangement[_from.x, _from.y];
-            _pieceArrangement[_from.x, _from.y] = null;
-            _pieceArrangement[_to.x, _to.y] = pieceToMove;
-            await pieceToMove.PositionPiece(_to.x, _to.y);
+            ChessPiece pieceToMove = _pieceArrangement[Start.x, Start.y];
+            _pieceArrangement[Start.x, Start.y] = null;
+            _pieceArrangement[Destination.x, Destination.y] = pieceToMove;
+            await pieceToMove.PositionPiece(Destination.x, Destination.y);
         }
     }
     public class ChessBoard : IInitializable
@@ -64,7 +71,7 @@ namespace SteampunkChess
         protected ChessPiece ActivePiece;
         private ChessBoardInfoSO _chessBoardInfoSO;
         private List<Movement> _availableMoves;
-        private List<Movement[]> _moveHistory;
+        private List<Movement> _moveHistory = new List<Movement>();
 
 
         public ChessBoard(ChessBoardInfoSO chessBoardInfoSO, PiecesPrefabsSO piecesPrefabsSO)
@@ -98,14 +105,12 @@ namespace SteampunkChess
             {
                 if (ActivePiece != null)
                 {
-                    var move = new Movement(new Vector2Int(ActivePiece.CurrentX, ActivePiece.CurrentY),new Vector2Int(hitPosition.x, hitPosition.y),_pieceArrangement);
                     if (cp != null)
                     {
                         OnSelectPieceAndShowAvailableMoves(hitPosition);
                     }
-                    else if(ContainsValidMove(_availableMoves, move))
+                    else if(SearchForMove(_availableMoves, hitPosition, out Movement move))
                     {
-                        Debug.Log("TRy move");
                         OnMoveTo(move);
                     }
 
@@ -119,13 +124,18 @@ namespace SteampunkChess
             }
             
         } 
-        private bool ContainsValidMove(List<Movement> moves, Movement move)
+        private bool SearchForMove(List<Movement> moves, Vector2Int hitPosition, out Movement move)
         {
-            Debug.Log("TRy move");
             for (int i = 0; i < moves.Count; i++)
-                if (moves[i]._from == move._from && moves[i]._to == move._to)
+            {
+                if (moves[i].Destination.x == hitPosition.x && moves[i].Destination.y == hitPosition.y)
+                {
+                    move = moves[i];
                     return true;
-            
+                }
+            }
+
+            move = null;
             return false;
         }
      
@@ -134,15 +144,18 @@ namespace SteampunkChess
         {
             ActivePiece = _pieceArrangement[hitPosition.x, hitPosition.y];
             _availableMoves = ActivePiece.GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY);
-          
-
-
+            ActivePiece.GetSpecialMove(_pieceArrangement, _moveHistory, _availableMoves);
+            
+            
         }
         
         
         protected void OnMoveTo(Movement move)
         {
             move.Process();
+            _moveHistory.Add(move);
+            
+           
         }
         
 

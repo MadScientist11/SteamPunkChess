@@ -5,8 +5,7 @@ using UnityEngine;
 namespace SteamPunkChess
 {
     public class Pawn : ChessPiece
-    { 
-
+    {
         public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY)
         {
             //one in front
@@ -37,45 +36,60 @@ namespace SteamPunkChess
                     if (pieceArrangement[CurrentX - 1, CurrentY + direction] != null && !IsFromSameTeam(pieceArrangement[CurrentX - 1, CurrentY + direction]))
                         r.Add(new Movement(new Vector2Int(CurrentX, CurrentY), new Vector2Int(CurrentX - 1, CurrentY + direction), pieceArrangement));
             }
+       
             return r;
         }
         
-        /*public override ISpecialMove GetSpecialMove(ref ChessPiece[,] board, ref List<Vector2Int[]> moveList, ref List<Vector2Int> availableMoves)
+        public override void GetSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
         {
-            int direction = team == 0 ? 1 : -1;
-            if (team == Team.White && currentY == 6 || team == Team.Black && currentY == 1)
-                return new Promotion();
-
-
-            if (moveList.Count > 0)
+            int direction = Team == 0 ? 1 : -1;
+            if (Team == Team.White && CurrentY == 6 || Team == Team.Black && CurrentY == 1)
             {
-                var lastMove = moveList[moveList.Count - 1];
-                if (board[lastMove[1].x, lastMove[1].y].chessType == ChessPieceType.Pawn)
+                int promotionMoveIndex = moveHistory.FindIndex(x => x.Destination.y == 7 || x.Destination.y == 0);
+                moveHistory[promotionMoveIndex] = new Movement(new Vector2Int(CurrentX, CurrentY),
+                    new Vector2Int(moveHistory[promotionMoveIndex].Destination.x, moveHistory[promotionMoveIndex].Destination.y), pieceArrangement);
+                //return new Promotion();
+            }
+                
+
+
+            if (moveHistory.Count > 0)
+            {
+                var lastMove = moveHistory[moveHistory.Count - 1];
+                if (pieceArrangement[lastMove.Destination.x, lastMove.Destination.y].ChessType == ChessPieceType.Pawn)
                 {
-                    if (Mathf.Abs(lastMove[1].y - lastMove[0].y) == 2)
+                    if (Mathf.Abs(lastMove.Destination.y - lastMove.Start.y) == 2)
                     {
-                        if (!IsFromSameTeam(board[lastMove[1].x, lastMove[1].y]))
+                        if (!IsFromSameTeam(pieceArrangement[lastMove.Destination.x, lastMove.Destination.y]))
                         {
-                            if (lastMove[1].y == currentY)
+                            if (lastMove.Destination.y == CurrentY)
                             {
-                                if (lastMove[1].x == currentX - 1)
+                                Debug.Log("7");
+                                if (lastMove.Destination.x == CurrentX - 1)
                                 {
-                                    availableMoves.Add(new Vector2Int(currentX - 1, currentY + direction));
-                                    return new EnPassant();
+                                    Debug.Log("7");
+                                    var enPassant = new EnPassant(moveHistory, pieceArrangement);
+                                    var movement = new Movement(new Vector2Int(CurrentX, CurrentY),
+                                        new Vector2Int(CurrentX - 1, CurrentY + direction), pieceArrangement);
+                                    movement.SpecialMove = enPassant;
+                                    availableMoves.Add(movement);
+                                    
                                 }
-                                if (lastMove[1].x == currentX + 1)
+                                if (lastMove.Destination.x == CurrentX + 1)
                                 {
-                                    availableMoves.Add(new Vector2Int(currentX + 1, currentY + direction));
-                                    return new EnPassant();
+                                    Debug.Log("7");
+                                    var enPassant = new EnPassant(moveHistory, pieceArrangement);
+                                    Movement movement = new Movement(new Vector2Int(CurrentX, CurrentY),
+                                        new Vector2Int(CurrentX + 1, CurrentY + direction), pieceArrangement);
+                                    movement.SpecialMove = enPassant;
+                                    availableMoves.Add(movement);
                                 }
                             }
                         }
                     }
                 }
             }
-            return new NoneSpecialMove();
-        }*/
-
-       
+            //return new NoneSpecialMove();
+        }
     }
 }
