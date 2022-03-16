@@ -408,6 +408,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _chessBoardInfoSO: {fileID: 11400000, guid: 0a8041ed2ee67374697d61298aafdc74, type: 2}
   _piecesPrefabsSO: {fileID: 11400000, guid: c31c70899869d5347a0fda96a493ce92, type: 2}
+  _tileSelectionSO: {fileID: 11400000, guid: 9028b09c870d9964d9f8397a0c7b090f, type: 2}
 --- !u!114 &1584280693
 MonoBehaviour:
   m_ObjectHideFlags: 0

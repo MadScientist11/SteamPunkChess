@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3651783227196661983}
   - component: {fileID: 2316309751257429494}
   m_Layer: 0
-  m_Name: Selection
+  m_Name: TileSelection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

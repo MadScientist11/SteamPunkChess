@@ -4,20 +4,20 @@ namespace SteampunkChess
 {
     public class EnPassant : ISpecialMove
     {
-        private readonly List<Movement> _moveList;
+        private readonly List<Movement> _moveHistory;
         private readonly PieceArrangement _pieceArrangement;
         
-       public EnPassant(List<Movement> moveList, PieceArrangement pieceArrangement)
+       public EnPassant(List<Movement> moveHistory, PieceArrangement pieceArrangement)
        {
-           _moveList = moveList;
+           _moveHistory = moveHistory;
            _pieceArrangement = pieceArrangement;
        }
 
         public void ProcessSpecialMove()
         {
-            Movement newMove = _moveList[_moveList.Count - 1];
+            Movement newMove = _moveHistory[_moveHistory.Count - 1];
             ChessPiece myPawn = _pieceArrangement[newMove.Destination.x, newMove.Destination.y];
-            Movement targetPawnPos = _moveList[_moveList.Count - 2];
+            Movement targetPawnPos = _moveHistory[_moveHistory.Count - 2];
             ChessPiece targetPawn = _pieceArrangement[targetPawnPos.Destination.x, targetPawnPos.Destination.y];
             if (myPawn.CurrentX == targetPawn.CurrentX)
             {

@@ -8,8 +8,9 @@ namespace SteampunkChess
     public class TileSelection : IInitializable 
     {
         private readonly List<GameObject> _activeSelections;
+        private readonly TileSelectionInfoSO _tileSelectionInfoSO;
         private ObjectPool<GameObject> _pool;
-        private TileSelectionInfoSO _tileSelectionInfoSO;
+       
 
         public TileSelection(TileSelectionInfoSO tileSelectionInfoSO)
         {
@@ -29,15 +30,15 @@ namespace SteampunkChess
             return Object.Instantiate(_tileSelectionInfoSO.selectionPrefab);
         }
 
-        public void ShowSelection(IEnumerable<(Vector3 pos, bool isAttackMove)> tileData)
+        public void ShowSelection(IEnumerable<(Vector3 tileCenter, bool isAttackMove)> tilesData)
         {
             ClearSelection();
-            foreach (var data in tileData)
+            foreach (var tileData in tilesData)
             {
                 GameObject selector = _pool.Get();
-                selector.transform.SetPositionAndRotation(data.pos, Quaternion.identity);
+                selector.transform.SetPositionAndRotation(tileData.tileCenter, Quaternion.identity);
                 _activeSelections.Add(selector);
-                selector.GetComponent<MeshRenderer>().material = data.isAttackMove ? _tileSelectionInfoSO.enemySquareMaterial : _tileSelectionInfoSO.freeSquareMaterial;
+                selector.GetComponent<MeshRenderer>().material = tileData.isAttackMove ? _tileSelectionInfoSO.enemySquareMaterial : _tileSelectionInfoSO.freeSquareMaterial;
             }
         }
 
