@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 581e97c07caa4445bce87b013b6f13cf, type: 3}
+  m_Name: TileSelectionInfo
+  m_EditorClassIdentifier: 
+  freeSquareMaterial: {fileID: 2100000, guid: b6c3d9945af17604abb8a7b40b07a8a8, type: 2}
+  enemySquareMaterial: {fileID: 2100000, guid: 53fc39e6bd104204faac904be626826d, type: 2}
+  selectionPrefab: {fileID: 7482480306917092985, guid: fb3936e08be3cb04b8ea1b4855e1d1d4, type: 3}

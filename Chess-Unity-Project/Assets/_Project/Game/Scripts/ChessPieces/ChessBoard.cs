@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using SteamPunkChess;
 using UnityEngine;
 using Zenject;
@@ -28,6 +30,10 @@ namespace SteampunkChess
         public Vector2Int Start { get; }
         public Vector2Int Destination { get; }
 
+        public bool IsAttackMove => 
+            _pieceArrangement[Destination.x, Destination.y] != null || _specialMove is EnPassant;
+
+
         private readonly PieceArrangement _pieceArrangement;
 
         private readonly ISpecialMove _specialMove;
@@ -48,19 +54,21 @@ namespace SteampunkChess
         }
      
 
-        public async void Process()
+        public async Task Process()
         {
+           
             ChessPiece pieceToMove = _pieceArrangement[Start.x, Start.y];
+            ChessPiece enemy = _pieceArrangement[Destination.x, Destination.y];
            
             _pieceArrangement[Start.x, Start.y] = null;
             _pieceArrangement[Destination.x, Destination.y] = pieceToMove;
             await pieceToMove.PositionPiece(Destination.x, Destination.y);
             _specialMove?.ProcessSpecialMove();
+            enemy?.Dispose();
         }
         
         public async void ProcessBackwards()
         {
-            //_pieceToMove.GetSpec
             ChessPiece pieceToMove = _pieceArrangement[Start.x, Start.y];
             _pieceArrangement[Start.x, Start.y] = null;
             _pieceArrangement[Destination.x, Destination.y] = pieceToMove;
@@ -76,12 +84,15 @@ namespace SteampunkChess
         protected ChessPiece ActivePiece;
         private ChessBoardInfoSO _chessBoardInfoSO;
         private List<Movement> _availableMoves;
-        private List<Movement> _moveHistory = new List<Movement>();
+        private List<Movement> _moveHistory;
+        private TileSelection _tileSelection;
 
 
-        public ChessBoard(ChessBoardInfoSO chessBoardInfoSO, PiecesPrefabsSO piecesPrefabsSO)
+        public ChessBoard(ChessBoardInfoSO chessBoardInfoSO, PiecesPrefabsSO piecesPrefabsSO, TileSelectionInfoSO tileSelectionInfoSO)
         {
             _chessBoardInfoSO = chessBoardInfoSO;
+            _moveHistory = new List<Movement>();
+            _tileSelection = new TileSelection(tileSelectionInfoSO);
             _tileSet = new TileSet(_chessBoardInfoSO);
             _pieceArrangement = new PieceArrangement(_gameFen, _chessBoardInfoSO, piecesPrefabsSO);
         }
@@ -95,9 +106,10 @@ namespace SteampunkChess
 
         public void Initialize()
         {
-            UnityEngine.Object.Instantiate(_chessBoardInfoSO.boardPrefab);
+            Object.Instantiate(_chessBoardInfoSO.boardPrefab);
             _tileSet.Initialize();
             _pieceArrangement.Initialize();
+            _tileSelection.Initialize();
         }
         
         public void OnTileHover(GameObject tile)
@@ -110,7 +122,7 @@ namespace SteampunkChess
             {
                 if (ActivePiece != null)
                 {
-                    if (cp != null)
+                    if (cp != null && ActivePiece.IsFromSameTeam(cp))
                     {
                         OnSelectPieceAndShowAvailableMoves(hitPosition);
                     }
@@ -149,17 +161,31 @@ namespace SteampunkChess
         {
             ActivePiece = _pieceArrangement[hitPosition.x, hitPosition.y];
             _availableMoves = ActivePiece.GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY, _moveHistory, _availableMoves);
-            
+            ShowAvailableMoves();
 
+        }
+        private void ShowAvailableMoves()
+        {
+            List<(Vector3, bool)> tileData = new List<(Vector3, bool)>();
+            for (int i = 0; i < _availableMoves.Count; i++)
+            {
+                //if (availableSpecialMove is EnPassant && availableMoves[i].x != activePiece.currentX)
+                //    isSquareFree = false;
+
+                tileData.Add((TileSet.GetTileCenter(_availableMoves[i].Destination.x, _availableMoves[i].Destination.y), _availableMoves[i].IsAttackMove));
+            }
+            _tileSelection.ShowSelection(tileData);
         }
         
         
-        protected void OnMoveTo(Movement move)
+        protected async void OnMoveTo(Movement move)
         {
-            move.Process();
+            _tileSelection.ClearSelection();
+            await move.Process();
             _moveHistory.Add(move);
-            
-           
+            ActivePiece = null;
+
+
         }
         
 
