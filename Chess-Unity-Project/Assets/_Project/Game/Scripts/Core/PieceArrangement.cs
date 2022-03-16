@@ -53,14 +53,14 @@ namespace SteampunkChess
         
         private ChessPiece[,] SpawnAllPieces(string gameFen, (int boardSizeX, int boardSizeY) chessBoardSize, PiecesPrefabsSO piecesPrefabsSO)
         {
-            GameDataFen fenData = FenUtility.GameFenDataFromStringFen(gameFen);
+            GameData data = FenUtility.GameDataFromStringFen(gameFen);
             ChessPiece[,] chessPieces = new ChessPiece[chessBoardSize.boardSizeX, chessBoardSize.boardSizeY];
             _piecesParentGO = new GameObject(PiecesParent);
 
             for (int x = 0; x < chessBoardSize.boardSizeX; x++)
             for (int y = 0; y < chessBoardSize.boardSizeY; y++)
-                if (fenData.piecesInfo[x][y] != null)
-                    chessPieces[x, y] = SpawnSinglePiece(fenData.piecesInfo[x][y].type, fenData.piecesInfo[x][y].team);
+                if (data.piecesInfo[x, y] != null)
+                    chessPieces[x, y] = SpawnSinglePiece(data.piecesInfo[x, y].type, data.piecesInfo[x, y].team);
                     
                 
 

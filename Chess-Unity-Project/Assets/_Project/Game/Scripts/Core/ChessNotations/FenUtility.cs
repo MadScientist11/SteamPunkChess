@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using SteampunkChess;
 using UnityEngine;
 
@@ -6,32 +9,165 @@ namespace SteamPunkChess
 {
     public static class FenUtility
     {
-        private static readonly Dictionary<char, PieceInfo> fenMappings = new Dictionary<char, PieceInfo>()
+        private static readonly Dictionary<char, PieceInfo> FenMappings = new Dictionary<char, PieceInfo>()
         {
-            { 'K', new PieceInfo(ChessPieceType.King, Team.White) },
-            { 'k', new PieceInfo(ChessPieceType.King, Team.Black) },
-            { 'Q', new PieceInfo(ChessPieceType.Queen, Team.White) },
-            { 'q', new PieceInfo(ChessPieceType.Queen, Team.Black) },
-            { 'R', new PieceInfo(ChessPieceType.Rook, Team.White) },
-            { 'r', new PieceInfo(ChessPieceType.Rook, Team.Black) },
-            { 'B', new PieceInfo(ChessPieceType.Bishop, Team.White) },
-            { 'b', new PieceInfo(ChessPieceType.Bishop, Team.Black) },
-            { 'N', new PieceInfo(ChessPieceType.Knight, Team.White)},
-            { 'n', new PieceInfo(ChessPieceType.Knight, Team.Black) },
-            { 'P', new PieceInfo(ChessPieceType.Pawn, Team.White) },
-            { 'p', new PieceInfo(ChessPieceType.Pawn, Team.Black) },
+            {'K', new PieceInfo(ChessPieceType.King, Team.White)},
+            {'k', new PieceInfo(ChessPieceType.King, Team.Black)},
+            {'Q', new PieceInfo(ChessPieceType.Queen, Team.White)},
+            {'q', new PieceInfo(ChessPieceType.Queen, Team.Black)},
+            {'R', new PieceInfo(ChessPieceType.Rook, Team.White)},
+            {'r', new PieceInfo(ChessPieceType.Rook, Team.Black)},
+            {'B', new PieceInfo(ChessPieceType.Bishop, Team.White)},
+            {'b', new PieceInfo(ChessPieceType.Bishop, Team.Black)},
+            {'N', new PieceInfo(ChessPieceType.Knight, Team.White)},
+            {'n', new PieceInfo(ChessPieceType.Knight, Team.Black)},
+            {'P', new PieceInfo(ChessPieceType.Pawn, Team.White)},
+            {'p', new PieceInfo(ChessPieceType.Pawn, Team.Black)},
         };
 
-        public static string FenStringFromGameFenData()
+        private static readonly Dictionary<PieceInfo, char> FenCharMappings = new Dictionary<PieceInfo, char>()
         {
-            return "";
+            {new PieceInfo(ChessPieceType.King, Team.White), 'K'},
+            {new PieceInfo(ChessPieceType.King, Team.Black), 'k'},
+            {new PieceInfo(ChessPieceType.Queen, Team.White), 'Q'},
+            {new PieceInfo(ChessPieceType.Queen, Team.Black), 'q'},
+            {new PieceInfo(ChessPieceType.Rook, Team.White), 'R'},
+            {new PieceInfo(ChessPieceType.Rook, Team.Black), 'r'},
+            {new PieceInfo(ChessPieceType.Bishop, Team.White), 'B'},
+            {new PieceInfo(ChessPieceType.Bishop, Team.Black), 'b'},
+            {new PieceInfo(ChessPieceType.Knight, Team.White), 'N'},
+            {new PieceInfo(ChessPieceType.Knight, Team.Black), 'n'},
+            {new PieceInfo(ChessPieceType.Pawn, Team.White), 'P'},
+            {new PieceInfo(ChessPieceType.Pawn, Team.Black), 'p'},
+        };
+        
+        public static PieceInfo[] GetColumn(PieceInfo[,] matrix, int columnNumber)
+        {
+            return Enumerable.Range(0, matrix.GetLength(0))
+                .Select(x => matrix[x, columnNumber])
+                .ToArray();
+        }
+
+        public static PieceInfo[] GetRow(PieceInfo[,] matrix, int rowNumber)
+        {
+            return Enumerable.Range(0, matrix.GetLength(1))
+                .Select(x => matrix[rowNumber, x])
+                .ToArray();
         }
         
-        public static GameDataFen GameFenDataFromStringFen(string fen)
+
+        public static string FenStringFromGameData(GameData gameData)
         {
-            var data = new GameDataFen();
+            var fenBuilder = new StringBuilder();
+            PieceInfo[,] board = gameData.piecesInfo;
+            int dimension = board.GetLength(0);
+            
+            
+            for (int i = 0; i < dimension; i++)
+            {
+                PieceInfo[] row = GetColumn(board, 7 - i);
+                
+                int empty = 0;
+                foreach (PieceInfo piece in row)
+                {
+                    char pieceChar = piece == null ? '\0' : FenCharMappings[piece];
+                    if (pieceChar == '\0')
+                    {
+                        empty++;
+                        continue;
+                    }
+
+                    if (empty != 0)
+                    {
+                        fenBuilder.Append(empty);
+                        empty = 0;
+                    }
+
+                    fenBuilder.Append(pieceChar);
+                }
+
+                if (empty != 0)
+                {
+                    fenBuilder.Append(empty);
+                }
+
+                if (i != dimension - 1)
+                {
+                    fenBuilder.Append('/');
+                }
+            }
+
+            fenBuilder.Append(' ');
+
+            fenBuilder.Append(gameData.whoseTurn == (int)Team.White ? 'w' : 'b');
+
+            fenBuilder.Append(' ');
+
+            bool hasAnyCastlingOptions = false;
+
+
+            if (gameData.canWhiteCastleKingSide)
+            {
+                fenBuilder.Append('K');
+                hasAnyCastlingOptions = true;
+            }
+
+            if (gameData.canWhiteCastleQueenSide)
+            {
+                fenBuilder.Append('Q');
+                hasAnyCastlingOptions = true;
+            }
+
+
+            if (gameData.canBlackCastleKingSide)
+            {
+                fenBuilder.Append('k');
+                hasAnyCastlingOptions = true;
+            }
+
+            if (gameData.canBlackCastleQueenSide)
+            {
+                fenBuilder.Append('q');
+                hasAnyCastlingOptions = true;
+            }
+
+            if (!hasAnyCastlingOptions)
+            {
+                fenBuilder.Append('-');
+            }
+
+            fenBuilder.Append(' ');
+
+            //TODO: En Passant coords
+            //DetailedMove last;
+            //if (Moves.Count > 0 && (last = Moves[Moves.Count - 1]).Piece is Pawn &&
+            //    Math.Abs(last.OriginalPosition.Rank - last.NewPosition.Rank) == 2
+            //    && last.OriginalPosition.Rank == (last.Player == Player.White ? 2 : 7))
+            //{
+            //    fenBuilder.Append(last.NewPosition.File.ToString().ToLowerInvariant());
+            //    fenBuilder.Append(last.Player == Player.White ? 3 : 6);
+            //}
+            //else
+            //{
+                fenBuilder.Append("-");
+           // }
+
+            fenBuilder.Append(' ');
+
+            fenBuilder.Append(gameData.halfMoveClock);
+
+            fenBuilder.Append(' ');
+
+            fenBuilder.Append(gameData.fullMoveNumber);
+
+            return fenBuilder.ToString();
+        }
+
+        public static GameData GameDataFromStringFen(string fen)
+        {
+            var data = new GameData();
             data.parseFenError = "";
-        
+
             string[] parts = fen.Split(' ');
             if (parts.Length != 6)
             {
@@ -39,6 +175,7 @@ namespace SteamPunkChess
 
                 return data;
             }
+
             string[] rows = parts[0].Split('/');
             if (rows.Length != 8)
             {
@@ -48,14 +185,15 @@ namespace SteamPunkChess
 
 
             data.piecesInfo = BoardArrangementFromFen(rows);
+            Debug.Log(parts[1]);
 
             if (parts[1] == "w")
             {
-                data.WhoseTurn = 0;
+                data.whoseTurn = 0;
             }
             else if (parts[1] == "b")
             {
-                data.WhoseTurn = 1;
+                data.whoseTurn = 1;
             }
             else
             {
@@ -63,19 +201,19 @@ namespace SteamPunkChess
                 return data;
             }
 
-            if (parts[2].Contains("K")) data.CanWhiteCastleKingSide = true;
-            else data.CanWhiteCastleKingSide = false;
+            if (parts[2].Contains("K")) data.canWhiteCastleKingSide = true;
+            else data.canWhiteCastleKingSide = false;
 
-            if (parts[2].Contains("Q")) data.CanWhiteCastleQueenSide = true;
-            else data.CanWhiteCastleQueenSide = false;
+            if (parts[2].Contains("Q")) data.canWhiteCastleQueenSide = true;
+            else data.canWhiteCastleQueenSide = false;
 
-            if (parts[2].Contains("k")) data.CanBlackCastleKingSide = true;
-            else data.CanBlackCastleKingSide = false;
+            if (parts[2].Contains("k")) data.canBlackCastleKingSide = true;
+            else data.canBlackCastleKingSide = false;
 
-            if (parts[2].Contains("q")) data.CanBlackCastleQueenSide = true;
-            else data.CanBlackCastleQueenSide = false;
+            if (parts[2].Contains("q")) data.canBlackCastleQueenSide = true;
+            else data.canBlackCastleQueenSide = false;
 
-            if (parts[3] == "-") data.EnPassant = Vector2Int.zero;
+            if (parts[3] == "-") data.enPassant = Vector2Int.zero;
             else
             {
                 char[] charArray = parts[3].ToCharArray();
@@ -112,20 +250,21 @@ namespace SteamPunkChess
                     default:
                         data.parseFenError = "Invalid en passant field in FEN.";
                         return data;
-
                 }
-                row = (int)char.GetNumericValue(charArray[1]) - 1;
+
+                row = (int) char.GetNumericValue(charArray[1]) - 1;
                 if (row == -1)
                 {
                     data.parseFenError = "Invalid en passant field in FEN.";
                     return data;
                 }
-                data.EnPassant = new Vector2Int(column, row);
+
+                data.enPassant = new Vector2Int(column, row);
             }
-            int halfmoveClock;
-            if (int.TryParse(parts[4], out halfmoveClock))
+
+            if (int.TryParse(parts[4], out var halfmoveClock))
             {
-                data.HalfMoveClock = halfmoveClock;
+                data.halfMoveClock = halfmoveClock;
             }
             else
             {
@@ -133,10 +272,9 @@ namespace SteamPunkChess
                 return data;
             }
 
-            int fullMoveNumber;
-            if (int.TryParse(parts[5], out fullMoveNumber))
+            if (int.TryParse(parts[5], out var fullMoveNumber))
             {
-                data.FullMoveNumber = fullMoveNumber;
+                data.fullMoveNumber = fullMoveNumber;
             }
             else
             {
@@ -146,13 +284,11 @@ namespace SteamPunkChess
 
             return data;
         }
-        public static PieceInfo[][] BoardArrangementFromFen(string[] rows)
+
+        public static PieceInfo[,] BoardArrangementFromFen(string[] rows)
         {
-            var pieceArray = new PieceInfo[8][];
-            for (int j = 0; j < 8; j++)
-            {
-                pieceArray[j] = new PieceInfo[8] { null, null, null, null, null, null, null, null };
-            }
+            var pieceArray = new PieceInfo[8, 8];
+    
             for (int i = 0; i < rows.Length; i++)
             {
                 string row = rows[i];
@@ -161,17 +297,17 @@ namespace SteamPunkChess
                 {
                     if (char.IsDigit(rowSymb))
                     {
-                        j += (int)char.GetNumericValue(rowSymb);
+                        j += (int) char.GetNumericValue(rowSymb);
                         continue;
                     }
-                    pieceArray[j][7 - i] = fenMappings[rowSymb];
+
+                    pieceArray[j, 7 - i] = FenMappings[rowSymb];
 
                     j++;
                 }
-
             }
+
             return pieceArray;
         }
-
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SteamPunkChess;
 using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;
@@ -20,6 +21,18 @@ namespace SteampunkChess
     //    }
     //}
 //
+    public abstract class Notation
+    {
+        public abstract GameData GameDataFromNotation(string notationString);
+    }
+
+    public class FenNotation : Notation
+    {
+        public override GameData GameDataFromNotation(string notationString)
+        {
+           return FenUtility.GameDataFromStringFen(notationString);
+        }
+    }
     public class ChessBoard : IInitializable
     {
         private TileSet _tileSet;
