@@ -1,5 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
+using Sirenix.Serialization;
 using SteamPunkChess;
+using TMPro;
 using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;
@@ -23,16 +27,111 @@ namespace SteampunkChess
 //
     public abstract class Notation
     {
-        public abstract GameData GameDataFromNotation(string notationString);
+        public abstract GameData GameDataFromNotationString(string notationString);
+        public abstract string NotationStringFromGameData(GameData gameData);
     }
 
     public class FenNotation : Notation
     {
-        public override GameData GameDataFromNotation(string notationString)
+        public override GameData GameDataFromNotationString(string notationString)
         {
            return FenUtility.GameDataFromStringFen(notationString);
         }
+
+        public override string NotationStringFromGameData(GameData gameData)
+        {
+            return FenUtility.FenStringFromGameData(gameData);
+        }
     }
+    public class MoveListingData : MonoBehaviour
+    {
+        public Transform content;
+        public GameObject moveListingDarker;
+        public GameObject moveListingLighter;
+    }
+
+    public class MoveListing : IInitializable
+    {
+        private readonly List<Movement> _moveHistory;
+        private readonly List<MoveListingEntry> _moveListingEntries;
+        private MoveListingData _moveListingData;
+        private readonly GameObject _moveListingPrefab;
+
+        public MoveListing(List<Movement> moveHistory, List<MoveListingEntry> moveListingEntries, GameObject moveListingPrefab)
+        {
+            _moveHistory = moveHistory;
+            _moveListingEntries = moveListingEntries;
+            _moveListingPrefab = moveListingPrefab;
+        }
+
+        public Movement this[int index]
+        {
+            get => _moveHistory[index];
+        }
+        
+        public void Initialize()
+        {
+            _moveListingData = Object.Instantiate(_moveListingPrefab).GetComponent<MoveListingData>();
+        }
+
+        public void UpdateMoveHistory(Movement move)
+        {
+            if (_moveListingEntries[_moveListingEntries.Count - 1].IsFilled)
+            {
+                GameObject entryPrefab = _moveHistory.Count % 2 == 0
+                    ? _moveListingData.moveListingDarker
+                    : _moveListingData.moveListingLighter;
+                int fullMoveNumber = 1 + Mathf.FloorToInt((_moveHistory.Count / 2));
+                MoveListingEntry listingEntry = new MoveListingEntry(entryPrefab, _moveListingData.content, fullMoveNumber);
+            }
+            
+        }
+
+      
+    }
+
+    public class MoveListingEntry
+    {
+        private readonly List<Movement> _moves;
+        private readonly GameObject _entryPrefab;
+        private readonly Transform _entryParent;
+        private readonly int _moveNumber;
+        private TextMeshProUGUI _listingEntryText;
+
+        public MoveListingEntry(GameObject entryPrefab, Transform entryParent, int moveNumber)
+        {
+            _moves = new List<Movement>(2);
+            _entryPrefab = entryPrefab;
+            _entryParent = entryParent;
+            _moveNumber = moveNumber;
+        }
+
+        public bool IsFilled => _moves.Count >= 2;
+
+        private void CreateVisual()
+        {
+            _listingEntryText = Object.Instantiate(_entryPrefab, _entryParent).GetComponent<TextMeshProUGUI>();
+        }
+        
+        public void AddMove(Movement move)
+        {
+            if (_moves.Count == 0)
+            {
+                CreateVisual();
+                _listingEntryText.text = $"{_moveNumber}. {move.GetMovePGN()}";
+            }
+            else
+            {
+                _listingEntryText.text = $"{_listingEntryText.text} {move.GetMovePGN()}";
+            }
+
+            _moves.Add(move);
+            // = move.RepresentationPGN
+            
+        }
+        
+    }
+
     public class ChessBoard : IInitializable
     {
         private TileSet _tileSet;
@@ -85,7 +184,7 @@ namespace SteampunkChess
                     {
                         OnSelectPieceAndShowAvailableMoves(hitPosition);
                     }
-                    else if (SearchForMove(_availableMoves, hitPosition, out Movement move))
+                    else if (SearchForMoveDestination(_availableMoves, hitPosition, out Movement move))
                     {
                         OnMoveTo(move);
                     }
@@ -98,11 +197,11 @@ namespace SteampunkChess
             }
         }
 
-        private bool SearchForMove(List<Movement> moves, Vector2Int hitPosition, out Movement move)
+        private bool SearchForMoveDestination(List<Movement> moves, Vector2Int moveDestination, out Movement move)
         {
             for (int i = 0; i < moves.Count; i++)
             {
-                if (moves[i].Destination.x == hitPosition.x && moves[i].Destination.y == hitPosition.y)
+                if (moves[i].Destination.x == moveDestination.x && moves[i].Destination.y == moveDestination.y)
                 {
                     move = moves[i];
                     return true;
@@ -112,13 +211,17 @@ namespace SteampunkChess
             move = null;
             return false;
         }
-
-
+       
         protected void OnSelectPieceAndShowAvailableMoves(Vector2Int hitPosition)
         {
             ActivePiece = _pieceArrangement[hitPosition.x, hitPosition.y];
             _availableMoves = ActivePiece.GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX,
                 _chessBoardInfoSO.boardSizeY, _moveHistory, _availableMoves);
+            //byte[] bytes = SerializationUtility.SerializeValue(_availableMoves[0], DataFormat.JSON);
+            //File.WriteAllBytes(@"D:\Genshin Impact Game/games_archive", bytes);
+            //byte[] bytess = File.ReadAllBytes(@"D:\Genshin Impact Game/games_archive");
+            //var move = SerializationUtility.DeserializeValue<Movement>(bytess, DataFormat.JSON);
+            //new Movement(move.Start, move.Destination, _pieceArrangement).Process();
             ShowAvailableMoves();
         }
 

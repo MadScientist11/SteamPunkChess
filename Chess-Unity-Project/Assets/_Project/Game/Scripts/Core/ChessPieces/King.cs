@@ -70,7 +70,7 @@ namespace SteamPunkChess
             return r;
         }
 
-        public override void UpdateWithSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
+        public void UpdateWithSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
         {
            
             int ourY = (Team == 0) ? 0 : 7;

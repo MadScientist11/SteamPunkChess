@@ -18,6 +18,8 @@ namespace SteampunkChess
             _moveList = moveList;
             _pieceArrangement = pieceArrangement;
         }
+        
+        //TODO: Choose promotion peace
         public void ProcessSpecialMove()
         {
             Movement lastMove = _moveList[_moveList.Count - 1];

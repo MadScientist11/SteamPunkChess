@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DG.Tweening;
 using SteamPunkChess;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -11,8 +9,6 @@ namespace SteampunkChess
 {
     public abstract class ChessPiece : IDisposable
     {
-        public Sequence MoveSequence { get; set; }
-
         public int CurrentX;
         public int CurrentY;
         public Team Team;
@@ -22,7 +18,7 @@ namespace SteampunkChess
 
         protected IObjectTweener Tweener;
 
-        public ChessPiece()
+        protected ChessPiece()
         {
             if (this is Knight)
                 Tweener = new ArcTweener(1, .65f);
@@ -33,12 +29,9 @@ namespace SteampunkChess
 
         public abstract List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY, List<Movement> moveHistory, List<Movement> availableMoves);
 
-        public virtual void UpdateWithSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
-        {
-            
-        }
+   
 
-        public Task PositionPiece(int x, int y, bool force = false)
+        public Task PositionPiece(int x, int y, bool force = false, IObjectTweener tweener = null)
         {
             CurrentX = x;
             CurrentY = y;
@@ -50,13 +43,11 @@ namespace SteampunkChess
                 return Task.CompletedTask;
             }
 
-            return Tweener.MoveTo(PieceTransform, tile);
+            return tweener == null ? Tweener.MoveTo(PieceTransform, tile) : tweener.MoveTo(PieceTransform,tile);
         }
 
         public bool IsFromSameTeam(ChessPiece piece)
-        {
-            return Team == piece.Team;
-        }
+            => Team == piece.Team;
 
         public void Dispose()
         {

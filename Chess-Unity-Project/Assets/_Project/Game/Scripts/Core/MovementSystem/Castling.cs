@@ -25,7 +25,7 @@ namespace SteampunkChess
                 {
                     ChessPiece rook = _pieceArrangement[0, 0];
                     _pieceArrangement[3, 0] = rook;
-                    _pieceArrangement[3, 0].PositionPiece(3, 0, true);
+                    _pieceArrangement[3, 0].PositionPiece(3, 0, false, new ArcTweener(1,.65f));
                     _pieceArrangement[0, 0] = null;
 
                     
@@ -34,7 +34,7 @@ namespace SteampunkChess
                 {
                     ChessPiece rook = _pieceArrangement[0, 7];
                     _pieceArrangement[3, 7] = rook;
-                    _pieceArrangement[3, 7].PositionPiece(3, 7, true);
+                    _pieceArrangement[3, 7].PositionPiece(3, 7, false, new ArcTweener(1,.65f));
                     _pieceArrangement[0, 7] = null;
 
                 }
@@ -46,7 +46,7 @@ namespace SteampunkChess
                 {
                     ChessPiece rook = _pieceArrangement[7, 0];
                     _pieceArrangement[5, 0] = rook;
-                    _pieceArrangement[5, 0].PositionPiece(5, 0, true);
+                    _pieceArrangement[5, 0].PositionPiece(5, 0, false, new ArcTweener(1,.65f));
                     _pieceArrangement[7, 0] = null;
 
                 }
@@ -54,7 +54,7 @@ namespace SteampunkChess
                 {
                     ChessPiece rook = _pieceArrangement[7, 7];
                     _pieceArrangement[5, 7] = rook;
-                    _pieceArrangement[5, 7].PositionPiece(5, 7, true);
+                    _pieceArrangement[5, 7].PositionPiece(5, 7, false, new ArcTweener(1,.65f));
                     _pieceArrangement[7, 7] = null;
    
                 }

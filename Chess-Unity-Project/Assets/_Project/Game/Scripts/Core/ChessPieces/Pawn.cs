@@ -42,7 +42,7 @@ namespace SteamPunkChess
             return r;
         }
         
-        public override void UpdateWithSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
+        public void UpdateWithSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
         {
             int direction = Team == 0 ? 1 : -1;
             if (Team == Team.White && CurrentY == 6 || Team == Team.Black && CurrentY == 1)
