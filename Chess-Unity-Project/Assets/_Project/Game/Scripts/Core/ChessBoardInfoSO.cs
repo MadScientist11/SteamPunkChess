@@ -9,5 +9,6 @@ namespace SteampunkChess
         public int boardSizeX = 8;
         public int boardSizeY = 8;
         public TileInfoSO tileInfoSO;
+        public GameObject moveListingPrefab;
     }
 }

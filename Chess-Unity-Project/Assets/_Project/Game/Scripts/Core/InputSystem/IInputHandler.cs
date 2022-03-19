@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace SteamPunkChess
+﻿namespace SteampunkChess
 {
     interface IInputHandler<T>
     {

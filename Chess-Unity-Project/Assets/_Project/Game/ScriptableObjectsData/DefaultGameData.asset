@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 800f1895a4824899857e162f99369a2d, type: 3}
+  m_Name: DefaultGameData
+  m_EditorClassIdentifier: 
+  notationString: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+  chessBoardInfoSO: {fileID: 11400000, guid: 0a8041ed2ee67374697d61298aafdc74, type: 2}
+  piecesPrefabsSO: {fileID: 11400000, guid: c31c70899869d5347a0fda96a493ce92, type: 2}
+  tileSelectionSO: {fileID: 11400000, guid: 9028b09c870d9964d9f8397a0c7b090f, type: 2}

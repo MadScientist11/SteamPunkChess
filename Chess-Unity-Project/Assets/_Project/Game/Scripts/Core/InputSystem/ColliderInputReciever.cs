@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SteamPunkChess
+namespace SteampunkChess
 {
     public class ColliderInputReciever : MonoBehaviour
     {

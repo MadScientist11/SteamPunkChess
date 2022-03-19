@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using SteampunkChess;
 using UnityEngine;
 
-namespace SteamPunkChess
+namespace SteampunkChess
 {
     public static class FenUtility
     {
@@ -40,32 +37,18 @@ namespace SteamPunkChess
             {new PieceInfo(ChessPieceType.Pawn, Team.White), 'P'},
             {new PieceInfo(ChessPieceType.Pawn, Team.Black), 'p'},
         };
-        
-        public static PieceInfo[] GetColumn(PieceInfo[,] matrix, int columnNumber)
-        {
-            return Enumerable.Range(0, matrix.GetLength(0))
-                .Select(x => matrix[x, columnNumber])
-                .ToArray();
-        }
 
-        public static PieceInfo[] GetRow(PieceInfo[,] matrix, int rowNumber)
-        {
-            return Enumerable.Range(0, matrix.GetLength(1))
-                .Select(x => matrix[rowNumber, x])
-                .ToArray();
-        }
-        
 
-        public static string FenStringFromGameData(GameData gameData)
+        public static string FenStringFromGameData(PieceArrangementData pieceArrangementData)
         {
             var fenBuilder = new StringBuilder();
-            PieceInfo[,] board = gameData.piecesInfo;
+            PieceInfo[,] board = pieceArrangementData.piecesInfo;
             int dimension = board.GetLength(0);
             
             
             for (int i = 0; i < dimension; i++)
             {
-                PieceInfo[] row = GetColumn(board, 7 - i);
+                PieceInfo[] row = board.GetColumn(7 - i);
                 
                 int empty = 0;
                 foreach (PieceInfo piece in row)
@@ -99,33 +82,33 @@ namespace SteamPunkChess
 
             fenBuilder.Append(' ');
 
-            fenBuilder.Append(gameData.whoseTurn == (int)Team.White ? 'w' : 'b');
+            fenBuilder.Append(pieceArrangementData.whoseTurn == (int)Team.White ? 'w' : 'b');
 
             fenBuilder.Append(' ');
 
             bool hasAnyCastlingOptions = false;
 
 
-            if (gameData.canWhiteCastleKingSide)
+            if (pieceArrangementData.canWhiteCastleKingSide)
             {
                 fenBuilder.Append('K');
                 hasAnyCastlingOptions = true;
             }
 
-            if (gameData.canWhiteCastleQueenSide)
+            if (pieceArrangementData.canWhiteCastleQueenSide)
             {
                 fenBuilder.Append('Q');
                 hasAnyCastlingOptions = true;
             }
 
 
-            if (gameData.canBlackCastleKingSide)
+            if (pieceArrangementData.canBlackCastleKingSide)
             {
                 fenBuilder.Append('k');
                 hasAnyCastlingOptions = true;
             }
 
-            if (gameData.canBlackCastleQueenSide)
+            if (pieceArrangementData.canBlackCastleQueenSide)
             {
                 fenBuilder.Append('q');
                 hasAnyCastlingOptions = true;
@@ -154,18 +137,18 @@ namespace SteamPunkChess
 
             fenBuilder.Append(' ');
 
-            fenBuilder.Append(gameData.halfMoveClock);
+            fenBuilder.Append(pieceArrangementData.halfMoveClock);
 
             fenBuilder.Append(' ');
 
-            fenBuilder.Append(gameData.fullMoveNumber);
+            fenBuilder.Append(pieceArrangementData.fullMoveNumber);
 
             return fenBuilder.ToString();
         }
 
-        public static GameData GameDataFromStringFen(string fen)
+        public static PieceArrangementData GameDataFromStringFen(string fen)
         {
-            var data = new GameData();
+            var data = new PieceArrangementData();
             data.parseFenError = "";
 
             string[] parts = fen.Split(' ');
@@ -285,7 +268,7 @@ namespace SteamPunkChess
             return data;
         }
 
-        public static PieceInfo[,] BoardArrangementFromFen(string[] rows)
+        private static PieceInfo[,] BoardArrangementFromFen(string[] rows)
         {
             var pieceArray = new PieceInfo[8, 8];
     

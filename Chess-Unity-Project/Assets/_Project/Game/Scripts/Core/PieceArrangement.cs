@@ -43,17 +43,35 @@ namespace SteampunkChess
             get => _chessPieces[x, y];
             set => _chessPieces[x, y] = value;
         }
+
+        public PieceArrangement DeepCopy()
+        {
+            PieceArrangement pieceArrangement = new PieceArrangement(_gameFen, _chessBoardInfoSO, _piecesPrefabsSO);
+  
+            for (int x = 0; x < _chessBoardInfoSO.boardSizeX; x++)
+            {
+                for (int y = 0; y < _chessBoardInfoSO.boardSizeY; y++)
+                {
+                    if (pieceArrangement[x, y] != null)
+                    {
+                        pieceArrangement[x, y] = this[x, y];
+                    }
+                }
+            }
+
+            return pieceArrangement;
+        }
         
         public void Initialize()
         {
             _chessPieces = SpawnAllPieces(_gameFen, (_chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY), _piecesPrefabsSO);
             PositionPieces();
-            Debug.Log("Spawn");
+            
         }
         
         private ChessPiece[,] SpawnAllPieces(string gameFen, (int boardSizeX, int boardSizeY) chessBoardSize, PiecesPrefabsSO piecesPrefabsSO)
         {
-            GameData data = FenUtility.GameDataFromStringFen(gameFen);
+            PieceArrangementData data = FenUtility.GameDataFromStringFen(gameFen);
             ChessPiece[,] chessPieces = new ChessPiece[chessBoardSize.boardSizeX, chessBoardSize.boardSizeY];
             _piecesParentGO = new GameObject(PiecesParent);
 

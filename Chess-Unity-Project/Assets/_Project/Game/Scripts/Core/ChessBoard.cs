@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using Sirenix.Serialization;
-using SteamPunkChess;
+using System.Linq;
 using TMPro;
 using UnityEngine;
-using Zenject;
 using Object = UnityEngine.Object;
 
 namespace SteampunkChess
@@ -25,29 +22,29 @@ namespace SteampunkChess
     //    }
     //}
 //
-    public abstract class Notation
+    [Serializable]
+    public abstract class NotationString
     {
-        public abstract GameData GameDataFromNotationString(string notationString);
-        public abstract string NotationStringFromGameData(GameData gameData);
-    }
+        protected readonly string _notationString;
 
-    public class FenNotation : Notation
-    {
-        public override GameData GameDataFromNotationString(string notationString)
+        protected NotationString(string notationString)
         {
-           return FenUtility.GameDataFromStringFen(notationString);
+            _notationString = notationString;
         }
 
-        public override string NotationStringFromGameData(GameData gameData)
-        {
-            return FenUtility.FenStringFromGameData(gameData);
-        }
+        public abstract PieceArrangementData GameDataFromNotationString();
     }
-    public class MoveListingData : MonoBehaviour
+    [Serializable]
+    public class FenNotationString : NotationString
     {
-        public Transform content;
-        public GameObject moveListingDarker;
-        public GameObject moveListingLighter;
+        public FenNotationString(string notationString) : base(notationString)
+        {
+        }
+
+        public override PieceArrangementData GameDataFromNotationString()
+        {
+            return FenUtility.GameDataFromStringFen(_notationString);
+        }
     }
 
     public class MoveListing : IInitializable
@@ -57,18 +54,13 @@ namespace SteampunkChess
         private MoveListingData _moveListingData;
         private readonly GameObject _moveListingPrefab;
 
-        public MoveListing(List<Movement> moveHistory, List<MoveListingEntry> moveListingEntries, GameObject moveListingPrefab)
+        public MoveListing(GameObject moveListingPrefab, List<Movement> moveHistory)
         {
             _moveHistory = moveHistory;
-            _moveListingEntries = moveListingEntries;
+            _moveListingEntries = new List<MoveListingEntry>();
             _moveListingPrefab = moveListingPrefab;
         }
 
-        public Movement this[int index]
-        {
-            get => _moveHistory[index];
-        }
-        
         public void Initialize()
         {
             _moveListingData = Object.Instantiate(_moveListingPrefab).GetComponent<MoveListingData>();
@@ -76,18 +68,24 @@ namespace SteampunkChess
 
         public void UpdateMoveHistory(Movement move)
         {
-            if (_moveListingEntries[_moveListingEntries.Count - 1].IsFilled)
+            _moveHistory.Add(move);
+
+            if (_moveListingEntries.Count == 0 || _moveListingEntries[_moveListingEntries.Count - 1].IsFilled)
             {
                 GameObject entryPrefab = _moveHistory.Count % 2 == 0
                     ? _moveListingData.moveListingDarker
                     : _moveListingData.moveListingLighter;
                 int fullMoveNumber = 1 + Mathf.FloorToInt((_moveHistory.Count / 2));
-                MoveListingEntry listingEntry = new MoveListingEntry(entryPrefab, _moveListingData.content, fullMoveNumber);
+                MoveListingEntry listingEntry =
+                    new MoveListingEntry(entryPrefab, _moveListingData.content, fullMoveNumber);
+                _moveListingEntries.Add(listingEntry);
+                listingEntry.AddMove(move);
             }
-            
+            else
+            {
+                _moveListingEntries[_moveListingEntries.Count - 1].AddMove(move);
+            }
         }
-
-      
     }
 
     public class MoveListingEntry
@@ -110,9 +108,10 @@ namespace SteampunkChess
 
         private void CreateVisual()
         {
-            _listingEntryText = Object.Instantiate(_entryPrefab, _entryParent).GetComponent<TextMeshProUGUI>();
+            _listingEntryText = Object.Instantiate(_entryPrefab, _entryParent).transform.GetChild(0)
+                .GetComponent<TextMeshProUGUI>();
         }
-        
+
         public void AddMove(Movement move)
         {
             if (_moves.Count == 0)
@@ -126,24 +125,23 @@ namespace SteampunkChess
             }
 
             _moves.Add(move);
-            // = move.RepresentationPGN
-            
         }
-        
     }
 
-    public class ChessBoard : IInitializable
+    public class ChessBoard : IInitializable<ChessGame>
     {
         private TileSet _tileSet;
         private readonly string _gameFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         private PieceArrangement _pieceArrangement;
 
         protected ChessPiece ActivePiece;
+        private ChessGame _chessGame;
         private ChessBoardInfoSO _chessBoardInfoSO;
         private List<Movement> _availableMoves;
         private List<Movement> _moveHistory;
+        private MoveListing _moveListing;
         private TileSelection _tileSelection;
-        private bool _canMove;
+        private bool _processingMove;
 
 
         public ChessBoard(ChessBoardInfoSO chessBoardInfoSO, PiecesPrefabsSO piecesPrefabsSO,
@@ -151,23 +149,31 @@ namespace SteampunkChess
         {
             _chessBoardInfoSO = chessBoardInfoSO;
             _moveHistory = new List<Movement>();
+            _moveListing = new MoveListing(chessBoardInfoSO.moveListingPrefab, _moveHistory);
             _tileSelection = new TileSelection(tileSelectionInfoSO);
             _tileSet = new TileSet(_chessBoardInfoSO);
             _pieceArrangement = new PieceArrangement(_gameFen, _chessBoardInfoSO, piecesPrefabsSO);
         }
+
+        public ChessPiece this[int x, int y] => _pieceArrangement[x, y];
 
 
         private void DeepCopy()
         {
         }
 
-        public void Initialize()
+        public void Initialize(ChessGame chessGame)
         {
-            Object.Instantiate(_chessBoardInfoSO.boardPrefab);
-            _canMove = true;
+            _chessGame = chessGame;
+            InitializeBoardComponents();
+        }
+
+        private void InitializeBoardComponents()
+        {
             _tileSet.Initialize();
             _pieceArrangement.Initialize();
             _tileSelection.Initialize();
+            _moveListing.Initialize();
         }
 
         public void OnTileHover(GameObject tile)
@@ -175,10 +181,10 @@ namespace SteampunkChess
             Vector2Int hitPosition = _tileSet.LookupTileIndex(tile);
             ChessPiece cp = _pieceArrangement[hitPosition.x, hitPosition.y];
 
-            bool onTileSelected = Input.GetMouseButtonUp(0);
-            if (onTileSelected)
+            bool onTileClicked = Input.GetMouseButtonUp(0);
+            if (onTileClicked)
             {
-                if (ActivePiece != null && _canMove)
+                if (ActivePiece != null && !_processingMove)
                 {
                     if (cp != null && ActivePiece.IsFromSameTeam(cp))
                     {
@@ -191,7 +197,7 @@ namespace SteampunkChess
                 }
                 else
                 {
-                    if (cp != null)
+                    if (cp != null && _chessGame.WhoseTurn == cp.Team)
                         OnSelectPieceAndShowAvailableMoves(hitPosition);
                 }
             }
@@ -211,12 +217,12 @@ namespace SteampunkChess
             move = null;
             return false;
         }
-       
+
         protected void OnSelectPieceAndShowAvailableMoves(Vector2Int hitPosition)
         {
             ActivePiece = _pieceArrangement[hitPosition.x, hitPosition.y];
             _availableMoves = ActivePiece.GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX,
-                _chessBoardInfoSO.boardSizeY, _moveHistory, _availableMoves);
+                _chessBoardInfoSO.boardSizeY, _moveHistory);
             //byte[] bytes = SerializationUtility.SerializeValue(_availableMoves[0], DataFormat.JSON);
             //File.WriteAllBytes(@"D:\Genshin Impact Game/games_archive", bytes);
             //byte[] bytess = File.ReadAllBytes(@"D:\Genshin Impact Game/games_archive");
@@ -241,22 +247,73 @@ namespace SteampunkChess
 
         protected async void OnMoveTo(Movement move)
         {
-            _canMove = false;
+            _processingMove = true;
             _tileSelection.ClearSelection();
-            _moveHistory.Add(move);
+            _moveListing.UpdateMoveHistory(move);
             await move.Process();
-            ActivePiece = null;
-            _canMove = true;
+            ActivePiece = null; 
+            _chessGame.ChangeActiveTeam();
+            _processingMove = false;
         }
-    }
 
-    public class ChessPlayer
-    {
-        public ChessPiece ActivePiece;
-    }
+        private void SimulateForSinglePiece(ChessPiece cp, List<Movement> moves, ChessPiece king)
+        {
+            //Save values to reset them in the end
+            ChessPiece simulationPiece = cp.ShallowCopy();
+            List<Movement> movesToRemove = new List<Movement>();
 
-    public class ChessGame
-    {
-        public ChessPlayer CurrentPlayer;
+            for (int i = 0; i < moves.Count; i++)
+            {
+                int simX = moves[i].Destination.x;
+                int simY = moves[i].Destination.y;
+
+                Vector2Int kingPositionThisSim = new Vector2Int(king.CurrentX, king.CurrentY);
+                
+                if (cp.ChessType == ChessPieceType.King)
+                    kingPositionThisSim = new Vector2Int(simX, simY);
+
+                
+                PieceArrangement simulation = _pieceArrangement.DeepCopy();
+                List<ChessPiece> possibleAttackingPieces = new List<ChessPiece>();
+                possibleAttackingPieces = _chessGame.CurrentPlayer.ActivePieces.Where(x => x != cp).ToList();
+               
+
+                // Simulate that move
+                simulation[simulationPiece.CurrentX, simulationPiece.CurrentY] = null;
+                simulationPiece.CurrentX = simX;
+                simulationPiece.CurrentY = simY;
+                simulation[simX, simY] = simulationPiece;
+
+                // Did one of the pieces got taken down during  simulation
+                var deadPiece = possibleAttackingPieces.Find(x => x.CurrentX == simX && x.CurrentY == simY);
+
+                if (deadPiece != null)
+                    possibleAttackingPieces.Remove(deadPiece);
+
+                // Get all attacking pieces available moves
+                List<Movement> simMoves = new List<Movement>();
+                for (int a = 0; a < possibleAttackingPieces.Count; a++)
+                {
+                    var pieceMoves = possibleAttackingPieces[a].GetAvailableMoves(simulation, _chessBoardInfoSO.boardSizeX,
+                        _chessBoardInfoSO.boardSizeY, _moveHistory);
+                    for (int b = 0; b < pieceMoves.Count; b++)
+                    {
+                        simMoves.Add(pieceMoves[b]);
+                    }
+                }
+
+                //Is that spot safe for king?
+                if (SearchForMoveDestination(simMoves, kingPositionThisSim, out Movement move))
+                {
+                    movesToRemove.Add(moves[i]);
+                }
+            }
+
+            //Remove  some moves from availableMoves
+            for (int i = 0; i < movesToRemove.Count; i++)
+            {
+                moves.Remove(movesToRemove[i]);
+            }
+        }
     }
 }

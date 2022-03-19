@@ -1,10 +1,10 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace SteamPunkChess
+namespace SteampunkChess
 {
     [System.Serializable]
-    public class GameData
+    public class PieceArrangementData
     {
         [ShowInInspector]
         public PieceInfo[,] piecesInfo;
@@ -17,5 +17,11 @@ namespace SteamPunkChess
         public Vector2Int enPassant;
         public int halfMoveClock;
         public int fullMoveNumber;
+
+
+        public FenNotationString ToFen()
+        {
+            return new FenNotationString(FenUtility.FenStringFromGameData(this));
+        }
     }
 }

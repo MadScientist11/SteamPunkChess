@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Zenject;
 
 namespace SteampunkChess
 {
@@ -22,6 +21,7 @@ namespace SteampunkChess
             _tiles = new GameObject[_chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY];
             _tilesParentTransform = new GameObject(TilesParent).transform;
             CreateTilesGO();
+            Debug.Log("Init tile");
         }
         
         public GameObject this[int x, int y]

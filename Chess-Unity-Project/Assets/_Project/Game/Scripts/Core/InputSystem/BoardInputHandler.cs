@@ -1,15 +1,13 @@
-﻿using SteampunkChess;
-using UnityEngine;
-using Zenject;
+﻿using UnityEngine;
 
-namespace SteamPunkChess
+namespace SteampunkChess
 {
-    public class BoardInputHandler : MonoBehaviour, IInputHandler<GameObject>
+    public class BoardInputHandler : MonoBehaviour, IInputHandler<GameObject>, IInitializable<ChessBoard>
     {
         private ChessBoard _chessBoard;
         
-        [Inject]
-        private void Initialize(ChessBoard chessBoard)
+        
+        public void Initialize(ChessBoard chessBoard)
         {
             _chessBoard = chessBoard;
         }
@@ -18,5 +16,6 @@ namespace SteamPunkChess
         {
            _chessBoard.OnTileHover(obj);
         }
+
     }
 }

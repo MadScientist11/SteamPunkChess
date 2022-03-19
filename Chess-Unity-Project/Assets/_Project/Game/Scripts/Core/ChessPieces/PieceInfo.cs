@@ -1,6 +1,4 @@
-using SteampunkChess;
-
-namespace SteamPunkChess
+namespace SteampunkChess
 {
     [System.Serializable]
     public class PieceInfo

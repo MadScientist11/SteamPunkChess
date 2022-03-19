@@ -16,3 +16,4 @@ MonoBehaviour:
   boardSizeX: 8
   boardSizeY: 8
   tileInfoSO: {fileID: 11400000, guid: 5afb43f8387c1ae4bb2748aa1e8a0eb2, type: 2}
+  moveListingPrefab: {fileID: 547657013847814581, guid: 7551a5d5ebd9269468318a1bfb4adf20, type: 3}

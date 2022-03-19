@@ -253,7 +253,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1104022675}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.18338406, y: 0.037243724, z: 0.013228416}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -406,9 +406,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4006b1ac7015334d962668304db2216, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _chessBoardInfoSO: {fileID: 11400000, guid: 0a8041ed2ee67374697d61298aafdc74, type: 2}
-  _piecesPrefabsSO: {fileID: 11400000, guid: c31c70899869d5347a0fda96a493ce92, type: 2}
-  _tileSelectionSO: {fileID: 11400000, guid: 9028b09c870d9964d9f8397a0c7b090f, type: 2}
+  _gameDataSO: {fileID: 11400000, guid: 4346e784cb395e1449ea335f7fb8b62c, type: 2}
 --- !u!114 &1584280693
 MonoBehaviour:
   m_ObjectHideFlags: 0

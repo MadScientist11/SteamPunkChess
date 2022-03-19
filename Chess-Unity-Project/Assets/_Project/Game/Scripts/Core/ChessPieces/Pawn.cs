@@ -7,7 +7,7 @@ namespace SteamPunkChess
 {
     public class Pawn : ChessPiece
     {
-        public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY, List<Movement> moveHistory, List<Movement> availableMoves)
+        public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY, List<Movement> moveHistory)
         {
             //one in front
             List<Movement> r = new List<Movement>();

@@ -27,8 +27,12 @@ namespace SteampunkChess
         }
 
 
-        public abstract List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY, List<Movement> moveHistory, List<Movement> availableMoves);
+        public abstract List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY, List<Movement> moveHistory);
 
+        public ChessPiece ShallowCopy()
+        {
+            return (ChessPiece) this.MemberwiseClone();
+        }
    
 
         public Task PositionPiece(int x, int y, bool force = false, IObjectTweener tweener = null)

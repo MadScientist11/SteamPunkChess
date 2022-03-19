@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 547657013847814582}
   - component: {fileID: 547657013847814568}
   - component: {fileID: 547657013847814569}
+  - component: {fileID: -3599445577482879915}
   m_Layer: 5
   m_Name: MoveListingCanvas
   m_TagString: Untagged
@@ -76,6 +77,21 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 55
+--- !u!114 &-3599445577482879915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 547657013847814581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60d7c331caf4538813281d2dd029061, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  content: {fileID: 547657015226295006}
+  moveListingDarker: {fileID: 6749567019971528356, guid: 7240ef2ee7c396347b143494adad74d4, type: 3}
+  moveListingLighter: {fileID: 7668037411958998065, guid: 93604a35aec22934eb8fafbe97efab6a, type: 3}
 --- !u!1 &547657013905419009
 GameObject:
   m_ObjectHideFlags: 0

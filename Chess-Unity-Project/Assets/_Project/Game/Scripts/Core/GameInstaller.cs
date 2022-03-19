@@ -5,26 +5,49 @@ namespace SteampunkChess
 {
     public class GameInstaller : MonoInstaller
     {
-        [SerializeField] private ChessBoardInfoSO _chessBoardInfoSO;
-        [SerializeField] private PiecesPrefabsSO _piecesPrefabsSO;
-        [SerializeField] private TileSelectionInfoSO _tileSelectionSO;
+        [SerializeField] private GameDataSO _gameDataSO;
         public override void InstallBindings()
+        {
+            BindGameData();
+            
+            
+            Container
+                .Bind<IGameFactory>()
+                .To<GameFactory>()
+                .AsSingle();
+            
+            Container
+                .Bind<IBoardFactory>()
+                .To<BoardFactory>()
+                .AsSingle();
+
+            Container
+                .Bind<ChessGame>()
+                .AsSingle();
+
+
+
+
+        }
+
+        private void BindGameData()
         {
             Container
                 .Bind<ChessBoardInfoSO>()
-                .FromInstance(_chessBoardInfoSO);
+                .FromInstance(_gameDataSO.chessBoardInfoSO)
+                .AsSingle();
             Container
                 .Bind<PiecesPrefabsSO>()
-                .FromInstance(_piecesPrefabsSO);
+                .FromInstance(_gameDataSO.piecesPrefabsSO)
+                .AsSingle();
             Container
                 .Bind<TileSelectionInfoSO>()
-                .FromInstance(_tileSelectionSO);
-            Container
-                .BindInterfacesAndSelfTo<ChessBoard>()
+                .FromInstance(_gameDataSO.tileSelectionSO)
                 .AsSingle();
-            
-            BoardFactory.DIContainer = Container; 
-            Debug.Log("GameInstaller");
+            Container
+                .Bind<NotationString>()
+                .FromInstance(new FenNotationString(_gameDataSO.notationString))
+                .AsSingle();
         }
     }
 }
