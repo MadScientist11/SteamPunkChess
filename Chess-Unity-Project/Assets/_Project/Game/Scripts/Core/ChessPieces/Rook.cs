@@ -2,7 +2,7 @@
 using SteampunkChess;
 using UnityEngine;
 
-namespace SteamPunkChess
+namespace SteampunkChess
 {
     public class Rook : ChessPiece
     {

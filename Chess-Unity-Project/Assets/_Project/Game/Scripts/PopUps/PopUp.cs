@@ -19,7 +19,7 @@ namespace SteampunkChess.PopUps
         public event Action OnDestroyed;
 
 
-        private void Start()
+        public virtual void Start()
         {
             ResetLocationAndScale();
         }
@@ -31,7 +31,7 @@ namespace SteampunkChess.PopUps
         }
 
         [Button, DisableInEditorMode]
-        public void Show()
+        public virtual void Show(params object[] data)
         {
             ResetLocationAndScale();
             _tweenTransform.DOAnchorPos(_locationTo, _showDuration).SetEase(_easeType);

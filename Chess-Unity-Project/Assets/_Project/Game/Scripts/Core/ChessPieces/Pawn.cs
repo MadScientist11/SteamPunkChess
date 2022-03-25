@@ -3,7 +3,7 @@ using ModestTree;
 using SteampunkChess;
 using UnityEngine;
 
-namespace SteamPunkChess
+namespace SteampunkChess
 {
     public class Pawn : ChessPiece
     {

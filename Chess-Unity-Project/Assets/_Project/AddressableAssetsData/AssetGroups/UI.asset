@@ -29,6 +29,10 @@ MonoBehaviour:
     m_Address: WindowSignUp
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 5be7a0bffea10e84b87fd6ad0cff02e8
+    m_Address: ErrorToast
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9e45ba45cf167064f8d2632052821566, type: 2}
   m_SchemaSet:

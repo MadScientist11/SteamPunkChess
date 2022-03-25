@@ -75,3 +75,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _popUpService: {fileID: 11400000, guid: 72aeecdc8a1b7084e8380a385945e36b, type: 2}
   _playFabService: {fileID: 11400000, guid: 6ba6dc385ac93c24698a55c3dba3e664, type: 2}
+  _photonService: {fileID: 11400000, guid: 2c49257d3f3b1c142b53eb60d2373aff, type: 2}

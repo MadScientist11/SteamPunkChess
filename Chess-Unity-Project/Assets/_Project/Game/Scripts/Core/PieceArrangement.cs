@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SteamPunkChess;
 using UnityEngine;
-using Zenject;
 using Object = UnityEngine.Object;
 
 namespace SteampunkChess
@@ -35,6 +33,7 @@ namespace SteampunkChess
             _gameFen = gameFen;
             _chessBoardInfoSO = chessBoardInfoSO;
             _piecesPrefabsSO = piecesPrefabsSO;
+            _chessPieces = new ChessPiece[chessBoardInfoSO.boardSizeX, chessBoardInfoSO.boardSizeY];
         }
         
 
@@ -52,7 +51,7 @@ namespace SteampunkChess
             {
                 for (int y = 0; y < _chessBoardInfoSO.boardSizeY; y++)
                 {
-                    if (pieceArrangement[x, y] != null)
+                    if (this[x, y] != null)
                     {
                         pieceArrangement[x, y] = this[x, y];
                     }

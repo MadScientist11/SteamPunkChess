@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Zenject;
 
 namespace SteampunkChess
 {
@@ -45,14 +44,11 @@ namespace SteampunkChess
                 ActivePieces.Remove(piece);
         }
 
-        public ChessPiece[] GetPiecesOfType<T>() where T : ChessPiece
+        public IEnumerable<ChessPiece> GetPiecesOfType<T>() where T : ChessPiece
         {
-            return ActivePieces.Where(p => p is T).ToArray();
+            return ActivePieces.Where(p => p is T);
         }
 
-        public List<ChessPiece> GetActivePieces()
-        {
-            return ActivePieces;
-        }
+       
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ICSharpCode.NRefactory.Ast;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace SteampunkChess
@@ -43,17 +41,13 @@ namespace SteampunkChess
 
         public async Task Process()
         {
-         
-           
             ChessPiece pieceToMove = MovePiece;
             ChessPiece enemy = _pieceArrangement[Destination.x, Destination.y];
-           
             _pieceArrangement[Start.x, Start.y] = null;
             _pieceArrangement[Destination.x, Destination.y] = pieceToMove;
             await pieceToMove.PositionPiece(Destination.x, Destination.y);
             _specialMove?.ProcessSpecialMove();
             enemy?.Dispose();
-            Debug.Log(this.GetMovePGN());
         }
 
         public string GetMovePGN()

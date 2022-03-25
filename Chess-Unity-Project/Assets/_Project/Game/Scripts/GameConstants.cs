@@ -5,6 +5,7 @@
         public static class GameCLIArgs
         {
             public const string SkipUserValidation = "skipuservalidation";
+            //TODO: offline mode
 
         }
     }

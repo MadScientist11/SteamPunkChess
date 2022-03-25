@@ -2,7 +2,9 @@
 using PlayFab.ClientModels;
 using SteampunkChess.CloudService.Models;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
+using Zenject;
 
 namespace SteampunkChess.CloudService
 {
@@ -12,6 +14,12 @@ namespace SteampunkChess.CloudService
         private const string TitleId = "832CB";
         private Action _onSuccess;
         private Action<string> _onError;
+        
+        [Inject]
+        private void Construct(ServiceContainer serviceContainer)
+        {
+            serviceContainer.ServiceList.Add(this);
+        }
 
         public void RegisterUser(RegisterUserParams userParams, Action onSuccess, Action<string> onError)
         {
@@ -24,7 +32,7 @@ namespace SteampunkChess.CloudService
             };
             _onSuccess = onSuccess;
             _onError = onError;
-
+            
             PlayFabClientAPI.RegisterPlayFabUser(request, OnRegisterSuccess, OnError);
         }
 
@@ -84,6 +92,12 @@ namespace SteampunkChess.CloudService
             _onError = null;
             Logger.Debug(error.GenerateErrorReport());
    
+        }
+
+        public string InitializationMessage { get; } = "Initialize cloud service";
+        public async Task Initialize()
+        {
+            await Task.Delay(2000);
         }
     }
 }

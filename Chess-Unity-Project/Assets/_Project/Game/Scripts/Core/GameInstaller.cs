@@ -22,8 +22,11 @@ namespace SteampunkChess
                 .AsSingle();
 
             Container
-                .Bind<ChessGame>()
-                .AsSingle();
+                .Bind<NotationString>()
+                .To<FenNotationString>()
+                .FromInstance(new FenNotationString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
+
+
 
 
 
@@ -33,20 +36,13 @@ namespace SteampunkChess
         private void BindGameData()
         {
             Container
+                .Bind<GameDataSO>()
+                .FromInstance(_gameDataSO)
+                .AsSingle();
+            
+            Container
                 .Bind<ChessBoardInfoSO>()
                 .FromInstance(_gameDataSO.chessBoardInfoSO)
-                .AsSingle();
-            Container
-                .Bind<PiecesPrefabsSO>()
-                .FromInstance(_gameDataSO.piecesPrefabsSO)
-                .AsSingle();
-            Container
-                .Bind<TileSelectionInfoSO>()
-                .FromInstance(_gameDataSO.tileSelectionSO)
-                .AsSingle();
-            Container
-                .Bind<NotationString>()
-                .FromInstance(new FenNotationString(_gameDataSO.notationString))
                 .AsSingle();
         }
     }

@@ -128,7 +128,7 @@ namespace SteampunkChess
         }
     }
 
-    public class ChessBoard : IInitializable<ChessGame>
+    public abstract class ChessBoard 
     {
         private TileSet _tileSet;
         private readonly string _gameFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -144,15 +144,14 @@ namespace SteampunkChess
         private bool _processingMove;
 
 
-        public ChessBoard(ChessBoardInfoSO chessBoardInfoSO, PiecesPrefabsSO piecesPrefabsSO,
-            TileSelectionInfoSO tileSelectionInfoSO)
+        protected ChessBoard(GameDataSO gameDataSO)
         {
-            _chessBoardInfoSO = chessBoardInfoSO;
+            _chessBoardInfoSO = gameDataSO.chessBoardInfoSO;
             _moveHistory = new List<Movement>();
-            _moveListing = new MoveListing(chessBoardInfoSO.moveListingPrefab, _moveHistory);
-            _tileSelection = new TileSelection(tileSelectionInfoSO);
+            _moveListing = new MoveListing(gameDataSO.chessBoardInfoSO.moveListingPrefab, _moveHistory);
+            _tileSelection = new TileSelection(gameDataSO.tileSelectionSO);
             _tileSet = new TileSet(_chessBoardInfoSO);
-            _pieceArrangement = new PieceArrangement(_gameFen, _chessBoardInfoSO, piecesPrefabsSO);
+            _pieceArrangement = new PieceArrangement(_gameFen, _chessBoardInfoSO, gameDataSO.piecesPrefabsSO);
         }
 
         public ChessPiece this[int x, int y] => _pieceArrangement[x, y];
@@ -162,7 +161,7 @@ namespace SteampunkChess
         {
         }
 
-        public void Initialize(ChessGame chessGame)
+        public virtual void Initialize(ChessGame chessGame)
         {
             _chessGame = chessGame;
             InitializeBoardComponents();
@@ -175,6 +174,9 @@ namespace SteampunkChess
             _tileSelection.Initialize();
             _moveListing.Initialize();
         }
+        
+        protected abstract void MoveTo(Vector2 moveTo);
+        protected abstract void SelectPieceAndShowAvailableMoves(Vector2 hitPosition);
 
         public void OnTileHover(GameObject tile)
         {
@@ -182,28 +184,28 @@ namespace SteampunkChess
             ChessPiece cp = _pieceArrangement[hitPosition.x, hitPosition.y];
 
             bool onTileClicked = Input.GetMouseButtonUp(0);
-            if (onTileClicked)
+            if (onTileClicked  && !_processingMove)
             {
-                if (ActivePiece != null && !_processingMove)
+                if (ActivePiece != null)
                 {
                     if (cp != null && ActivePiece.IsFromSameTeam(cp))
                     {
-                        OnSelectPieceAndShowAvailableMoves(hitPosition);
+                        SelectPieceAndShowAvailableMoves(hitPosition);
                     }
                     else if (SearchForMoveDestination(_availableMoves, hitPosition, out Movement move))
                     {
-                        OnMoveTo(move);
+                        MoveTo(move.Destination);
                     }
                 }
                 else
                 {
-                    if (cp != null && _chessGame.WhoseTurn == cp.Team)
-                        OnSelectPieceAndShowAvailableMoves(hitPosition);
+                    if (cp != null && _chessGame.IsTeamTurnActive(cp.Team))
+                        SelectPieceAndShowAvailableMoves(hitPosition);
                 }
             }
         }
 
-        private bool SearchForMoveDestination(List<Movement> moves, Vector2Int moveDestination, out Movement move)
+        public bool SearchForMoveDestination(List<Movement> moves, Vector2Int moveDestination, out Movement move)
         {
             for (int i = 0; i < moves.Count; i++)
             {
@@ -223,12 +225,14 @@ namespace SteampunkChess
             ActivePiece = _pieceArrangement[hitPosition.x, hitPosition.y];
             _availableMoves = ActivePiece.GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX,
                 _chessBoardInfoSO.boardSizeY, _moveHistory);
+            RemoveMovesToPreventCheck();
             //byte[] bytes = SerializationUtility.SerializeValue(_availableMoves[0], DataFormat.JSON);
             //File.WriteAllBytes(@"D:\Genshin Impact Game/games_archive", bytes);
             //byte[] bytess = File.ReadAllBytes(@"D:\Genshin Impact Game/games_archive");
             //var move = SerializationUtility.DeserializeValue<Movement>(bytess, DataFormat.JSON);
             //new Movement(move.Start, move.Destination, _pieceArrangement).Process();
             ShowAvailableMoves();
+           
         }
 
         private void ShowAvailableMoves()
@@ -240,20 +244,33 @@ namespace SteampunkChess
                     TileSet.GetTileCenter(_availableMoves[i].Destination.x, _availableMoves[i].Destination.y);
                 tileData.Add((tileCenter, _availableMoves[i].IsAttackMove));
             }
-
+            
             _tileSelection.ShowSelection(tileData);
         }
 
 
-        protected async void OnMoveTo(Movement move)
+        protected async void OnMoveTo(Vector2Int moveTo)
         {
-            _processingMove = true;
-            _tileSelection.ClearSelection();
-            _moveListing.UpdateMoveHistory(move);
-            await move.Process();
-            ActivePiece = null; 
-            _chessGame.ChangeActiveTeam();
-            _processingMove = false;
+            if (SearchForMoveDestination(_availableMoves, moveTo, out Movement move))
+            {
+                _processingMove = true;
+                _tileSelection.ClearSelection();
+                _moveListing.UpdateMoveHistory(move);
+                await move.Process();
+
+                if (IsCheckmated())
+                    Debug.Log("Game Over");
+                
+                ActivePiece = null;
+                _chessGame.ChangeActiveTeam();
+                _processingMove = false;
+            }
+        }
+        
+        private void RemoveMovesToPreventCheck()
+        {
+            ChessPiece targetKing = _chessGame.ActivePlayer.GetPiecesOfType<King>().First();
+            SimulateForSinglePiece(ActivePiece, _availableMoves, targetKing);
         }
 
         private void SimulateForSinglePiece(ChessPiece cp, List<Movement> moves, ChessPiece king)
@@ -261,6 +278,7 @@ namespace SteampunkChess
             //Save values to reset them in the end
             ChessPiece simulationPiece = cp.ShallowCopy();
             List<Movement> movesToRemove = new List<Movement>();
+            Team attackingTeam = cp.Team == Team.White ? Team.Black : Team.White;
 
             for (int i = 0; i < moves.Count; i++)
             {
@@ -275,7 +293,7 @@ namespace SteampunkChess
                 
                 PieceArrangement simulation = _pieceArrangement.DeepCopy();
                 List<ChessPiece> possibleAttackingPieces = new List<ChessPiece>();
-                possibleAttackingPieces = _chessGame.CurrentPlayer.ActivePieces.Where(x => x != cp).ToList();
+                possibleAttackingPieces = _chessGame.ChessPlayers[(int) attackingTeam].ActivePieces.Where(x => x != cp).ToList();
                
 
                 // Simulate that move
@@ -314,6 +332,44 @@ namespace SteampunkChess
             {
                 moves.Remove(movesToRemove[i]);
             }
+        }
+        
+        private bool IsCheckmated()
+        {
+            var lastMove = _moveHistory[_moveHistory.Count - 1];
+            Team attackingTeam = _pieceArrangement[lastMove.Destination.x, lastMove.Destination.y].Team;
+            Team targetTeam = (attackingTeam == Team.White) ? Team.Black : Team.White;
+            
+            List<ChessPiece> attackingPieces = _chessGame.ChessPlayers[(int) attackingTeam].ActivePieces;
+            List<ChessPiece> defendingPieces = _chessGame.ChessPlayers[(int) targetTeam].ActivePieces;
+            ChessPiece targetKing = _chessGame.ChessPlayers[(int) targetTeam].GetPiecesOfType<King>().First();
+
+            // Is king attacked right now
+            List<Movement> attackingMoves = new List<Movement>();
+            for (int a = 0; a < attackingPieces.Count; a++)
+            {
+                var pieceMoves = attackingPieces[a].GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY, _moveHistory);
+                for (int b = 0; b < pieceMoves.Count; b++)
+                {
+                    attackingMoves.Add(pieceMoves[b]);
+                }
+            }
+           
+            if (SearchForMoveDestination(attackingMoves, new Vector2Int(targetKing.CurrentX, targetKing.CurrentY), out Movement move))
+            {
+                //King is under attack, can we defend him?
+                for (int i = 0; i < defendingPieces.Count; i++)
+                {
+                    var defendingMoves = defendingPieces[i].GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY, _moveHistory);
+                    //Delete moves that still give us check
+                    SimulateForSinglePiece(defendingPieces[i], defendingMoves, targetKing);
+                    
+                    if (defendingMoves.Count != 0)
+                        return false;
+                }
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace SteampunkChess
         
         public ChessBoard Create()
         {
-            ChessBoard board = _diContainer.Instantiate<ChessBoard>();
+            ChessBoard board = _diContainer.Instantiate<MultiplayerBoard>();
             GameObject boardGO = Object.Instantiate(_boardInfoSO.boardPrefab);
             boardGO.GetComponent<BoardInputHandler>().Initialize(board);
             return board;

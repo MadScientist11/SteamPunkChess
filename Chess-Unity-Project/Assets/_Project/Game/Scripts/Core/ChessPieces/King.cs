@@ -3,7 +3,7 @@ using SteampunkChess;
 using UnityEngine;
 
 
-namespace SteamPunkChess
+namespace SteampunkChess
 {
     public class King : ChessPiece
     {
