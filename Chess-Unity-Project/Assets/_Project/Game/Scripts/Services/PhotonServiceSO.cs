@@ -14,10 +14,14 @@ namespace SteampunkChess.NetworkService
         bool OfflineMode { get; }
         
         string Username { get; set; }
+
+        public bool AutomaticallySyncScene { set; }
+        public LobbyCallbacksDispatcher LobbyCallbacksDispatcher { get; }
+        public RoomCallbacksDispatcher RoomCallbacksDispatcher { get; }
         void SendRPC(string methodName, RpcTarget target, params object[] parameters);
-        void CreateRoom(string roomName, RoomOptions roomOptions = null, TypedLobby typedLobby = null);
+        void CreateRoom(string roomName, string password = null, string matchTime = null, RoomOptions roomOptions = null, TypedLobby typedLobby = null);
         void JoinLobby();
-        void JoinRoom(string roomName);
+        void JoinRoom(string roomName = null);
     }
 
     [RequireComponent(typeof(PhotonView))]
@@ -39,6 +43,7 @@ namespace SteampunkChess.NetworkService
     public class LobbyCallbacksDispatcher : MonoBehaviour, ILobbyCallbacks
     {
         public event Action<List<RoomInfo>> OnRoomListUpdateEvent;
+        
         
         private void OnEnable()
         {
@@ -74,12 +79,15 @@ namespace SteampunkChess.NetworkService
         }
 
         #endregion
-        
+
+       
     }
 
-    public class RoomCallbacksDispatcher : MonoBehaviour, IInRoomCallbacks
+    public class RoomCallbacksDispatcher : MonoBehaviour, IInRoomCallbacks, IMatchmakingCallbacks
     {
         public event Action<Player> OnPlayerEnteredRoomEvent;
+        public event Action OnCreatedRoomEvent;
+        public event Action OnJoinedRoomEvent;
         private void OnEnable()
         {
             PhotonNetwork.AddCallbackTarget(this);
@@ -95,6 +103,7 @@ namespace SteampunkChess.NetworkService
         public void OnPlayerEnteredRoom(Player newPlayer)
         {
             OnPlayerEnteredRoomEvent?.Invoke(newPlayer);
+            OnPlayerEnteredRoomEvent = null;
         }
 
         public void OnPlayerLeftRoom(Player otherPlayer)
@@ -118,6 +127,44 @@ namespace SteampunkChess.NetworkService
         }
         
         #endregion
+        
+        #region MatchmakingCallbacks
+        public void OnFriendListUpdate(List<FriendInfo> friendList)
+        {
+            
+        }
+
+        public void OnCreatedRoom()
+        {
+            OnCreatedRoomEvent?.Invoke();
+            OnCreatedRoomEvent = null;
+        }
+
+        public void OnCreateRoomFailed(short returnCode, string message)
+        {
+          
+        }
+
+        public void OnJoinedRoom()
+        {
+            OnJoinedRoomEvent?.Invoke();
+        }
+
+        public void OnJoinRoomFailed(short returnCode, string message)
+        {
+           
+        }
+
+        public void OnJoinRandomFailed(short returnCode, string message)
+        {
+           
+        }
+
+        public void OnLeftRoom()
+        {
+            
+        }
+        #endregion
        
     }
 
@@ -133,7 +180,12 @@ namespace SteampunkChess.NetworkService
         public LobbyCallbacksDispatcher LobbyCallbacksDispatcher { get; private set; }
         public RoomCallbacksDispatcher RoomCallbacksDispatcher { get; private set; }
         public bool OfflineMode => PhotonNetwork.OfflineMode;
-        
+
+        public bool AutomaticallySyncScene
+        {
+            set => PhotonNetwork.AutomaticallySyncScene = value;
+        }
+
         public string Username
         {
             get => PhotonNetwork.NickName;
@@ -193,10 +245,19 @@ namespace SteampunkChess.NetworkService
                 return;
             }
 
+            RoomCallbacksDispatcher.OnPlayerEnteredRoomEvent += (_) =>
+            {
+                if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
+                {
+                    PhotonNetwork.CurrentRoom.IsOpen = false;
+                    PhotonNetwork.LoadLevel(1);
+                }
+            };
+
             PhotonNetwork.JoinRoom(roomName);
         }
 
-        public void CreateRoom(string roomName, RoomOptions roomOptions = null, TypedLobby typedLobby = null)
+        public void CreateRoom(string roomName, string password = null, string matchTime = null, RoomOptions roomOptions = null, TypedLobby typedLobby = null)
         {
             if (RoomCallbacksDispatcher == null)
             {
@@ -204,6 +265,15 @@ namespace SteampunkChess.NetworkService
                     .AddComponent<RoomCallbacksDispatcher>();
                 DontDestroyOnLoad(RoomCallbacksDispatcher);
             }
+
+            RoomCallbacksDispatcher.OnCreatedRoomEvent += () =>
+            {
+                Hashtable roomProperties = new Hashtable();
+                roomProperties["P"] = password;
+                roomProperties["T"] = matchTime;
+                PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
+            };
+            
             PhotonNetwork.CreateRoom(roomName, roomOptions, typedLobby);
         }
         
