@@ -6,6 +6,7 @@ namespace SteampunkChess
     public class GameInstaller : MonoInstaller
     {
         [SerializeField] private GameDataSO _gameDataSO;
+        [SerializeField] private CameraPivot cameraPivot;
         
         public override void InstallBindings()
         {
@@ -26,6 +27,12 @@ namespace SteampunkChess
                 .Bind<NotationString>()
                 .To<FenNotationString>()
                 .FromInstance(new FenNotationString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
+            
+            Container
+                .Bind<CameraPivot>()
+                .FromInstance(cameraPivot)
+                .AsSingle();
+
         }
 
         private void BindGameData()

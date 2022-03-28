@@ -10,12 +10,10 @@ namespace SteampunkChess
     {
         [SerializeField] private GameObject _mainMenu;
         
-
         private IPopUpService _popUpService;
         private INetworkService _networkService;
         private readonly System.Random _random = new System.Random();
-
-
+        
         [Inject]
         private void Construct(IPopUpService popUpService, INetworkService networkService)
         {
@@ -26,7 +24,6 @@ namespace SteampunkChess
         public void ContinueAsGuest()
         {
             _popUpService.HideAll(HideType.HideDestroyAndRelease);
-
             Prefs.Username = $"Guest{GenerateGuestIndex()}";
             _networkService.LocalPlayer.PlayerName = Prefs.Username;
             
@@ -45,7 +42,5 @@ namespace SteampunkChess
             int _max = 9999;
             return _random.Next(_min, _max);
         }
-
-  
     }
 }

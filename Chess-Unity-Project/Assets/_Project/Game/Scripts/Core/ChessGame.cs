@@ -1,4 +1,5 @@
 using SteampunkChess.NetworkService;
+using UnityEngine;
 
 namespace SteampunkChess
 {
@@ -7,6 +8,7 @@ namespace SteampunkChess
         private readonly NotationString _notationString;
         private readonly IBoardFactory _boardFactory;
         private readonly INetworkService _networkService;
+        private readonly CameraPivot _cameraPivot;
         public ChessPlayer ActivePlayer { get; private set; }
         
         public ChessPlayer[] ChessPlayers { get; }
@@ -21,11 +23,12 @@ namespace SteampunkChess
         public Team WhoseTurn { get; private set; }
 
 
-        public ChessGame(NotationString notationString, IBoardFactory boardFactory, INetworkService networkService)
+        public ChessGame(NotationString notationString, IBoardFactory boardFactory, INetworkService networkService, CameraPivot cameraPivot)
         {
             _notationString = notationString;
             _boardFactory = boardFactory;
             _networkService = networkService;
+            _cameraPivot = cameraPivot;
             ChessPlayers = new ChessPlayer[2];
         }
 
@@ -39,10 +42,17 @@ namespace SteampunkChess
             CreatePlayers(chessBoard);
             ActivePlayer = ChessPlayers[InitialPieceArrangementData.whoseTurn];
             _localPlayer = GetLocalPlayer();
+            HandleCameraRotation();
             
             WhoseTurn = (Team) InitialPieceArrangementData.whoseTurn;
         }
 
+        private void HandleCameraRotation()
+        {
+            if(_localPlayer.Team == Team.Black)
+                _cameraPivot.transform.Rotate(Vector3.up, 180f);
+        }
+        
         private ChessPlayer GetLocalPlayer()
         {
             int team = _networkService.LocalPlayer.PlayerTeam;
