@@ -45,11 +45,13 @@ namespace SteampunkChess.PopUps
                 if (destroyAfterHide)
                 {
                     Destroy(gameObject);
-                    OnDestroyed?.Invoke();
                 }
             });
         }
 
-
+        private void OnDestroy()
+        {
+            OnDestroyed?.Invoke();
+        }
     }
 }
