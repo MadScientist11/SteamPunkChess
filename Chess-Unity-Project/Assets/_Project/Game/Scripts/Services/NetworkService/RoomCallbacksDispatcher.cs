@@ -32,7 +32,7 @@ namespace SteampunkChess.NetworkService
         public void OnPlayerEnteredRoom(Player newPlayer)
         {
             OnPlayerEnteredRoomEvent?.Invoke(newPlayer);
-            Logger.DebugError("Player entered room!");
+            Logger.DebugError($"Player {newPlayer.NickName} entered room!");
         }
 
         public void OnPlayerLeftRoom(Player otherPlayer)

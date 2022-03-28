@@ -1,23 +1,31 @@
+using SteampunkChess.NetworkService;
+
 namespace SteampunkChess
 {
     public class ChessGame : IInitializable
     {
         private readonly NotationString _notationString;
         private readonly IBoardFactory _boardFactory;
+        private readonly INetworkService _networkService;
         public ChessPlayer ActivePlayer { get; private set; }
         
         public ChessPlayer[] ChessPlayers { get; }
+
+        private ChessPlayer _localPlayer;
         
         public PieceArrangementData InitialPieceArrangementData { get; private set; }
+
+        public bool IsActivePlayer => ActivePlayer == _localPlayer;
         
         
         public Team WhoseTurn { get; private set; }
 
 
-        public ChessGame(NotationString notationString, IBoardFactory boardFactory)
+        public ChessGame(NotationString notationString, IBoardFactory boardFactory, INetworkService networkService)
         {
             _notationString = notationString;
             _boardFactory = boardFactory;
+            _networkService = networkService;
             ChessPlayers = new ChessPlayer[2];
         }
 
@@ -30,8 +38,23 @@ namespace SteampunkChess
             
             CreatePlayers(chessBoard);
             ActivePlayer = ChessPlayers[InitialPieceArrangementData.whoseTurn];
+            _localPlayer = GetLocalPlayer();
             
             WhoseTurn = (Team) InitialPieceArrangementData.whoseTurn;
+        }
+
+        private ChessPlayer GetLocalPlayer()
+        {
+            int team = _networkService.LocalPlayer.PlayerTeam;
+            Logger.DebugError($"Local player is from team {team}");
+            return ChessPlayers[team];
+        }
+        
+        public bool CanPerformMove()
+        {
+            if (IsActivePlayer)
+                return true;
+            return false;
         }
 
         public void ChangeActiveTeam()

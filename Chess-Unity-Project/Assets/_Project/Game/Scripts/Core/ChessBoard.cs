@@ -180,11 +180,14 @@ namespace SteampunkChess
 
         public void OnTileHover(GameObject tile)
         {
+            if (_processingMove || !_chessGame.CanPerformMove())
+                return; 
+            
             Vector2Int hitPosition = _tileSet.LookupTileIndex(tile);
             ChessPiece cp = _pieceArrangement[hitPosition.x, hitPosition.y];
 
             bool onTileClicked = Input.GetMouseButtonUp(0);
-            if (onTileClicked  && !_processingMove)
+            if (onTileClicked)
             {
                 if (ActivePiece != null)
                 {

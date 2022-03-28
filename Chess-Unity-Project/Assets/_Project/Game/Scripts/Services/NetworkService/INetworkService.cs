@@ -3,9 +3,7 @@
     public interface INetworkService : IService
     {
         bool OfflineMode { get; }
-
-        string Username { get; set; }
-
+        PhotonServiceSO.NetworkPlayer LocalPlayer { get; }
         public bool AutomaticallySyncScene { set; }
         public LobbyCallbacksDispatcher LobbyCallbacksDispatcher { get; }
         public RoomCallbacksDispatcher RoomCallbacksDispatcher { get; }

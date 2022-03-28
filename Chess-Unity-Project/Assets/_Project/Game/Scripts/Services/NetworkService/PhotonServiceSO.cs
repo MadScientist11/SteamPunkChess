@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ExitGames.Client.Photon;
 using Photon.Pun;
@@ -67,17 +68,43 @@ namespace SteampunkChess.NetworkService
         }
 
         public bool OfflineMode => PhotonNetwork.OfflineMode;
+        
 
         public bool AutomaticallySyncScene
         {
             set => PhotonNetwork.AutomaticallySyncScene = value;
         }
-
-        public string Username
+        
+        public class NetworkPlayer
         {
-            get => PhotonNetwork.NickName;
-            set => PhotonNetwork.NickName = value;
+            public string PlayerName
+            {
+                get => PhotonNetwork.NickName;
+                set => PhotonNetwork.NickName = value;
+            }
+
+            public int PlayerTeam
+            {
+                get
+                {
+                    if (!PhotonNetwork.InRoom)
+                        throw new Exception("Cannot address PlayerTeam property while not in a room");
+                    
+                    return (int) PhotonNetwork.LocalPlayer.CustomProperties["Team"];
+                }
+                set
+                {
+                    Hashtable properties = new Hashtable()
+                    {
+                        ["Team"] = value
+                    };
+                    PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
+                }
+            }
+
         }
+
+        public NetworkPlayer LocalPlayer { get; private set; }
 
         [Inject]
         private void Construct(ServiceContainer serviceContainer)
@@ -90,6 +117,7 @@ namespace SteampunkChess.NetworkService
             PhotonNetwork.AddCallbackTarget(this);
             
             PhotonNetwork.ConnectUsingSettings();
+            LocalPlayer = new NetworkPlayer();
 
             if (OfflineMode)
             {
@@ -114,6 +142,8 @@ namespace SteampunkChess.NetworkService
                 return;
             }
             
+            LocalPlayer.PlayerTeam = 1;
+            
             PhotonNetwork.JoinRoom(roomName);
         }
 
@@ -127,6 +157,9 @@ namespace SteampunkChess.NetworkService
                 //PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
                 //PhotonNetwork
             };
+
+            LocalPlayer.PlayerTeam = 0;
+            
             RoomCallbacksDispatcher.OnPlayerEnteredRoomEvent += TryLoadGame;
             
             RoomOptions roomOptions = new RoomOptions()

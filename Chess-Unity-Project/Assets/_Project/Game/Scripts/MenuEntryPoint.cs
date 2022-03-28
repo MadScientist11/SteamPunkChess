@@ -59,7 +59,7 @@ namespace SteampunkChess
             void OnLogin()
             {
                 _popUpService.HideAll(HideType.HideDestroyAndRelease);
-                _networkService.Username = Prefs.Username;
+                _networkService.LocalPlayer.PlayerName = Prefs.Username;
             }
         }
 

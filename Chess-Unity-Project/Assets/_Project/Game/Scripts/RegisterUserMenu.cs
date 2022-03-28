@@ -33,7 +33,7 @@ namespace SteampunkChess
             _popUpService.HideAll(HideType.HideDestroyAndRelease);
 
             Prefs.Username = $"Guest{GenerateGuestIndex()}";
-            _networkService.Username = Prefs.Username;
+            _networkService.LocalPlayer.PlayerName = Prefs.Username;
             
             SwitchToMainMenu();
         }

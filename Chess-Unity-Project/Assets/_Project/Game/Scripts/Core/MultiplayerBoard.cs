@@ -34,7 +34,6 @@ namespace SteampunkChess
             OnSelectPieceAndShowAvailableMoves(intCoords);
         }
         
-        
         private void RPC_MoveTo(Vector2 coords)
         {
             Vector2Int intCoords = new Vector2Int(Mathf.RoundToInt(coords.x), Mathf.RoundToInt(coords.y));
