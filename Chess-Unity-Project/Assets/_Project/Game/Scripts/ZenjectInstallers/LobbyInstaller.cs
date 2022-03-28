@@ -10,22 +10,39 @@ namespace SteampunkChess
         
         public override void InstallBindings()
         {
-            Container
-                .Bind<RoomListingMenu>()
-                .FromInstance(_roomListingMenu)
-                .AsSingle();
+            BindRoomListingMenu();
+            BindLobby();
+            BindRoomListingEntryPrefab();
+            BindRoomListingFactory();
+        }
 
+        private void BindRoomListingFactory()
+        {
             Container
-                .BindInterfacesAndSelfTo<Lobby>()
+                .Bind<RoomListingEntryFactory>()
                 .AsSingle();
-            
+        }
+
+        private void BindRoomListingEntryPrefab()
+        {
             Container
                 .Bind<RoomListingEntry>()
                 .FromInstance(_roomListingEntryPrefab)
                 .AsSingle();
+        }
 
+        private void BindLobby()
+        {
             Container
-                .Bind<RoomListingEntryFactory>()
+                .Bind<Lobby>()
+                .AsSingle();
+        }
+
+        private void BindRoomListingMenu()
+        {
+            Container
+                .Bind<RoomListingMenu>()
+                .FromInstance(_roomListingMenu)
                 .AsSingle();
         }
     }

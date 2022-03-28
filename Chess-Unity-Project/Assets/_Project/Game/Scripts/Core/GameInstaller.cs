@@ -6,10 +6,11 @@ namespace SteampunkChess
     public class GameInstaller : MonoInstaller
     {
         [SerializeField] private GameDataSO _gameDataSO;
+        
         public override void InstallBindings()
         {
             BindGameData();
-            
+            BindChessBoardInfo();
             
             Container
                 .Bind<IGameFactory>()
@@ -25,12 +26,6 @@ namespace SteampunkChess
                 .Bind<NotationString>()
                 .To<FenNotationString>()
                 .FromInstance(new FenNotationString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
-
-
-
-
-
-
         }
 
         private void BindGameData()
@@ -39,7 +34,10 @@ namespace SteampunkChess
                 .Bind<GameDataSO>()
                 .FromInstance(_gameDataSO)
                 .AsSingle();
-            
+        }
+
+        private void BindChessBoardInfo()
+        {
             Container
                 .Bind<ChessBoardInfoSO>()
                 .FromInstance(_gameDataSO.chessBoardInfoSO)

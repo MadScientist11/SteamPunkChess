@@ -18,20 +18,9 @@ namespace SteampunkChess
             BindCloudService();
             BindNetworkService();
             BindInstallerInterfaces();
-            Container
-                .Bind<ServiceContainer>()
-                .AsSingle();
+            BindServiceContainer();
         
         }
-
-        private void BindInstallerInterfaces()
-        {
-            Container
-                .BindInterfacesTo<BootstrapInstaller>()
-                .FromInstance(this)
-                .AsSingle();
-        }
-
         public void Initialize()
         {
             InjectServices();
@@ -47,6 +36,21 @@ namespace SteampunkChess
                 .Inject(_popUpService);
         }
 
+        private void BindServiceContainer()
+        {
+            Container
+                .Bind<ServiceContainer>()
+                .AsSingle();
+        }
+
+        private void BindInstallerInterfaces()
+        {
+            Container
+                .BindInterfacesTo<BootstrapInstaller>()
+                .FromInstance(this)
+                .AsSingle();
+        }
+
         private void BindNetworkService()
         {
             Container
@@ -57,7 +61,6 @@ namespace SteampunkChess
 
         private void BindCloudService()
         {
-        
             Container
                 .Bind<ICloudService>()
                 .To<PlayFabServiceSO>()
@@ -67,7 +70,6 @@ namespace SteampunkChess
 
         private void BindPopUpService()
         {
-            
             Container
                 .Bind<IPopUpService>()
                 .To<PopUpServiceSO>()
