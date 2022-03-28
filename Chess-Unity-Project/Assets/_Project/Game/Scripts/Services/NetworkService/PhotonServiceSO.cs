@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ExitGames.Client.Photon;
 using Photon.Pun;
@@ -10,158 +9,6 @@ using Object = UnityEngine.Object;
 
 namespace SteampunkChess.NetworkService
 {
-    public interface INetworkService : IService
-    {
-        bool OfflineMode { get; }
-
-        string Username { get; set; }
-
-        public bool AutomaticallySyncScene { set; }
-        public LobbyCallbacksDispatcher LobbyCallbacksDispatcher { get; }
-        public RoomCallbacksDispatcher RoomCallbacksDispatcher { get; }
-        public PhotonRPCSender PhotonRPCSender { get; }
-
-        void CreateRoom(string roomName, string password = null, string matchTime = null);
-
-        void JoinLobby();
-        void JoinRoom(string roomName = null);
-    }
-
-    public interface IRPCSender
-    {
-        void SendRPC(byte rpcCode, object[] content, ReceiverGroup receivers, SendOptions sendOptions);
-    }
-
-    public class LobbyCallbacksDispatcher : MonoBehaviour, ILobbyCallbacks
-    {
-        public event Action<List<RoomInfo>> OnRoomListUpdateEvent;
-
-
-        private void OnEnable()
-        {
-            PhotonNetwork.AddCallbackTarget(this);
-        }
-
-        private void OnDisable()
-        {
-            PhotonNetwork.RemoveCallbackTarget(this);
-            OnRoomListUpdateEvent = null;
-        }
-
-        #region LobbyCallbacks
-
-        public void OnJoinedLobby()
-        {
-            Logger.Debug("Joined lobby!");
-        }
-
-        public void OnLeftLobby()
-        {
-            Logger.Debug("Left lobby");
-            Destroy(gameObject);
-        }
-
-        public void OnRoomListUpdate(List<RoomInfo> roomList)
-        {
-            OnRoomListUpdateEvent?.Invoke(roomList);
-        }
-
-        public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
-        {
-        }
-
-        #endregion
-    }
-
-
-    public class RoomCallbacksDispatcher : MonoBehaviour, IInRoomCallbacks, IMatchmakingCallbacks
-    {
-        public event Action<Player> OnPlayerEnteredRoomEvent;
-        public event Action OnCreatedRoomEvent;
-        public event Action OnJoinedRoomEvent;
-        public event Action OnLeftRoomEvent;
-
-        private void OnEnable()
-        {
-            PhotonNetwork.AddCallbackTarget(this);
-        }
-
-        private void OnDisable()
-        {
-            PhotonNetwork.RemoveCallbackTarget(this);
-            OnPlayerEnteredRoomEvent = null;
-            OnCreatedRoomEvent = null;
-            OnJoinedRoomEvent = null;
-           
-        }
-
-        #region InRoomCallbacks
-
-        public void OnPlayerEnteredRoom(Player newPlayer)
-        {
-            OnPlayerEnteredRoomEvent?.Invoke(newPlayer);
-            Logger.DebugError("Player entered room!");
-        }
-
-        public void OnPlayerLeftRoom(Player otherPlayer)
-        {
-            
-        }
-
-        public void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
-        {
-        }
-
-        public void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
-        {
-        }
-
-        public void OnMasterClientSwitched(Player newMasterClient)
-        {
-        }
-
-        #endregion
-
-        #region MatchmakingCallbacks
-
-        public void OnFriendListUpdate(List<FriendInfo> friendList)
-        {
-        }
-
-        public void OnCreatedRoom()
-        {
-            OnCreatedRoomEvent?.Invoke();
-            Logger.Debug("Room created!");
-        }
-
-        public void OnCreateRoomFailed(short returnCode, string message)
-        {
-        }
-
-        public void OnJoinedRoom()
-        {
-            OnJoinedRoomEvent?.Invoke();
-            Logger.Debug("Joined room!");
-        }
-
-        public void OnJoinRoomFailed(short returnCode, string message)
-        {
-        }
-
-        public void OnJoinRandomFailed(short returnCode, string message)
-        {
-        }
-
-        public void OnLeftRoom()
-        {
-            gameObject.SetActive(false);
-            Logger.Debug("Room left, destroying room callbacks dispatcher");
-        }
-
-        #endregion
-    }
-
-
     [CreateAssetMenu(fileName = "PhotonServiceSO", menuName = "Services/PhotonServiceSO")]
     public class PhotonServiceSO : ScriptableObject, INetworkService, IConnectionCallbacks
     {
@@ -170,8 +17,6 @@ namespace SteampunkChess.NetworkService
         private LobbyCallbacksDispatcher _lobbyCallbacksDispatcher;
         private RoomCallbacksDispatcher _roomCallbacksDispatcher;
         private PhotonRPCSender _photonRPCSender;
-        [SerializeField] private GameObject _photonRPCSenderPrefab;
-        [SerializeField] private GameObject _photonPrefabPool;
 
         public PhotonRPCSender PhotonRPCSender
         {
