@@ -541,7 +541,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aece38a7fafd7d24486656fe7e891616, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _roomNameText: {fileID: 6277339633736655348}
+  _roomNameText: {fileID: 7470800632468294179}
   _matchTimeText: {fileID: 1642086617773351535}
   _passwordIcon: {fileID: 6179787387296204027}
 --- !u!1 &5110701458115607243

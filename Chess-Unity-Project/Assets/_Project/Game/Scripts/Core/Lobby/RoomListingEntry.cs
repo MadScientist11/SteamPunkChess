@@ -1,5 +1,3 @@
-using System;
-using Photon.Pun;
 using Photon.Realtime;
 using SteampunkChess.NetworkService;
 using SteampunkChess.PopUpService;
@@ -31,7 +29,9 @@ namespace SteampunkChess
         {
             _roomPassword = (string)RoomInfo.CustomProperties["P"];
             _roomNameText.text = RoomInfo.Name;
+            Logger.DebugError(RoomInfo.Name);
             _matchTimeText.text = (string)RoomInfo.CustomProperties["T"];
+            Logger.DebugError(_matchTimeText.text);
             if(IsRoomUnderPassword)
                 _passwordIcon.SetActive(true);
         }

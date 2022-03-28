@@ -10,7 +10,6 @@ namespace SteampunkChess
         public string RoomName;
         public string Password;
         public string Time;
-        public RoomOptions RoomOptions;
     }
     
     [CreateAssetMenu(fileName = "PlayerDataSO", menuName = "ScriptableObjects/PlayerDataSO")]
@@ -18,7 +17,7 @@ namespace SteampunkChess
     {
         public int team;
     }
-    public class Lobby : IInitializable, Zenject.ILateDisposable
+    public class Lobby : IInitializable
     {
         private readonly RoomListingMenu _roomListingMenu;
         private INetworkService _networkService;
@@ -33,16 +32,12 @@ namespace SteampunkChess
         {
             _networkService.AutomaticallySyncScene = true;
             _networkService.LobbyCallbacksDispatcher.OnRoomListUpdateEvent += _roomListingMenu.UpdateRoomListing;
-        }
-        
-        public void LateDispose()
-        {
-            _networkService.LobbyCallbacksDispatcher.OnRoomListUpdateEvent -= _roomListingMenu.UpdateRoomListing;
+            _networkService.JoinLobby();
         }
 
         public void CreateRoom(RoomData roomData)
         {
-            _networkService.CreateRoom(roomData.RoomName, roomData.Password, roomData.Time, roomData.RoomOptions);
+            _networkService.CreateRoom(roomData.RoomName, roomData.Password, roomData.Time);
             
             //loading and waiting for opponent
         }

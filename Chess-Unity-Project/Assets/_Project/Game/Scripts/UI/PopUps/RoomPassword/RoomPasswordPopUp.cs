@@ -11,7 +11,7 @@ namespace SteampunkChess
     public class RoomPasswordPopUp : PopUp
     {
         [SerializeField] private TMP_InputField _passwordInputField;
-        [SerializeField] private Button _joinButton;
+        
         private string _roomPassword;
         private INetworkService _networkService;
         private IPopUpService _popUpService;

@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 332336f55f174f64ae87d6c58c487df5, type: 3}
   m_Name: PhotonService
   m_EditorClassIdentifier: 
+  _photonRPCSenderPrefab: {fileID: 3634957730842939433, guid: ea27d2d7970416e42bdd25f274dbce0a, type: 3}
+  _photonPrefabPool: {fileID: 4844024416312009260, guid: c9b70685a17272745adf6c64192aad2f, type: 3}

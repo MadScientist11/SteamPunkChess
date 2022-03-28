@@ -33,6 +33,10 @@ MonoBehaviour:
     m_Address: ErrorToast
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 647f6c673a9f44f438c0493055cc50aa
+    m_Address: WindowRoomPassword
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9e45ba45cf167064f8d2632052821566, type: 2}
   m_SchemaSet:

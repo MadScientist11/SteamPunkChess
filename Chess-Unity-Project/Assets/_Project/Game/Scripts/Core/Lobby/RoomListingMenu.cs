@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Photon.Realtime;
 using UnityEngine;
+using Zenject;
 
 namespace SteampunkChess
 {
@@ -9,17 +10,16 @@ namespace SteampunkChess
         [SerializeField] private GameObject _roomListingEntryPrefab;
         [SerializeField] private Transform _roomMenuContent;
     
-        private readonly Dictionary<string, RoomListingEntry> _cachedRoomList = new Dictionary<string, RoomListingEntry>();
+        private readonly Dictionary<string, RoomListingEntry> _cachedRoomListEntries = new Dictionary<string, RoomListingEntry>();
+        private RoomListingEntryFactory _roomListingEntryFactory;
 
-
-        private RoomListingEntry CreateRoomListingEntry(RoomInfo roomInfo)
+        [Inject]
+        private void Construct(RoomListingEntryFactory roomListingEntryFactory)
         {
-            var roomListing = Instantiate(_roomListingEntryPrefab, _roomMenuContent).GetComponent<RoomListingEntry>();
-            roomListing.RoomInfo = roomInfo;
-            roomListing.Initialize();
-            return roomListing;
+            _roomListingEntryFactory = roomListingEntryFactory;
         }
-        
+
+       
         public void UpdateRoomListing(List<RoomInfo> roomList)
         {
             for(int i=0; i<roomList.Count; i++)
@@ -27,16 +27,14 @@ namespace SteampunkChess
                 RoomInfo info = roomList[i];
                 if (info.RemovedFromList)
                 {
-                    Destroy(_cachedRoomList[info.Name].gameObject);
-                    _cachedRoomList.Remove(info.Name);
+                    Destroy(_cachedRoomListEntries[info.Name].gameObject);
+                    _cachedRoomListEntries.Remove(info.Name);
                 }
                 else
                 {
-                    _cachedRoomList[info.Name] = CreateRoomListingEntry(info);
+                    _cachedRoomListEntries[info.Name] = _roomListingEntryFactory.CreateRoomListingEntry(info,_roomMenuContent);
                 }
             }
         }
-
-        
     }
 }

@@ -36,7 +36,7 @@ namespace SteampunkChess
 
         private async void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space) && !_isInitialized)
+            if (Input.anyKeyDown && !_isInitialized)
             {
                 _isInitialized = true;
                 await InitializeServices();

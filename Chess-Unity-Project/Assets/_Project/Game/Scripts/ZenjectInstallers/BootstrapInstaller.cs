@@ -11,6 +11,7 @@ namespace SteampunkChess
         [SerializeField] private PopUpServiceSO _popUpService;
         [SerializeField] private PlayFabServiceSO _playFabService;
         [SerializeField] private PhotonServiceSO _photonService;
+       
         public override void InstallBindings()
         {
             BindPopUpService();
@@ -20,6 +21,7 @@ namespace SteampunkChess
             Container
                 .Bind<ServiceContainer>()
                 .AsSingle();
+        
         }
 
         private void BindInstallerInterfaces()
