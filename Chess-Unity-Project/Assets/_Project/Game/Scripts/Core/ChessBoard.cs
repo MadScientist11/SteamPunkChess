@@ -72,10 +72,10 @@ namespace SteampunkChess
 
             if (_moveListingEntries.Count == 0 || _moveListingEntries[_moveListingEntries.Count - 1].IsFilled)
             {
-                GameObject entryPrefab = _moveHistory.Count % 2 == 0
+                GameObject entryPrefab = (_moveHistory.Count & 1) == 0
                     ? _moveListingData.moveListingDarker
                     : _moveListingData.moveListingLighter;
-                int fullMoveNumber = 1 + Mathf.FloorToInt((_moveHistory.Count / 2));
+                int fullMoveNumber = 1 + (_moveHistory.Count >> 1);
                 MoveListingEntry listingEntry =
                     new MoveListingEntry(entryPrefab, _moveListingData.content, fullMoveNumber);
                 _moveListingEntries.Add(listingEntry);
