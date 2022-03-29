@@ -12,6 +12,7 @@ namespace SteampunkChess
     {
         [SerializeField] private TextMeshProUGUI _toastText;
         [SerializeField] private int _popUpLifetimeMs = 5000;
+        [SerializeField] private string _addressableToastName;
         private string _message;
         
         private IPopUpService _popUpService;
@@ -26,7 +27,7 @@ namespace SteampunkChess
         {
             base.Start();
             await Task.Delay(_popUpLifetimeMs);
-            _popUpService.HidePopUp(GameConstants.PopUps.ErrorToast, HideType.HideDestroyAndRelease);
+            _popUpService.HidePopUp(_addressableToastName, HideType.HideDestroyAndRelease);
         }
 
 
@@ -39,7 +40,7 @@ namespace SteampunkChess
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            _popUpService.HidePopUp(GameConstants.PopUps.ErrorToast, HideType.HideDestroyAndRelease);
+            _popUpService.HidePopUp(_addressableToastName, HideType.HideDestroyAndRelease);
         }
     }
 }

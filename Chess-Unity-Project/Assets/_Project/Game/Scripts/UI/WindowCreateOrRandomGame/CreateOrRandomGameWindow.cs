@@ -1,4 +1,5 @@
 using Photon.Realtime;
+using SteampunkChess.PopUpService;
 using UnityEngine;
 using Zenject;
 
@@ -7,23 +8,18 @@ namespace SteampunkChess
     public class CreateOrRandomGameWindow : MonoBehaviour
     {
         private Lobby _lobby;
+        private IPopUpService _popUpService;
 
         [Inject]
-        private void Construct(Lobby lobby)
+        private void Construct(Lobby lobby, IPopUpService popUpService)
         {
+            _popUpService = popUpService;
             _lobby = lobby;
         }
 
         public void CreateRoom()
         {
-            //show room creation window
-            RoomData roomData = new RoomData()
-            {
-                RoomName = "TestRoom",
-                Password = "",
-                Time = "5:00",
-            };
-            _lobby.CreateRoom(roomData);
+            _popUpService.ShowPopUp(GameConstants.PopUps.RoomCreationWindow);
         }
 
         public void JoinRandomGame()

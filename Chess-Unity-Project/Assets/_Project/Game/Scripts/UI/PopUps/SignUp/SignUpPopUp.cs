@@ -59,13 +59,14 @@ namespace SteampunkChess.PopUps
 
         private void OnRegisterSuccess()
         {
-            _onLogInSignal?.Raise();
             _popUpService.HidePopUp(GameConstants.PopUps.SignUpWindow, HideType.HideDestroyAndRelease);
+            _popUpService.ShowPopUp(GameConstants.PopUps.SuccessToast, "You have successfully signed in");
+            _onLogInSignal?.Raise();
         }
         
         private void OnRegisterError(string error)
         {
-
+            _popUpService.ShowPopUp(GameConstants.PopUps.ErrorToast, $"{error}");
         }
 
         public void SwitchToLogInPopUp()

@@ -9,6 +9,9 @@ namespace SteampunkChess
             public const string ForgotPasswordWindow = "WindowForgotPassword";
             public const string RoomPasswordWindow = "WindowRoomPassword";
             public const string ErrorToast = "ErrorToast";
+            public const string SuccessToast = "SuccessToast";
+            public const string InfoToast = "InfoToast";
+            public const string RoomCreationWindow = "WindowRoomCreation";
         }
     }
 }

@@ -25,6 +25,10 @@ MonoBehaviour:
     m_Address: WindowLogIn
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 647f6c673a9f44f438c0493055cc50aa
+    m_Address: WindowRoomPassword
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   - m_GUID: 26f3de524e6811f43ba6580c914e333a
     m_Address: WindowSignUp
     m_ReadOnly: 0
@@ -33,8 +37,12 @@ MonoBehaviour:
     m_Address: ErrorToast
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 647f6c673a9f44f438c0493055cc50aa
-    m_Address: WindowRoomPassword
+  - m_GUID: 0b7c140521d01e9408a330f454b5e1cd
+    m_Address: SuccessToast
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: ded2ec4fb4792b64e95d311a207988f2
+    m_Address: WindowRoomCreation
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

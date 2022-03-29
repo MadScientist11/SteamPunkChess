@@ -15,6 +15,14 @@ namespace SteampunkChess.CloudService
         private Action _onSuccess;
         private Action<string> _onError;
         
+        
+        public string InitializationMessage => "Initialize cloud service";
+
+        public async Task Initialize()
+        {
+            await Task.Delay(2000);
+        }
+        
         [Inject]
         private void Construct(ServiceContainer serviceContainer)
         {
@@ -76,6 +84,7 @@ namespace SteampunkChess.CloudService
             _onSuccess?.Invoke();
             _onSuccess = null;
             Logger.Debug("Register success");
+            
         }
 
         private void OnLogInSuccess(LoginResult loginResult)
@@ -88,16 +97,9 @@ namespace SteampunkChess.CloudService
 
         private void OnError(PlayFabError error)
         {
-            _onError?.Invoke(error.GenerateErrorReport());
+            _onError?.Invoke(error.ErrorMessage);
             _onError = null;
             Logger.Debug(error.GenerateErrorReport());
-   
-        }
-
-        public string InitializationMessage { get; } = "Initialize cloud service";
-        public async Task Initialize()
-        {
-            await Task.Delay(2000);
         }
     }
 }

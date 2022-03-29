@@ -45,13 +45,14 @@ namespace SteampunkChess.PopUps
                 Prefs.Password = _passwordInputField.text;
             }
             _popUpService.HidePopUp(GameConstants.PopUps.LogInWindow, HideType.HideDestroyAndRelease);
+            _popUpService.ShowPopUp(GameConstants.PopUps.SuccessToast, "You have successfully logged in");
             _onLogInSignal?.Raise();
 
         }
 
         private void OnLogInError(string error)
         {
-
+            _popUpService.ShowPopUp(GameConstants.PopUps.ErrorToast, $"{error}");
         }
 
         public void SwitchToLogInPopUp()

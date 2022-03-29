@@ -13,6 +13,7 @@ namespace SteampunkChess
     {
         [SerializeField] private AssetReference _mainMenuScene;
         [SerializeField] private TextMeshProUGUI _loadingText;
+        [SerializeField] private GameObject _loadingGO;
         private ServiceContainer _serviceContainer;
         private bool _isInitialized;
        
@@ -38,6 +39,8 @@ namespace SteampunkChess
         {
             if (Input.anyKeyDown && !_isInitialized)
             {
+                _loadingGO.SetActive(true);
+                _loadingText.gameObject.SetActive(true);
                 _isInitialized = true;
                 await InitializeServices();
                 _mainMenuScene.LoadSceneAsync();
