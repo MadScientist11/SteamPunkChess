@@ -1,4 +1,3 @@
-using FluentAssertions;
 using UnityEngine;
 using Zenject;
 
@@ -7,13 +6,15 @@ namespace SteampunkChess
     public class GameInstaller : MonoInstaller
     {
         [SerializeField] private GameDataSO _gameDataSO;
-        [SerializeField] private CameraPivot _cameraPivot;
+        [SerializeField] private GameCameraController _gameCameraController;
         [SerializeField] private TimerTextW _timerTextW;
         [SerializeField] private TimerTextB _timerTextB;
         public override void InstallBindings()
         {
             BindGameData();
             BindChessBoardInfo();
+            BindGameCameraController();
+            BindTimer();
             
             Container
                 .Bind<IGameFactory>()
@@ -29,35 +30,37 @@ namespace SteampunkChess
                 .Bind<NotationString>()
                 .To<FenNotationString>()
                 .FromInstance(new FenNotationString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
-            
-            Container
-                .Bind<CameraPivot>()
-                .FromInstance(_cameraPivot)
-                .AsSingle();
-
-            Container
-                .Bind<GameTimer>()
-                .AsSingle();
 
             Container
                 .Bind<PlayerFactory>()
                 .AsSingle();
 
+            
+        }
+
+        private void BindGameCameraController()
+        {
+            Container
+                .Bind<GameCameraController>()
+                .FromInstance(_gameCameraController)
+                .AsSingle();
+        }
+
+        private void BindTimer()
+        {
             Container
                 .Bind<TimerTextW>()
                 .FromInstance(_timerTextW)
                 .AsSingle();
-            
+
             Container
                 .Bind<TimerTextB>()
                 .FromInstance(_timerTextB)
                 .AsSingle();
-            
+
             Container
                 .Bind<TimerFactory>()
                 .AsSingle();
-
-
         }
 
         private void BindGameData()

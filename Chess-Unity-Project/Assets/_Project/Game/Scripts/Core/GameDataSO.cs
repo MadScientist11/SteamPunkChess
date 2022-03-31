@@ -6,8 +6,15 @@ namespace SteampunkChess
     public class GameDataSO : ScriptableObject
     {
         public string notationString;
+        public GameType gameType;
         public ChessBoardInfoSO chessBoardInfoSO;
         public PiecesPrefabsSO piecesPrefabsSO;
         public TileSelectionInfoSO tileSelectionSO;
+    }
+
+    public enum GameType
+    {
+        Multiplayer,
+        AI
     }
 }

@@ -9,7 +9,7 @@ namespace SteampunkChess
         private readonly NotationString _notationString;
         private readonly IBoardFactory _boardFactory;
         private readonly INetworkService _networkService;
-        private readonly CameraPivot _cameraPivot;
+        private readonly GameCameraController _gameCameraController;
         
         private readonly PlayerFactory _playerFactory;
         private readonly TimerFactory _timerFactory;
@@ -29,13 +29,13 @@ namespace SteampunkChess
         public Team WhoseTurn { get; private set; }
 
 
-        public ChessGame(NotationString notationString, IBoardFactory boardFactory, INetworkService networkService, CameraPivot cameraPivot
+        public ChessGame(NotationString notationString, IBoardFactory boardFactory, INetworkService networkService, GameCameraController gameCameraController
         , PlayerFactory playerFactory, TimerFactory timerFactory)
         {
             _notationString = notationString;
             _boardFactory = boardFactory;
             _networkService = networkService;
-            _cameraPivot = cameraPivot;
+            _gameCameraController = gameCameraController;
             _playerFactory = playerFactory;
             _timerFactory = timerFactory;
             ChessPlayers = new ChessPlayer[2];
@@ -55,18 +55,14 @@ namespace SteampunkChess
             _timer.InitializeTimer(ChessPlayers[0],ChessPlayers[1], GameOver);
             
             WhoseTurn = (Team) InitialPieceArrangementData.whoseTurn;
-            ActivePlayer = ChessPlayers[InitialPieceArrangementData.whoseTurn];
+            ActivePlayer = ChessPlayers[(int) WhoseTurn];
             _localPlayer = GetLocalPlayer();
-            HandleCameraRotation();
+           
+            _gameCameraController.Initialize(_localPlayer.Team);
+            
             _timer.Start();
             
            
-        }
-
-        private void HandleCameraRotation()
-        {
-            if(_localPlayer.Team == Team.Black)
-                _cameraPivot.transform.Rotate(Vector3.up, 180f);
         }
         
         private ChessPlayer GetLocalPlayer()
@@ -140,12 +136,6 @@ namespace SteampunkChess
 
     public class PlayerFactory
     {
-        private readonly IInstantiator _instantiator;
-
-        public PlayerFactory(IInstantiator instantiator)
-        {
-            _instantiator = instantiator;
-        }
         public ChessPlayer Create(ChessBoard chessBoard, Team team, PieceArrangementData data, float matchTIme)
         {
             ChessPlayer player = new ChessPlayer(team, chessBoard, matchTIme)
