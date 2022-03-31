@@ -102,6 +102,17 @@ namespace SteampunkChess.NetworkService
                 }
             }
 
+            public int MatchTimeLimitInSeconds
+            {
+                get
+                {
+                    if (!PhotonNetwork.InRoom)
+                        throw new Exception("Cannot address MatchTimeLimit property while not in a room");
+                    
+                    return (int) PhotonNetwork.CurrentRoom.CustomProperties["T"];
+                }
+            }
+
         }
 
         public NetworkPlayer LocalPlayer { get; private set; }
@@ -126,7 +137,7 @@ namespace SteampunkChess.NetworkService
             }
 
             
-            await Task.Delay(2000);
+            await Task.Delay(000);
         }
 
         public void JoinLobby()
@@ -147,7 +158,7 @@ namespace SteampunkChess.NetworkService
             PhotonNetwork.JoinRoom(roomName);
         }
 
-        public void CreateRoom(string roomName, string password = null, string matchTime = null)
+        public void CreateRoom(string roomName, string password = null, int timeLimitInSeconds = -1)
         {
             RoomCallbacksDispatcher.OnCreatedRoomEvent += () =>
             {
@@ -168,7 +179,7 @@ namespace SteampunkChess.NetworkService
                 CustomRoomProperties = new Hashtable()
                 {
                     ["P"] = password,
-                    ["T"] = matchTime,
+                    ["T"] = timeLimitInSeconds,
                 },
                 CustomRoomPropertiesForLobby = new[] {"P", "T"},
             };

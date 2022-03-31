@@ -3,29 +3,43 @@ using SteampunkChess.PopUps;
 using SteampunkChess.PopUpService;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Zenject;
 
 namespace SteampunkChess
 {
-    public class RoomCreationPopUp : PopUp
+    public class RoomCreationPopUp : PopUp, IPointerClickHandler
     {
-        [SerializeField] private TextMeshProUGUI _roomNameText;
-        [SerializeField] private TextMeshProUGUI _passwordText;
-        
         private readonly System.Random _random = new System.Random();
-        private Lobby _lobby;
+        
+        [Header("RoomCreationPopUp")]
+        [SerializeField] private TMP_InputField _roomNameInputField;
+        [SerializeField] private TMP_InputField _passwordInputField;
+        [SerializeField] private TMP_Dropdown _timeDropdown;
+        
+        private INetworkService _networkService;
         private IPopUpService _popUpService;
+        
+        private Team _localPlayerTeam = Team.Random;
+        private int _matchTimeLimitInSeconds;
+        
 
         [Inject]
-        private void Construct(Lobby lobby, IPopUpService popUpService)
+        private void Construct(INetworkService networkService, IPopUpService popUpService)
         {
             _popUpService = popUpService;
-            _lobby = lobby;
+            _networkService = networkService;
         }
 
-        public Team GetLocalPlayerTeam(int team)
+        public override void Start()
         {
-            return (Team) team switch
+            base.Start();
+            ChangeRoomTime();
+        }
+
+        public void ChangeLocalPlayerTeam(int team)
+        {
+            _localPlayerTeam = (Team) team switch
             {
                 Team.Random when _random.NextDouble() >= 0.5 => Team.White,
                 Team.Random => Team.Black,
@@ -33,18 +47,35 @@ namespace SteampunkChess
             };
         }
 
-        public void CreateRoom()
+        public void ChangeRoomTime()
         {
-            _popUpService.HidePopUp(GameConstants.PopUps.RoomCreationWindow, HideType.HideDestroyAndRelease);
-            RoomData roomData = new RoomData()
+            _matchTimeLimitInSeconds = _timeDropdown.value switch
             {
-                RoomName = _roomNameText.text,
-                Password = _passwordText.text,
-                Time = "5:00",
+                0 => 60,
+                1 => 300,
+                2 => 600,
+                3 => 0,
+                _ => -1
             };
-            _lobby.CreateRoom(roomData);
+            
         }
 
+        public void CreateRoom()
+        {
+            RoomData roomData = new RoomData()
+            {
+                RoomName = _roomNameInputField.text,
+                Password = _passwordInputField.text,
+                TimeLimitInSeconds = _matchTimeLimitInSeconds,
+            };
+            _networkService.CreateRoom(roomData.RoomName, roomData.Password, roomData.TimeLimitInSeconds);
+            _networkService.LocalPlayer.PlayerTeam = (int) _localPlayerTeam;
+            _popUpService.HidePopUp(GameConstants.PopUps.RoomCreationWindow, HideType.HideDestroyAndRelease);
+        }
         
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            _popUpService.HidePopUp(GameConstants.PopUps.RoomCreationWindow, HideType.HideDestroyAndRelease);
+        }
     }
 }

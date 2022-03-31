@@ -20,7 +20,7 @@ namespace SteampunkChess.CloudService
 
         public async Task Initialize()
         {
-            await Task.Delay(2000);
+            await Task.Delay(000);
         }
         
         [Inject]

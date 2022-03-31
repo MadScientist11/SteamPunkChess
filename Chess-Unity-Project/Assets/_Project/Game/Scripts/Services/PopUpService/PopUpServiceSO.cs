@@ -17,17 +17,17 @@ namespace SteampunkChess.PopUpService
         private readonly Dictionary<string, AsyncOperationHandle<GameObject>> _asyncOperationHandles =
             new Dictionary<string, AsyncOperationHandle<GameObject>>();
 
-        private DiContainer _container;
+        private IInstantiator _instantiator;
 
         [Inject]
-        private void Construct(DiContainer container, ServiceContainer serviceContainer)
+        private void Construct(IInstantiator instantiator, ServiceContainer serviceContainer)
         {
-            _container = container;
+            _instantiator = instantiator;
             serviceContainer.ServiceList.Add(this);
         }
         
         public string InitializationMessage => "PopUp initialization";
-
+        
         public async Task Initialize()
         {
             await Task.Delay(2000);
@@ -44,7 +44,7 @@ namespace SteampunkChess.PopUpService
 
             if (_asyncOperationHandles.ContainsKey(popUpKey))
             {
-                GameObject go = _container.InstantiatePrefab(_asyncOperationHandles[popUpKey].Result, FindObjectOfType<Canvas>().transform);
+                GameObject go = _instantiator.InstantiatePrefab(_asyncOperationHandles[popUpKey].Result, FindObjectOfType<Canvas>().transform);
                 go.GetComponent<IPopUp>().Show(data);
                 _popUpsInstances[popUpKey] = go;
                 return;
@@ -56,7 +56,7 @@ namespace SteampunkChess.PopUpService
             {
                 _asyncOperationHandles.Add(popUpKey, loadOp);
 
-                GameObject go = _container.InstantiatePrefab(loadOp.Result, FindObjectOfType<Canvas>().transform);
+                GameObject go = _instantiator.InstantiatePrefab(loadOp.Result, FindObjectOfType<Canvas>().transform);
                 go.GetComponent<IPopUp>().Show(data);
                 _popUpsInstances.Add(popUpKey, go);
             }

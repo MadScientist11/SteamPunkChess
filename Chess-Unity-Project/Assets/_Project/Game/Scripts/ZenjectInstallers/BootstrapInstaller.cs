@@ -6,6 +6,7 @@ using Zenject;
 
 namespace SteampunkChess
 {
+  
     public class BootstrapInstaller : MonoInstaller, Zenject.IInitializable
     {
         [SerializeField] private PopUpServiceSO _popUpService;
@@ -19,7 +20,6 @@ namespace SteampunkChess
             BindNetworkService();
             BindInstallerInterfaces();
             BindServiceContainer();
-        
         }
         public void Initialize()
         {

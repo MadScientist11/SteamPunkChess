@@ -1,3 +1,4 @@
+using System;
 using Photon.Realtime;
 using SteampunkChess.NetworkService;
 using SteampunkChess.PopUpService;
@@ -16,7 +17,7 @@ namespace SteampunkChess
         private IPopUpService _popUpService;
         private INetworkService _networkService;
         public RoomInfo RoomInfo { get; set; }
-        private bool IsRoomUnderPassword => !string.IsNullOrEmpty(_roomPassword);
+        private bool IsRoomUnderPassword => !string.IsNullOrWhiteSpace(_roomPassword);
 
         [Inject]
         private void Construct(IPopUpService popUpService, INetworkService networkService)
@@ -28,12 +29,23 @@ namespace SteampunkChess
         public void Initialize()
         {
             _roomPassword = (string)RoomInfo.CustomProperties["P"];
+            
+            int matchTimeLimitInSeconds = (int)RoomInfo.CustomProperties["T"];
+            
             _roomNameText.text = RoomInfo.Name;
-            Logger.DebugError(RoomInfo.Name);
-            _matchTimeText.text = (string)RoomInfo.CustomProperties["T"];
-            Logger.DebugError(_matchTimeText.text);
+            _matchTimeText.text = ParseMatchTimeLimit(matchTimeLimitInSeconds);
+      
             if(IsRoomUnderPassword)
                 _passwordIcon.SetActive(true);
+        }
+
+        private string ParseMatchTimeLimit(int timeLimitInSeconds)
+        {
+            if (timeLimitInSeconds == 0)
+                return "∞";
+            
+            TimeSpan t = TimeSpan.FromSeconds(timeLimitInSeconds);
+            return $"{t.Minutes}:00";
         }
         
         public void JoinRoom()

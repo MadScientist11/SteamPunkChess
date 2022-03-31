@@ -1,5 +1,6 @@
 using SteampunkChess.NetworkService;
 using UnityEngine;
+using Zenject;
 
 namespace SteampunkChess
 {
@@ -9,11 +10,16 @@ namespace SteampunkChess
         private readonly IBoardFactory _boardFactory;
         private readonly INetworkService _networkService;
         private readonly CameraPivot _cameraPivot;
+        
+        private readonly PlayerFactory _playerFactory;
+        private readonly TimerFactory _timerFactory;
         public ChessPlayer ActivePlayer { get; private set; }
         
         public ChessPlayer[] ChessPlayers { get; }
 
         private ChessPlayer _localPlayer;
+
+        private GameTimer _timer;
         
         public PieceArrangementData InitialPieceArrangementData { get; private set; }
 
@@ -23,12 +29,15 @@ namespace SteampunkChess
         public Team WhoseTurn { get; private set; }
 
 
-        public ChessGame(NotationString notationString, IBoardFactory boardFactory, INetworkService networkService, CameraPivot cameraPivot)
+        public ChessGame(NotationString notationString, IBoardFactory boardFactory, INetworkService networkService, CameraPivot cameraPivot
+        , PlayerFactory playerFactory, TimerFactory timerFactory)
         {
             _notationString = notationString;
             _boardFactory = boardFactory;
             _networkService = networkService;
             _cameraPivot = cameraPivot;
+            _playerFactory = playerFactory;
+            _timerFactory = timerFactory;
             ChessPlayers = new ChessPlayer[2];
         }
 
@@ -36,15 +45,22 @@ namespace SteampunkChess
         public void Initialize()
         {
             InitialPieceArrangementData = _notationString.GameDataFromNotationString(); 
+            
             ChessBoard chessBoard = _boardFactory.Create();
             chessBoard.Initialize(this);
             
             CreatePlayers(chessBoard);
+            
+            _timer = _timerFactory.Create();
+            _timer.InitializeTimer(ChessPlayers[0],ChessPlayers[1], GameOver);
+            
+            WhoseTurn = (Team) InitialPieceArrangementData.whoseTurn;
             ActivePlayer = ChessPlayers[InitialPieceArrangementData.whoseTurn];
             _localPlayer = GetLocalPlayer();
             HandleCameraRotation();
+            _timer.Start();
             
-            WhoseTurn = (Team) InitialPieceArrangementData.whoseTurn;
+           
         }
 
         private void HandleCameraRotation()
@@ -71,6 +87,7 @@ namespace SteampunkChess
         {
             WhoseTurn = WhoseTurn == Team.White ? Team.Black : Team.White;
             ActivePlayer = ChessPlayers[(int) WhoseTurn];
+            _timer.SwitchPlayer();
         }
         
         public bool IsTeamTurnActive(Team team)
@@ -80,18 +97,20 @@ namespace SteampunkChess
 
         private void CreatePlayers(ChessBoard chessBoard)
         {
-            ChessPlayers[0] = new ChessPlayer(Team.White, chessBoard);
-            ChessPlayers[0].CanRightSideCastle = InitialPieceArrangementData.canWhiteCastleKingSide;
-            ChessPlayers[0].CanLeftSideCastle = InitialPieceArrangementData.canWhiteCastleQueenSide;
-            
-            ChessPlayers[1] = new ChessPlayer(Team.Black, chessBoard);
-            ChessPlayers[1].CanRightSideCastle = InitialPieceArrangementData.canBlackCastleKingSide;
-            ChessPlayers[1].CanLeftSideCastle = InitialPieceArrangementData.canBlackCastleQueenSide;
-            
-            for(int i = 0; i < 2; i++)
+            for (int i = 0; i < 2; i++)
+            {
+                ChessPlayers[i] = _playerFactory.Create(chessBoard, (Team) i, InitialPieceArrangementData, 
+                    _networkService.LocalPlayer.MatchTimeLimitInSeconds);
                 ChessPlayers[i].Initialize();
+            }
+            
         }
 
+        public void GameOver()
+        {
+            Debug.LogError("Game over");
+        }
+        
         public PieceArrangementData AssembleCurrentGameData()
         {
             PieceArrangementData pieceArrangementData = new PieceArrangementData();
@@ -101,6 +120,40 @@ namespace SteampunkChess
             pieceArrangementData.canWhiteCastleKingSide = ChessPlayers[(int) Team.White].CanRightSideCastle;
             pieceArrangementData.canWhiteCastleQueenSide = ChessPlayers[(int) Team.White].CanLeftSideCastle;
             return pieceArrangementData;
+        }
+    }
+
+    public class TimerFactory
+    {
+        private readonly IInstantiator _instantiator;
+
+        public TimerFactory(IInstantiator instantiator)
+        {
+            _instantiator = instantiator;
+        }
+        public GameTimer Create()
+        {
+            var playerTimer = _instantiator.Instantiate<GameTimer>();
+            return playerTimer;
+        }
+    }
+
+    public class PlayerFactory
+    {
+        private readonly IInstantiator _instantiator;
+
+        public PlayerFactory(IInstantiator instantiator)
+        {
+            _instantiator = instantiator;
+        }
+        public ChessPlayer Create(ChessBoard chessBoard, Team team, PieceArrangementData data, float matchTIme)
+        {
+            ChessPlayer player = new ChessPlayer(team, chessBoard, matchTIme)
+            {
+                CanRightSideCastle = team == Team.White ? data.canWhiteCastleKingSide : data.canBlackCastleKingSide,
+                CanLeftSideCastle = team == Team.White ? data.canWhiteCastleQueenSide : data.canBlackCastleQueenSide
+            };
+            return player;
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using Photon.Pun;
-using Photon.Realtime;
-using SteampunkChess.NetworkService;
-using UnityEngine;
+﻿using SteampunkChess.NetworkService;
 
 namespace SteampunkChess
 {
@@ -9,14 +6,9 @@ namespace SteampunkChess
     {
         public string RoomName;
         public string Password;
-        public string Time;
+        public int TimeLimitInSeconds;
     }
     
-    [CreateAssetMenu(fileName = "PlayerDataSO", menuName = "ScriptableObjects/PlayerDataSO")]
-    public class PlayerDataSO : ScriptableObject
-    {
-        public int team;
-    }
     public class Lobby : IInitializable
     {
         private readonly RoomListingMenu _roomListingMenu;
@@ -32,13 +24,12 @@ namespace SteampunkChess
         {
             _networkService.AutomaticallySyncScene = true;
             _networkService.LobbyCallbacksDispatcher.OnRoomListUpdateEvent += _roomListingMenu.UpdateRoomListing;
+            //_networkService.LobbyCallbacksDispatcher.OnCreateRoom
             _networkService.JoinLobby();
         }
 
-        public void CreateRoom(RoomData roomData)
+        public void OnCreateRoom()
         {
-            _networkService.CreateRoom(roomData.RoomName, roomData.Password, roomData.Time);
-            
             //loading and waiting for opponent
         }
 

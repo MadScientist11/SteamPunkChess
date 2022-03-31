@@ -7,16 +7,20 @@ namespace SteampunkChess
     {
         public Team Team { get; }
         private readonly ChessBoard _board;
+        
         public List<ChessPiece> ActivePieces { get; }
 
         public bool CanLeftSideCastle { get; set; }
         public bool CanRightSideCastle { get; set; }
 
-        public ChessPlayer(Team team, ChessBoard board)
+        public float PlayerRemainingTime { get; set; }
+
+        public ChessPlayer(Team team, ChessBoard board, float matchTime)
         {
             ActivePieces = new List<ChessPiece>(16);
-            _board = board;
             Team = team;
+            _board = board;
+            PlayerRemainingTime = matchTime;
         }
 
         public void Initialize()

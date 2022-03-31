@@ -7,7 +7,6 @@ namespace SteampunkChess
 {
     public class RoomListingMenu : MonoBehaviour
     {
-        [SerializeField] private GameObject _roomListingEntryPrefab;
         [SerializeField] private Transform _roomMenuContent;
     
         private readonly Dictionary<string, RoomListingEntry> _cachedRoomListEntries = new Dictionary<string, RoomListingEntry>();
@@ -18,8 +17,7 @@ namespace SteampunkChess
         {
             _roomListingEntryFactory = roomListingEntryFactory;
         }
-
-       
+        
         public void UpdateRoomListing(List<RoomInfo> roomList)
         {
             for(int i=0; i<roomList.Count; i++)
