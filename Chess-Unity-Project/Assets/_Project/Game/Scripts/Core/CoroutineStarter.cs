@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ScpQuizUltimate
+namespace SteampunkChess
 {
     public class CoroutineStarter : MonoBehaviour
     {

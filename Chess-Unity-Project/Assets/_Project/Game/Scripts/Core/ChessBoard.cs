@@ -262,7 +262,9 @@ namespace SteampunkChess
                 await move.Process();
 
                 if (IsCheckmated())
-                    Debug.Log("Game Over");
+                {
+                    _chessGame.GameOver();
+                }
                 
                 ActivePiece = null;
                 _chessGame.ChangeActiveTeam();

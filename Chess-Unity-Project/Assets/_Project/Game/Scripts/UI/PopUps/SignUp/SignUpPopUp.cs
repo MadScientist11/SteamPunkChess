@@ -22,9 +22,10 @@ namespace SteampunkChess.PopUps
         private IPopUpService _popUpService;
         private ICloudService _cloudService;
 
-        private string _emailPattern = @"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
-                                   + "@"
-                                   + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))\z";
+        private const string EmailPattern = 
+            @"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*" + 
+            "@" + 
+            @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))\z";
 
         [Inject]
         private void Construct(IPopUpService popUpService, ICloudService cloudService)
@@ -42,7 +43,7 @@ namespace SteampunkChess.PopUps
                 return;
             }
 
-            if(!Regex.IsMatch(_emailInputField.text, _emailPattern))
+            if(!Regex.IsMatch(_emailInputField.text, EmailPattern))
             {
                 Logger.Debug("Invalid email");
                 return;

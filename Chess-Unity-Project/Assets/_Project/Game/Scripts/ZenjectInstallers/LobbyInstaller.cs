@@ -7,6 +7,7 @@ namespace SteampunkChess
     {
         [SerializeField] private RoomListingMenu _roomListingMenu;
         [SerializeField] private RoomListingEntry _roomListingEntryPrefab;
+        [SerializeField] private LobbyUI _lobbyUI;
         
         public override void InstallBindings()
         {
@@ -14,6 +15,10 @@ namespace SteampunkChess
             BindLobby();
             BindRoomListingEntryPrefab();
             BindRoomListingFactory();
+            Container
+                .Bind<LobbyUI>()
+                .FromInstance(_lobbyUI)
+                .AsSingle();
         }
 
         private void BindRoomListingFactory()

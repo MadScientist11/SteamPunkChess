@@ -20,7 +20,7 @@ namespace SteampunkChess
         private INetworkService _networkService;
         private IPopUpService _popUpService;
         
-        private Team _localPlayerTeam = Team.Random;
+        private int _playerTeam;
         private int _matchTimeLimitInSeconds;
         
 
@@ -35,15 +35,16 @@ namespace SteampunkChess
         {
             base.Start();
             ChangeRoomTime();
+            ChangeLocalPlayerTeam((int) Team.Random);
         }
 
         public void ChangeLocalPlayerTeam(int team)
         {
-            _localPlayerTeam = (Team) team switch
+            _playerTeam = (Team) team switch
             {
-                Team.Random when _random.NextDouble() >= 0.5 => Team.White,
-                Team.Random => Team.Black,
-                _ => (Team) team
+                Team.Random when _random.NextDouble() >= 0.5 => 0,
+                Team.Random => 1,
+                _ => team
             };
         }
 
@@ -68,8 +69,7 @@ namespace SteampunkChess
                 Password = _passwordInputField.text,
                 TimeLimitInSeconds = _matchTimeLimitInSeconds,
             };
-            _networkService.CreateRoom(roomData.RoomName, roomData.Password, roomData.TimeLimitInSeconds);
-            _networkService.LocalPlayer.PlayerTeam = (int) _localPlayerTeam;
+            _networkService.CreateRoom(roomData.RoomName, roomData.TimeLimitInSeconds, _playerTeam, roomData.Password);
             _popUpService.HidePopUp(GameConstants.PopUps.RoomCreationWindow, HideType.HideDestroyAndRelease);
         }
         

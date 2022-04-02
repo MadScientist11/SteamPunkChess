@@ -20,6 +20,9 @@ namespace SteampunkChess
             BindNetworkService();
             BindInstallerInterfaces();
             BindServiceContainer();
+            Container
+                .Bind<PlayerData>()
+                .AsSingle();
         }
         public void Initialize()
         {

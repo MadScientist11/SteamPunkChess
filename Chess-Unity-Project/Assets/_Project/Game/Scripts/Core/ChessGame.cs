@@ -1,4 +1,5 @@
 using SteampunkChess.NetworkService;
+using SteampunkChess.PopUpService;
 using UnityEngine;
 using Zenject;
 
@@ -10,9 +11,9 @@ namespace SteampunkChess
         private readonly IBoardFactory _boardFactory;
         private readonly INetworkService _networkService;
         private readonly GameCameraController _gameCameraController;
-        
         private readonly PlayerFactory _playerFactory;
         private readonly TimerFactory _timerFactory;
+
         public ChessPlayer ActivePlayer { get; private set; }
         
         public ChessPlayer[] ChessPlayers { get; }
@@ -54,6 +55,7 @@ namespace SteampunkChess
             _timer = _timerFactory.Create();
             _timer.InitializeTimer(ChessPlayers[0],ChessPlayers[1], GameOver);
             
+            
             WhoseTurn = (Team) InitialPieceArrangementData.whoseTurn;
             ActivePlayer = ChessPlayers[(int) WhoseTurn];
             _localPlayer = GetLocalPlayer();
@@ -61,9 +63,11 @@ namespace SteampunkChess
             _gameCameraController.Initialize(_localPlayer.Team);
             
             _timer.Start();
+
             
-           
         }
+
+       
         
         private ChessPlayer GetLocalPlayer()
         {
@@ -104,6 +108,7 @@ namespace SteampunkChess
 
         public void GameOver()
         {
+            _timer.Stop();
             Debug.LogError("Game over");
         }
         

@@ -13,6 +13,7 @@ namespace SteampunkChess
         [SerializeField] private TMP_InputField _passwordInputField;
         
         private string _roomPassword;
+        private string _roomName;
         private INetworkService _networkService;
         private IPopUpService _popUpService;
 
@@ -26,14 +27,15 @@ namespace SteampunkChess
         public override void Show(params object[] data)
         {
             base.Show(data);
-            _roomPassword = (string)data[0];
+            _roomName = (string)data[0];
+            _roomPassword = (string)data[1];
         }
 
         public void JoinRoom()
         {
             if (_passwordInputField.text == _roomPassword)
             {
-                _networkService.JoinRoom();
+                _networkService.JoinRoom(_roomName);
             }
             else
             {

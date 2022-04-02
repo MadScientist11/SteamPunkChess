@@ -14,10 +14,14 @@ namespace SteampunkChess.NetworkService
     public class PhotonServiceSO : ScriptableObject, INetworkService, IConnectionCallbacks
     {
         public string InitializationMessage => "Connecting to the server...";
-        
+
         private LobbyCallbacksDispatcher _lobbyCallbacksDispatcher;
         private RoomCallbacksDispatcher _roomCallbacksDispatcher;
         private PhotonRPCSender _photonRPCSender;
+        private PlayerData _playerData;
+        private const int GameSceneIndex = 1;
+
+        public event Action<(string playerName, string playerScore)[]> OnReadyToStartGame;
 
         public PhotonRPCSender PhotonRPCSender
         {
@@ -31,7 +35,6 @@ namespace SteampunkChess.NetworkService
 
                 return _photonRPCSender;
             }
-           
         }
 
         public LobbyCallbacksDispatcher LobbyCallbacksDispatcher
@@ -59,8 +62,8 @@ namespace SteampunkChess.NetworkService
                         .AddComponent<RoomCallbacksDispatcher>();
                     DontDestroyOnLoad(_roomCallbacksDispatcher);
                 }
-                
-                if(!_roomCallbacksDispatcher.gameObject.activeSelf)
+
+                if (!_roomCallbacksDispatcher.gameObject.activeSelf)
                     _roomCallbacksDispatcher.gameObject.SetActive(true);
 
                 return _roomCallbacksDispatcher;
@@ -68,13 +71,13 @@ namespace SteampunkChess.NetworkService
         }
 
         public bool OfflineMode => PhotonNetwork.OfflineMode;
-        
+
 
         public bool AutomaticallySyncScene
         {
             set => PhotonNetwork.AutomaticallySyncScene = value;
         }
-        
+
         public class NetworkPlayer
         {
             public string PlayerName
@@ -89,7 +92,7 @@ namespace SteampunkChess.NetworkService
                 {
                     if (!PhotonNetwork.InRoom)
                         throw new Exception("Cannot address PlayerTeam property while not in a room");
-                    
+
                     return (int) PhotonNetwork.LocalPlayer.CustomProperties["Team"];
                 }
                 set
@@ -108,34 +111,51 @@ namespace SteampunkChess.NetworkService
                 {
                     if (!PhotonNetwork.InRoom)
                         throw new Exception("Cannot address MatchTimeLimit property while not in a room");
-                    
+
                     return (int) PhotonNetwork.CurrentRoom.CustomProperties["T"];
                 }
             }
 
+            public bool IsMasterClient => PhotonNetwork.IsMasterClient;
+
+            public int PlayerScore
+            {
+                get
+                {
+                    return (int) PhotonNetwork.LocalPlayer.CustomProperties["S"];
+                }
+                set
+                {
+                    Hashtable properties = new Hashtable()
+                    {
+                        ["S"] = value
+                    };
+                    PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
+                }
+            }
         }
 
         public NetworkPlayer LocalPlayer { get; private set; }
 
         [Inject]
-        private void Construct(ServiceContainer serviceContainer)
+        private void Construct(ServiceContainer serviceContainer, PlayerData playerData)
         {
+            _playerData = playerData;
             serviceContainer.ServiceList.Add(this);
         }
 
         public async Task Initialize()
         {
             PhotonNetwork.AddCallbackTarget(this);
-            
+
             PhotonNetwork.ConnectUsingSettings();
             LocalPlayer = new NetworkPlayer();
-
-            if (OfflineMode)
+            
+            _playerData.OnPlayerDataChanged += _playerData =>
             {
-                Logger.DebugError("Cannot connect, starting in offline mode, try restart the game");
-                return;
-            }
-
+                LocalPlayer.PlayerName = _playerData.PlayerName;
+                LocalPlayer.PlayerScore = _playerData.PlayerScore;
+            };
             
             await Task.Delay(000);
         }
@@ -152,27 +172,18 @@ namespace SteampunkChess.NetworkService
                 PhotonNetwork.JoinRandomOrCreateRoom();
                 return;
             }
-            
-            LocalPlayer.PlayerTeam = 1;
-            
+
+
             PhotonNetwork.JoinRoom(roomName);
         }
 
-        public void CreateRoom(string roomName, string password = null, int timeLimitInSeconds = -1)
+        public void CreateRoom(string roomName, int timeLimitInSeconds, int playerTeam, string password = null)
         {
-            RoomCallbacksDispatcher.OnCreatedRoomEvent += () =>
-            {
-                //Hashtable roomProperties = new Hashtable();
-                //roomProperties["P"] = password;
-                //roomProperties["T"] = matchTime;
-                //PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
-                //PhotonNetwork
-            };
+            LocalPlayer.PlayerTeam = playerTeam;
 
-            LocalPlayer.PlayerTeam = 0;
+            RoomCallbacksDispatcher.OnPlayerEnteredRoomEvent += SetEnteredPlayerTeamAndCloseGame;
             
-            RoomCallbacksDispatcher.OnPlayerEnteredRoomEvent += TryLoadGame;
-            
+
             RoomOptions roomOptions = new RoomOptions()
             {
                 MaxPlayers = 2,
@@ -185,24 +196,39 @@ namespace SteampunkChess.NetworkService
             };
 
             PhotonNetwork.CreateRoom(roomName, roomOptions, TypedLobby.Default);
-            
-            void TryLoadGame(Player newPlayer)
+
+            void SetEnteredPlayerTeamAndCloseGame(Player newPlayer)
             {
+                Hashtable teamProperty = new Hashtable()
+                {
+                    ["Team"] = LocalPlayer.PlayerTeam == 0 ? 1 : 0
+                };
+                newPlayer.SetCustomProperties(teamProperty);
+
+
                 if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
                 {
                     PhotonNetwork.CurrentRoom.IsOpen = false;
-                    Logger.DebugError("Load chess");
-                    PhotonNetwork.LoadLevel(1);
                 }
             }
+
+            
+        }
+
+        public void LoadGame()
+        {
+            if (PhotonNetwork.IsMasterClient)
+                PhotonNetwork.LoadLevel(GameSceneIndex);
         }
 
         private void OnDestroy()
         {
             PhotonNetwork.RemoveCallbackTarget(this);
+            
+
         }
 
-      
+
         #region ConnectionCallbacks
 
         public void OnConnected()

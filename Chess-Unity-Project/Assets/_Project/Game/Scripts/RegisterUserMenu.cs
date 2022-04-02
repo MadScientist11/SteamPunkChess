@@ -11,27 +11,33 @@ namespace SteampunkChess
         [SerializeField] private GameObject _mainMenu;
         
         private IPopUpService _popUpService;
-        private INetworkService _networkService;
-        private readonly System.Random _random = new System.Random();
         
+        private readonly System.Random _random = new System.Random();
+        private PlayerData _playerData;
+        private INetworkService _networkService;
+
         [Inject]
-        private void Construct(IPopUpService popUpService, INetworkService networkService)
+        private void Construct(IPopUpService popUpService, PlayerData playerData, INetworkService networkService)
         {
             _networkService = networkService;
+            _playerData = playerData;
             _popUpService = popUpService;
         }
 
         public void ContinueAsGuest()
         {
             _popUpService.HideAll(HideType.HideDestroyAndRelease);
-            Prefs.Username = $"Guest{GenerateGuestIndex()}";
-            _networkService.LocalPlayer.PlayerName = Prefs.Username;
+            
+            int index = GenerateGuestIndex();
+            _playerData.PlayerName = $"Guest{index}";
+            _playerData.PlayerScore = 0;
             
             SwitchToMainMenu();
         }
 
         public void SwitchToMainMenu()
         {
+            Debug.LogError("Switch to menu");
             gameObject.SetActive(false);
             _mainMenu.SetActive(true);
         }

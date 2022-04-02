@@ -56,41 +56,38 @@ namespace SteampunkChess
                     promotion
                     );
             }
-                
-
-
-            if (moveHistory.Count > 0)
+            
+            if (moveHistory.Count <= 0) return;
+            
+            var lastMove = moveHistory[moveHistory.Count - 1];
+            if (pieceArrangement[lastMove.Destination.x, lastMove.Destination.y].ChessType == ChessPieceType.Pawn)
             {
-                var lastMove = moveHistory[moveHistory.Count - 1];
-                if (pieceArrangement[lastMove.Destination.x, lastMove.Destination.y].ChessType == ChessPieceType.Pawn)
+                if (Mathf.Abs(lastMove.Destination.y - lastMove.Start.y) == 2)
                 {
-                    if (Mathf.Abs(lastMove.Destination.y - lastMove.Start.y) == 2)
+                    if (!IsFromSameTeam(pieceArrangement[lastMove.Destination.x, lastMove.Destination.y]))
                     {
-                        if (!IsFromSameTeam(pieceArrangement[lastMove.Destination.x, lastMove.Destination.y]))
+                        if (lastMove.Destination.y == CurrentY)
                         {
-                            if (lastMove.Destination.y == CurrentY)
-                            {
                                 
-                                if (lastMove.Destination.x == CurrentX - 1)
-                                {
-                                    var enPassant = new EnPassant(moveHistory, pieceArrangement);
-                                    var movement = new Movement(new Vector2Int(CurrentX, CurrentY),
-                                        new Vector2Int(CurrentX - 1, CurrentY + direction), 
-                                        pieceArrangement, 
-                                        enPassant);
+                            if (lastMove.Destination.x == CurrentX - 1)
+                            {
+                                var enPassant = new EnPassant(moveHistory, pieceArrangement);
+                                var movement = new Movement(new Vector2Int(CurrentX, CurrentY),
+                                    new Vector2Int(CurrentX - 1, CurrentY + direction), 
+                                    pieceArrangement, 
+                                    enPassant);
                                    
-                                    availableMoves.Add(movement);
-                                }
-                                if (lastMove.Destination.x == CurrentX + 1)
-                                {
-                                    var enPassant = new EnPassant(moveHistory, pieceArrangement);
-                                    Movement movement = new Movement(new Vector2Int(CurrentX, CurrentY),
-                                        new Vector2Int(CurrentX + 1, CurrentY + direction), 
-                                        pieceArrangement, 
-                                        enPassant);
+                                availableMoves.Add(movement);
+                            }
+                            if (lastMove.Destination.x == CurrentX + 1)
+                            {
+                                var enPassant = new EnPassant(moveHistory, pieceArrangement);
+                                Movement movement = new Movement(new Vector2Int(CurrentX, CurrentY),
+                                    new Vector2Int(CurrentX + 1, CurrentY + direction), 
+                                    pieceArrangement, 
+                                    enPassant);
                                     
-                                    availableMoves.Add(movement);
-                                }
+                                availableMoves.Add(movement);
                             }
                         }
                     }

@@ -12,6 +12,10 @@ namespace SteampunkChess.NetworkService
         public event Action<Player> OnPlayerEnteredRoomEvent;
         public event Action OnCreatedRoomEvent;
         public event Action OnJoinedRoomEvent;
+        
+        public event Action<Player, Hashtable> OnPlayerPropertiesUpdateEvent;
+        
+        
 
         private void OnEnable()
         {
@@ -46,6 +50,7 @@ namespace SteampunkChess.NetworkService
 
         public void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
+            OnPlayerPropertiesUpdateEvent?.Invoke(targetPlayer, changedProps);
         }
 
         public void OnMasterClientSwitched(Player newMasterClient)

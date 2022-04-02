@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections;
-using ScpQuizUltimate;
 using TMPro;
 using UnityEngine;
-using Zenject;
 
 namespace SteampunkChess
 {
     public class GameTimer 
     {
+        private const int NoLimitInTime = 0;
         private readonly TextMeshProUGUI _whiteTimerText;
         private readonly TextMeshProUGUI _blackTimerText;
         
@@ -26,18 +25,33 @@ namespace SteampunkChess
             _blackTimerText = blackTimerText.Text;
         }
         
-        public void InitializeTimer(ChessPlayer whitePlayer, ChessPlayer blackPlayer, Action onTimerEnd)
+        public void InitializeTimer(ChessPlayer whitePlayer, ChessPlayer blackPlayer, Action onTimeEnds)
         {
-            _onTimerEnd = onTimerEnd;
+            _onTimerEnd = onTimeEnds;
             _whitePlayer = whitePlayer;
             _blackPlayer = blackPlayer;
             _currentPlayer = whitePlayer;
-            CoroutineStarter.Instance.StartCoroutine(Tick());
+            
+            if (_currentPlayer.PlayerRemainingTime == NoLimitInTime)
+            {
+                _whiteTimerText.text = "∞";
+                _blackTimerText.text = "∞";
+            }
+            else
+            {
+                CoroutineStarter.Instance.StartCoroutine(Tick());
+            }
         }
 
         public void Start()
         {
             _timerIsRunning = true;
+        }
+
+        public void Stop()
+        {
+            _timerIsRunning = false;
+            CoroutineStarter.Instance.StopCoroutine(Tick());
         }
 
         public void SwitchPlayer()
@@ -71,14 +85,7 @@ namespace SteampunkChess
         {
             TimeSpan fromSeconds = TimeSpan.FromSeconds(time);
             Logger.DebugError("Display time");
-            if (time > 10)
-            {
-                CurrentText.text = $"{fromSeconds.Minutes:00}:{fromSeconds.Seconds:00}";
-            }
-            else
-            {
-                CurrentText.text = fromSeconds.ToString(@"mm\:ss\:fff");
-            }
+            CurrentText.text = time > 60 ? $"{fromSeconds.Minutes:00}:{fromSeconds.Seconds:00}" : fromSeconds.ToString(@"mm\:ss\:fff");
         }
 
       

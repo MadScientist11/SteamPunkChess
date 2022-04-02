@@ -52,7 +52,7 @@ namespace SteampunkChess
         {
             if (IsRoomUnderPassword)
             {
-                _popUpService.ShowPopUp(GameConstants.PopUps.RoomPasswordWindow, _roomPassword);
+                _popUpService.ShowPopUp(GameConstants.PopUps.RoomPasswordWindow,RoomInfo.Name, _roomPassword);
                 return;
             }
             _networkService.JoinRoom(RoomInfo.Name);
