@@ -28,9 +28,9 @@ namespace SteampunkChess
         
         public void Initialize()
         {
-            _roomPassword = (string)RoomInfo.CustomProperties["P"];
+            _roomPassword = (string)RoomInfo.CustomProperties[GameConstants.CustomProperties.RoomPassword];
             
-            int matchTimeLimitInSeconds = (int)RoomInfo.CustomProperties["T"];
+            int matchTimeLimitInSeconds = (int) RoomInfo.CustomProperties[GameConstants.CustomProperties.MatchTime];
             
             _roomNameText.text = RoomInfo.Name;
             _matchTimeText.text = ParseMatchTimeLimit(matchTimeLimitInSeconds);

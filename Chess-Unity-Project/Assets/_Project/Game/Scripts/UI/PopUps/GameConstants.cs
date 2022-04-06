@@ -13,6 +13,7 @@ namespace SteampunkChess
             public const string InfoToast = "InfoToast";
             public const string RoomCreationWindow = "WindowRoomCreation";
             public const string PlayersOverviewWindow = "PlayersOverviewWindow";
+            public const string WinOrLoseWindow = "WindowWinOrLoss";
         }
     }
 }

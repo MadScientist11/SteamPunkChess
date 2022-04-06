@@ -60,15 +60,30 @@ namespace SteampunkChess
 
             return pieceArrangement;
         }
+
+        public bool Eq(PieceArrangement pA)
+        {
+            for (int x = 0; x < _chessBoardInfoSO.boardSizeX; x++)
+            {
+                for (int y = 0; y < _chessBoardInfoSO.boardSizeY; y++)
+                {
+                    if (pA[x, y] != this[x, y])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
         
         public void Initialize()
         {
-            _chessPieces = SpawnAllPieces(_gameFen, (_chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY), _piecesPrefabsSO);
+            _chessPieces = SpawnAllPieces(_gameFen, (_chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY));
             PositionPieces();
-            
         }
         
-        private ChessPiece[,] SpawnAllPieces(string gameFen, (int boardSizeX, int boardSizeY) chessBoardSize, PiecesPrefabsSO piecesPrefabsSO)
+        private ChessPiece[,] SpawnAllPieces(string gameFen, (int boardSizeX, int boardSizeY) chessBoardSize)
         {
             PieceArrangementData data = FenUtility.GameDataFromStringFen(gameFen);
             ChessPiece[,] chessPieces = new ChessPiece[chessBoardSize.boardSizeX, chessBoardSize.boardSizeY];

@@ -9,6 +9,7 @@ namespace SteampunkChess
         [SerializeField] private GameCameraController _gameCameraController;
         [SerializeField] private TimerTextW _timerTextW;
         [SerializeField] private TimerTextB _timerTextB;
+        [SerializeField] private MoveListingData _moveListingData;
         public override void InstallBindings()
         {
             BindGameData();
@@ -35,7 +36,11 @@ namespace SteampunkChess
                 .Bind<PlayerFactory>()
                 .AsSingle();
 
-            
+            Container
+                .Bind<MoveListingData>()
+                .FromInstance(_moveListingData)
+                .AsSingle();
+
         }
 
         private void BindGameCameraController()

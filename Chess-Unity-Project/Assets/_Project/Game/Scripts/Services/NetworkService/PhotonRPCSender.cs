@@ -6,14 +6,13 @@ using UnityEngine;
 
 namespace SteampunkChess.NetworkService
 {
+   
     public class PhotonRPCSender : MonoBehaviour, IRPCSender, IOnEventCallback
     {
-        
         public event Action<Vector2> OnMoveToEvent;
-        public byte OnMoveToCode = 2;
-        
         public event Action<Vector2> OnSelectAndShowAvailableMovesEvent;
-        public byte OnSelectAndShowAvailableMovesCode = 3;
+    
+        
 
 
         private void OnEnable()
@@ -26,26 +25,33 @@ namespace SteampunkChess.NetworkService
             PhotonNetwork.RemoveCallbackTarget(this);
             OnMoveToEvent = null;
             OnSelectAndShowAvailableMovesEvent = null;
+    
         }
 
         public void SendRPC(byte rpcCode, object[] content, ReceiverGroup receivers, SendOptions sendOptions)
         {
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = receivers }; // You would have to set the Receivers to All in order to receive this event on the local client as well
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = receivers }; 
             PhotonNetwork.RaiseEvent(rpcCode, content, raiseEventOptions, sendOptions);
         }
 
         public void OnEvent(EventData photonEvent)
         {
-            if (photonEvent.Code == OnMoveToCode)
+            switch (photonEvent.Code)
             {
-                object[] data = (object[]) photonEvent.CustomData;
-                OnMoveToEvent?.Invoke((Vector2)data[0]);
-            }
-            else if (photonEvent.Code == OnSelectAndShowAvailableMovesCode)
-            {
-                object[] data = (object[]) photonEvent.CustomData;
-                OnSelectAndShowAvailableMovesEvent?.Invoke((Vector2)data[0]);
+                case GameConstants.RPCMethodsByteCodes.OnMoveToCode:
+                {
+                    object[] data = (object[]) photonEvent.CustomData;
+                    OnMoveToEvent?.Invoke((Vector2)data[0]);
+                    break;
+                }
+                case GameConstants.RPCMethodsByteCodes.OnSelectAndShowAvailableMovesCode:
+                {
+                    object[] data = (object[]) photonEvent.CustomData;
+                    OnSelectAndShowAvailableMovesEvent?.Invoke((Vector2)data[0]);
+                    break;
+                }
             }
         }
     }
 }
+

@@ -17,7 +17,7 @@ namespace SteampunkChess
         private ChessPlayer _currentPlayer;
         private ChessPlayer _whitePlayer;
         private ChessPlayer _blackPlayer;
-        private Action _onTimerEnd;
+        private Action<Team> _onTimerEnd;
 
         public GameTimer(TimerTextW whiteTimerText, TimerTextB blackTimerText)
         {
@@ -25,7 +25,7 @@ namespace SteampunkChess
             _blackTimerText = blackTimerText.Text;
         }
         
-        public void InitializeTimer(ChessPlayer whitePlayer, ChessPlayer blackPlayer, Action onTimeEnds)
+        public void InitializeTimer(ChessPlayer whitePlayer, ChessPlayer blackPlayer, Action<Team> onTimeEnds)
         {
             _onTimerEnd = onTimeEnds;
             _whitePlayer = whitePlayer;
@@ -39,6 +39,8 @@ namespace SteampunkChess
             }
             else
             {
+                _whiteTimerText.text = ParseTime(_whitePlayer.PlayerRemainingTime);
+                _blackTimerText.text = ParseTime(_blackPlayer.PlayerRemainingTime);
                 CoroutineStarter.Instance.StartCoroutine(Tick());
             }
         }
@@ -68,24 +70,34 @@ namespace SteampunkChess
                     if (_currentPlayer.PlayerRemainingTime > 0)
                     {
                         _currentPlayer.PlayerRemainingTime -= Time.deltaTime;
-                        DisplayTime(_currentPlayer.PlayerRemainingTime);
+                        CurrentText.text = ParseTime(_currentPlayer.PlayerRemainingTime);
                     }
                     else
                     {
                         _currentPlayer.PlayerRemainingTime = 0;
                         _timerIsRunning = false;
-                        _onTimerEnd?.Invoke();
+                        _onTimerEnd?.Invoke(_currentPlayer.Team);
+                        Logger.DebugError("On Timer end invoke");
                     }
                 }
                 yield return null;
             }
         }
         
-        private void DisplayTime(float time)
+        private string ParseTime(float time)
         {
             TimeSpan fromSeconds = TimeSpan.FromSeconds(time);
             Logger.DebugError("Display time");
-            CurrentText.text = time > 60 ? $"{fromSeconds.Minutes:00}:{fromSeconds.Seconds:00}" : fromSeconds.ToString(@"mm\:ss\:fff");
+            if (time > 60)
+                return $"{fromSeconds.Minutes:00}:{fromSeconds.Seconds:00}";
+            else if (time < 60 && time > 15)
+            {
+                return fromSeconds.ToString(@"mm\:ss\:ff");
+            }
+            else
+            {
+                return fromSeconds.ToString(@"mm\:ss\:fff");
+            }
         }
 
       

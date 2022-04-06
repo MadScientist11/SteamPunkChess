@@ -8,6 +8,20 @@ using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;
 
+public class PlayerInfoDTO
+{
+    public PlayerInfoDTO(int playerID, string playerName, int playerScore)
+    {
+        PlayerID = playerID;
+        PlayerName = playerName;
+        PlayerScore = playerScore;
+    }
+
+    public int PlayerID { get; }
+    public string PlayerName { get; }
+    public int PlayerScore { get; }
+}
+
 namespace SteampunkChess.NetworkService
 {
     [CreateAssetMenu(fileName = "PhotonServiceSO", menuName = "Services/PhotonServiceSO")]
@@ -18,7 +32,7 @@ namespace SteampunkChess.NetworkService
         private LobbyCallbacksDispatcher _lobbyCallbacksDispatcher;
         private RoomCallbacksDispatcher _roomCallbacksDispatcher;
         private PhotonRPCSender _photonRPCSender;
-        private PlayerData _playerData;
+        private PlayFabPlayerData _playFabPlayerData;
         private const int GameSceneIndex = 1;
 
         public event Action<(string playerName, string playerScore)[]> OnReadyToStartGame;
@@ -80,6 +94,7 @@ namespace SteampunkChess.NetworkService
 
         public class NetworkPlayer
         {
+            public int PlayerID => PhotonNetwork.LocalPlayer.ActorNumber;
             public string PlayerName
             {
                 get => PhotonNetwork.NickName;
@@ -93,13 +108,13 @@ namespace SteampunkChess.NetworkService
                     if (!PhotonNetwork.InRoom)
                         throw new Exception("Cannot address PlayerTeam property while not in a room");
 
-                    return (int) PhotonNetwork.LocalPlayer.CustomProperties["Team"];
+                    return (int) PhotonNetwork.LocalPlayer.CustomProperties[GameConstants.CustomProperties.Team];
                 }
                 set
                 {
                     Hashtable properties = new Hashtable()
                     {
-                        ["Team"] = value
+                        [GameConstants.CustomProperties.Team] = value
                     };
                     PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
                 }
@@ -112,7 +127,7 @@ namespace SteampunkChess.NetworkService
                     if (!PhotonNetwork.InRoom)
                         throw new Exception("Cannot address MatchTimeLimit property while not in a room");
 
-                    return (int) PhotonNetwork.CurrentRoom.CustomProperties["T"];
+                    return (int) PhotonNetwork.CurrentRoom.CustomProperties[GameConstants.CustomProperties.MatchTime];
                 }
             }
 
@@ -122,13 +137,13 @@ namespace SteampunkChess.NetworkService
             {
                 get
                 {
-                    return (int) PhotonNetwork.LocalPlayer.CustomProperties["S"];
+                    return (int) PhotonNetwork.LocalPlayer.CustomProperties[GameConstants.CustomProperties.Score];
                 }
                 set
                 {
                     Hashtable properties = new Hashtable()
                     {
-                        ["S"] = value
+                        [GameConstants.CustomProperties.Score] = value
                     };
                     PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
                 }
@@ -137,10 +152,32 @@ namespace SteampunkChess.NetworkService
 
         public NetworkPlayer LocalPlayer { get; private set; }
 
-        [Inject]
-        private void Construct(ServiceContainer serviceContainer, PlayerData playerData)
+        public List<PlayerInfoDTO>  PlayersInfo
         {
-            _playerData = playerData;
+            get
+            {
+                if (_playersInfo != null) return _playersInfo;
+                
+                _playersInfo = new List<PlayerInfoDTO>();
+            
+                foreach (var player in PhotonNetwork.PlayerList)
+                {
+                    int score = (int) player.CustomProperties[GameConstants.CustomProperties.Score];
+                    _playersInfo.Add(
+                        new PlayerInfoDTO(player.ActorNumber, player.NickName, score)
+                    );
+                }
+
+                return _playersInfo;
+            }
+        }
+
+        private List<PlayerInfoDTO> _playersInfo;
+
+        [Inject]
+        private void Construct(ServiceContainer serviceContainer, PlayFabPlayerData playFabPlayerData)
+        {
+            _playFabPlayerData = playFabPlayerData;
             serviceContainer.ServiceList.Add(this);
         }
 
@@ -151,7 +188,7 @@ namespace SteampunkChess.NetworkService
             PhotonNetwork.ConnectUsingSettings();
             LocalPlayer = new NetworkPlayer();
             
-            _playerData.OnPlayerDataChanged += _playerData =>
+            _playFabPlayerData.OnPlayerDataChanged += _playerData =>
             {
                 LocalPlayer.PlayerName = _playerData.PlayerName;
                 LocalPlayer.PlayerScore = _playerData.PlayerScore;
@@ -189,10 +226,10 @@ namespace SteampunkChess.NetworkService
                 MaxPlayers = 2,
                 CustomRoomProperties = new Hashtable()
                 {
-                    ["P"] = password,
-                    ["T"] = timeLimitInSeconds,
+                    [GameConstants.CustomProperties.RoomPassword] = password,
+                    [GameConstants.CustomProperties.MatchTime] = timeLimitInSeconds,
                 },
-                CustomRoomPropertiesForLobby = new[] {"P", "T"},
+                CustomRoomPropertiesForLobby = new[] {GameConstants.CustomProperties.RoomPassword, GameConstants.CustomProperties.MatchTime},
             };
 
             PhotonNetwork.CreateRoom(roomName, roomOptions, TypedLobby.Default);
@@ -201,7 +238,7 @@ namespace SteampunkChess.NetworkService
             {
                 Hashtable teamProperty = new Hashtable()
                 {
-                    ["Team"] = LocalPlayer.PlayerTeam == 0 ? 1 : 0
+                    [GameConstants.CustomProperties.Team] = LocalPlayer.PlayerTeam == 0 ? 1 : 0
                 };
                 newPlayer.SetCustomProperties(teamProperty);
 

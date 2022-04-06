@@ -57,7 +57,7 @@ namespace SteampunkChess.CloudService
         private Action _onSuccess;
         private Action<string> _onError;
         
-        private PlayerData _playerData;
+        private PlayFabPlayerData _playFabPlayerData;
 
         public bool IsLoggedIn =>  PlayFabClientAPI.IsClientLoggedIn();
         public string InitializationMessage => "Initializing cloud service";
@@ -69,9 +69,9 @@ namespace SteampunkChess.CloudService
         }
         
         [Inject]
-        private void Construct(ServiceContainer serviceContainer, PlayerData playerData)
+        private void Construct(ServiceContainer serviceContainer, PlayFabPlayerData playFabPlayerData)
         {
-            _playerData = playerData;
+            _playFabPlayerData = playFabPlayerData;
             serviceContainer.ServiceList.Add(this);
         }
 
@@ -159,7 +159,7 @@ namespace SteampunkChess.CloudService
 
         private void GetPlayerData(string username)
         {
-            _playerData.PlayerName = username;
+            _playFabPlayerData.PlayerName = username;
             PlayFabClientAPI.GetUserData(new GetUserDataRequest(), OnDataReceived, OnFailed);
         }
 
@@ -172,7 +172,7 @@ namespace SteampunkChess.CloudService
         {
             if (result.Data.TryGetValue(GameConstants.PlayerDataKeys.PlayerScoreKey, out var dataRecord))
             {
-                _playerData.PlayerScore = Convert.ToInt32(dataRecord.Value);
+                _playFabPlayerData.PlayerScore = Convert.ToInt32(dataRecord.Value);
             }
         }
 

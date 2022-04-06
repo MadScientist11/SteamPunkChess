@@ -9,7 +9,7 @@ namespace SteampunkChess
     {
         private readonly INetworkService _networkService;
 
-        public MultiplayerBoard(GameDataSO gameDataSO, INetworkService networkService) : base(gameDataSO)
+        public MultiplayerBoard(GameDataSO gameDataSO, MoveListingData moveListingData, INetworkService networkService) : base(gameDataSO, moveListingData)
         {
             _networkService = networkService;
             _networkService.PhotonRPCSender.OnMoveToEvent += RPC_MoveTo;
@@ -19,13 +19,13 @@ namespace SteampunkChess
         protected override void MoveTo(Vector2 coords)
         {
             object[] content = {coords};
-            _networkService.PhotonRPCSender.SendRPC(2, content, ReceiverGroup.All, SendOptions.SendReliable);
+            _networkService.PhotonRPCSender.SendRPC(GameConstants.RPCMethodsByteCodes.OnMoveToCode, content, ReceiverGroup.All, SendOptions.SendReliable);
         }
 
         protected override void SelectPieceAndShowAvailableMoves(Vector2 coords)
         {
             object[] content = {coords};
-            _networkService.PhotonRPCSender.SendRPC(3, content, ReceiverGroup.All, SendOptions.SendReliable);
+            _networkService.PhotonRPCSender.SendRPC(GameConstants.RPCMethodsByteCodes.OnSelectAndShowAvailableMovesCode, content, ReceiverGroup.All, SendOptions.SendReliable);
         }
         
         private void RPC_SelectPieceAndShowAvailableMoves(Vector2 coords)

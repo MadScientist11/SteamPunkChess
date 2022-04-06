@@ -51,19 +51,19 @@ namespace SteampunkChess
     {
         private readonly List<Movement> _moveHistory;
         private readonly List<MoveListingEntry> _moveListingEntries;
-        private MoveListingData _moveListingData;
-        private readonly GameObject _moveListingPrefab;
+        private readonly MoveListingData _moveListingData;
+        
 
-        public MoveListing(GameObject moveListingPrefab, List<Movement> moveHistory)
+        public MoveListing(MoveListingData moveListingData, List<Movement> moveHistory)
         {
             _moveHistory = moveHistory;
             _moveListingEntries = new List<MoveListingEntry>();
-            _moveListingPrefab = moveListingPrefab;
+            _moveListingData = moveListingData;
         }
 
         public void Initialize()
         {
-            _moveListingData = Object.Instantiate(_moveListingPrefab).GetComponent<MoveListingData>();
+            
         }
 
         public void UpdateMoveHistory(Movement move)
@@ -144,11 +144,11 @@ namespace SteampunkChess
         private bool _processingMove;
 
 
-        protected ChessBoard(GameDataSO gameDataSO)
+        protected ChessBoard(GameDataSO gameDataSO, MoveListingData moveListingData)
         {
             _chessBoardInfoSO = gameDataSO.chessBoardInfoSO;
             _moveHistory = new List<Movement>();
-            _moveListing = new MoveListing(gameDataSO.chessBoardInfoSO.moveListingPrefab, _moveHistory);
+            _moveListing = new MoveListing(moveListingData, _moveHistory);
             _tileSelection = new TileSelection(gameDataSO.tileSelectionSO);
             _tileSet = new TileSet(_chessBoardInfoSO);
             _pieceArrangement = new PieceArrangement(_gameFen, _chessBoardInfoSO, gameDataSO.piecesPrefabsSO);
@@ -263,7 +263,7 @@ namespace SteampunkChess
 
                 if (IsCheckmated())
                 {
-                    _chessGame.GameOver();
+                    _chessGame.EndOfGame(move.MovePiece.Team);
                 }
                 
                 ActivePiece = null;
@@ -297,8 +297,8 @@ namespace SteampunkChess
 
                 
                 PieceArrangement simulation = _pieceArrangement.DeepCopy();
-                List<ChessPiece> possibleAttackingPieces = new List<ChessPiece>();
-                possibleAttackingPieces = _chessGame.ChessPlayers[(int) attackingTeam].ActivePieces.Where(x => x != cp).ToList();
+                
+                var possibleAttackingPieces = _chessGame.ChessPlayers[(int) attackingTeam].ActivePieces;
                
 
                 // Simulate that move

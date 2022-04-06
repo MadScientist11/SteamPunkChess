@@ -41,17 +41,17 @@ namespace SteampunkChess
 
         public override void Show(params object[] data)
         {
-            var playerInfo = (List<(string playerName, string playerScore)>) data[0];
+            var playerInfo = (List<PlayerInfoDTO>) data[0];
             InitializePlayersUI(playerInfo);
             _popUpGO.SetActive(true);
         }
 
-        private void InitializePlayersUI(List<(string playerName, string playerScore)> playerInfo)
+        private void InitializePlayersUI(List<PlayerInfoDTO> playerInfo)
         {
             for (int i = 0; i < 2; i++)
             {
-                _playersNameTexts[i].text = playerInfo[i].playerName;
-                _playersScoreTexts[i].text = playerInfo[i].playerScore;
+                _playersNameTexts[i].text = playerInfo[i].PlayerName;
+                _playersScoreTexts[i].text = playerInfo[i].PlayerScore.ToString();
             }
         }
 

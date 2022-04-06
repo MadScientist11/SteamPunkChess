@@ -49,6 +49,10 @@ MonoBehaviour:
     m_Address: PlayersOverviewWindow
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: a23d8d93ee585054ab28f5abcf961ccd
+    m_Address: WindowWinOrLoss
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9e45ba45cf167064f8d2632052821566, type: 2}
   m_SchemaSet:

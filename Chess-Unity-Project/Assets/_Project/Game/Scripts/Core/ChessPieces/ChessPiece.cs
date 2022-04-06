@@ -16,7 +16,8 @@ namespace SteampunkChess
 
 
         protected IObjectTweener Tweener;
-
+        
+        public static event Action<ChessPiece> OnDestroyPlayerPiece;
         protected ChessPiece()
         {
             if (this is Knight)
@@ -55,6 +56,7 @@ namespace SteampunkChess
         public void Dispose()
         {
             Object.Destroy(PieceTransform.gameObject);
+            OnDestroyPlayerPiece?.Invoke(this);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace SteampunkChess
             _networkService.JoinLobby();
         }
         
-        private void ShowStartingGamePopUp(List<(string playerName, string playerScore)> playersInfo)
+        private void ShowStartingGamePopUp(List<PlayerInfoDTO> playersInfo)
         {
             Logger.DebugError("SHow popup!");
             _lobbyUI.Disable();
@@ -47,20 +47,9 @@ namespace SteampunkChess
         
         private void TryStartGame(Player newPlayer, Hashtable props)
         {
-            Logger.DebugError("Props update");
-            var playersInfo =
-                new List<(string playerName, string playerScore)>();
-            
-            foreach (var player in PhotonNetwork.PlayerList)
+            if (!newPlayer.IsMasterClient && props[GameConstants.CustomProperties.Team] != null)
             {
-                playersInfo.Add((player.NickName,((int) player.CustomProperties["S"]).ToString()));
-            }
-            
-            if (!newPlayer.IsMasterClient && props["Team"] != null)
-            {
-                Logger.DebugError("Props update2");
-                
-                ShowStartingGamePopUp(playersInfo);
+                ShowStartingGamePopUp(_networkService.PlayersInfo);
             }
         }
 

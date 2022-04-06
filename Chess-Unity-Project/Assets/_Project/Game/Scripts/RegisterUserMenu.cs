@@ -13,14 +13,14 @@ namespace SteampunkChess
         private IPopUpService _popUpService;
         
         private readonly System.Random _random = new System.Random();
-        private PlayerData _playerData;
+        private PlayFabPlayerData _playFabPlayerData;
         private INetworkService _networkService;
 
         [Inject]
-        private void Construct(IPopUpService popUpService, PlayerData playerData, INetworkService networkService)
+        private void Construct(IPopUpService popUpService, PlayFabPlayerData playFabPlayerData, INetworkService networkService)
         {
             _networkService = networkService;
-            _playerData = playerData;
+            _playFabPlayerData = playFabPlayerData;
             _popUpService = popUpService;
         }
 
@@ -29,8 +29,8 @@ namespace SteampunkChess
             _popUpService.HideAll(HideType.HideDestroyAndRelease);
             
             int index = GenerateGuestIndex();
-            _playerData.PlayerName = $"Guest{index}";
-            _playerData.PlayerScore = 0;
+            _playFabPlayerData.PlayerName = $"Guest{index}";
+            _playFabPlayerData.PlayerScore = 0;
             
             SwitchToMainMenu();
         }

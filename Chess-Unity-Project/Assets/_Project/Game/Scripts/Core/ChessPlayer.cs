@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SteampunkChess
@@ -15,6 +16,8 @@ namespace SteampunkChess
 
         public float PlayerRemainingTime { get; set; }
 
+        
+
         public ChessPlayer(Team team, ChessBoard board, float matchTime)
         {
             ActivePieces = new List<ChessPiece>(16);
@@ -26,6 +29,7 @@ namespace SteampunkChess
         public void Initialize()
         {
             GetPlayerPieces();
+            ChessPiece.OnDestroyPlayerPiece += RemovePiece;
         }
 
         private void GetPlayerPieces()
@@ -44,8 +48,13 @@ namespace SteampunkChess
 
         public void RemovePiece(ChessPiece piece)
         {
+            Logger.DebugError($"Entry piece");
             if (ActivePieces.Contains(piece))
+            {
                 ActivePieces.Remove(piece);
+                Logger.DebugError($"Remove piece {piece.ChessType}");
+            }
+                
         }
 
         public IEnumerable<ChessPiece> GetPiecesOfType<T>() where T : ChessPiece

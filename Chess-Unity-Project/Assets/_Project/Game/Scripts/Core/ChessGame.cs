@@ -1,6 +1,10 @@
+using ExitGames.Client.Photon;
+using Photon.Realtime;
 using SteampunkChess.NetworkService;
+using SteampunkChess.PopUps;
 using SteampunkChess.PopUpService;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Zenject;
 
 namespace SteampunkChess
@@ -13,6 +17,7 @@ namespace SteampunkChess
         private readonly GameCameraController _gameCameraController;
         private readonly PlayerFactory _playerFactory;
         private readonly TimerFactory _timerFactory;
+        private readonly IPopUpService _popUpService;
 
         public ChessPlayer ActivePlayer { get; private set; }
         
@@ -31,7 +36,7 @@ namespace SteampunkChess
 
 
         public ChessGame(NotationString notationString, IBoardFactory boardFactory, INetworkService networkService, GameCameraController gameCameraController
-        , PlayerFactory playerFactory, TimerFactory timerFactory)
+        , PlayerFactory playerFactory, TimerFactory timerFactory, IPopUpService popUpService)
         {
             _notationString = notationString;
             _boardFactory = boardFactory;
@@ -39,7 +44,9 @@ namespace SteampunkChess
             _gameCameraController = gameCameraController;
             _playerFactory = playerFactory;
             _timerFactory = timerFactory;
+            _popUpService = popUpService;
             ChessPlayers = new ChessPlayer[2];
+            
         }
 
 
@@ -53,7 +60,7 @@ namespace SteampunkChess
             CreatePlayers(chessBoard);
             
             _timer = _timerFactory.Create();
-            _timer.InitializeTimer(ChessPlayers[0],ChessPlayers[1], GameOver);
+            _timer.InitializeTimer(ChessPlayers[0],ChessPlayers[1], EndOfGame);
             
             
             WhoseTurn = (Team) InitialPieceArrangementData.whoseTurn;
@@ -106,11 +113,21 @@ namespace SteampunkChess
             
         }
 
-        public void GameOver()
+        public void EndOfGame(Team winTeam)
         {
             _timer.Stop();
-            Debug.LogError("Game over");
+            Debug.LogError(_localPlayer.Team ==  winTeam ? "You win" : "Game over");
+            if (_localPlayer.Team == winTeam)
+            {
+                _popUpService.ShowPopUp(GameConstants.PopUps.WinOrLoseWindow, MatchResult.Win);
+            }
+            else
+            {
+                _popUpService.ShowPopUp(GameConstants.PopUps.WinOrLoseWindow, MatchResult.Lose);
+            }
         }
+
+       
         
         public PieceArrangementData AssembleCurrentGameData()
         {

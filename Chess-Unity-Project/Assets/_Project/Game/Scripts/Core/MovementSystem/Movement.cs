@@ -15,7 +15,7 @@ namespace SteampunkChess
 
         public bool IsAttackMove { get; }
 
-        private readonly PieceArrangement _pieceArrangement;
+        public PieceArrangement _pieceArrangement;
         private readonly ISpecialMove _specialMove;
         
 

@@ -1,4 +1,5 @@
 using Photon.Realtime;
+using SteampunkChess.PopUps;
 using SteampunkChess.PopUpService;
 using UnityEngine;
 using Zenject;
@@ -20,6 +21,7 @@ namespace SteampunkChess
         public void CreateRoom()
         {
             _popUpService.ShowPopUp(GameConstants.PopUps.RoomCreationWindow);
+            _popUpService.HideAll(HideType.Hide);
         }
 
         public void JoinRandomGame()

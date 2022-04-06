@@ -2,9 +2,9 @@
 
 namespace SteampunkChess
 {
-    public class PlayerData
+    public class PlayFabPlayerData
     {
-        public event Action<PlayerData> OnPlayerDataChanged;
+        public event Action<PlayFabPlayerData> OnPlayerDataChanged;
 
         public string PlayerName
         {
@@ -12,6 +12,7 @@ namespace SteampunkChess
             set
             {
                 _playerName = value; 
+                Logger.DebugError($"Player name {_playerName}");
                 OnPlayerDataChanged?.Invoke(this);
             }
         }
@@ -45,9 +46,8 @@ namespace SteampunkChess
         {
             public const string Team = "Te";
             public const string Score = "S";
-            public const string Time = "Ti";
+            public const string MatchTime = "Ti";
             public const string RoomPassword = "P";
-
         }
     }
 }
