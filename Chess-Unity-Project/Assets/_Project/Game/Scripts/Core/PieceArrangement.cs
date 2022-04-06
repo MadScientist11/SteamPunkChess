@@ -9,28 +9,17 @@ namespace SteampunkChess
     {
         private ChessPiece[,] _chessPieces;
 
-        private readonly string _gameFen;
-        private ChessBoardInfoSO _chessBoardInfoSO;
-        private PiecesPrefabsSO _piecesPrefabsSO;
+        private readonly NotationString _notationString;
+        private readonly ChessBoardInfoSO _chessBoardInfoSO;
+        private readonly PiecesPrefabsSO _piecesPrefabsSO;
         
-        private const string PiecesParent = "Pieces";
-        private GameObject _piecesParentGO;
+        private const string PiecesParentName = "Pieces";
+        private Transform _piecesParent;
+       
 
-        private readonly Dictionary<ChessPieceType, Func<ChessPiece>> Pieces =
-            new Dictionary<ChessPieceType, Func<ChessPiece>>()
-            {
-                { ChessPieceType.None, null },
-                { ChessPieceType.Pawn, () => new Pawn() },
-                { ChessPieceType.Rook, () => new Rook() },
-                { ChessPieceType.Knight, () => new Knight() },
-                { ChessPieceType.Bishop, () => new Bishop() },
-                { ChessPieceType.Queen, () => new Queen() },
-                { ChessPieceType.King, () => new King() },
-            };
-
-        public PieceArrangement(string gameFen, ChessBoardInfoSO chessBoardInfoSO, PiecesPrefabsSO piecesPrefabsSO) //TODO: Class for chess notation, to interchange them
+        public PieceArrangement(NotationString notationString, ChessBoardInfoSO chessBoardInfoSO, PiecesPrefabsSO piecesPrefabsSO) 
         {
-            _gameFen = gameFen;
+            _notationString = notationString;
             _chessBoardInfoSO = chessBoardInfoSO;
             _piecesPrefabsSO = piecesPrefabsSO;
             _chessPieces = new ChessPiece[chessBoardInfoSO.boardSizeX, chessBoardInfoSO.boardSizeY];
@@ -45,7 +34,7 @@ namespace SteampunkChess
 
         public PieceArrangement DeepCopy()
         {
-            PieceArrangement pieceArrangement = new PieceArrangement(_gameFen, _chessBoardInfoSO, _piecesPrefabsSO);
+            PieceArrangement pieceArrangement = new PieceArrangement(_notationString, _chessBoardInfoSO, _piecesPrefabsSO);
   
             for (int x = 0; x < _chessBoardInfoSO.boardSizeX; x++)
             {
@@ -79,15 +68,15 @@ namespace SteampunkChess
         
         public void Initialize()
         {
-            _chessPieces = SpawnAllPieces(_gameFen, (_chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY));
+            _chessPieces = SpawnAllPieces(_notationString, (_chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY));
             PositionPieces();
         }
         
-        private ChessPiece[,] SpawnAllPieces(string gameFen, (int boardSizeX, int boardSizeY) chessBoardSize)
+        private ChessPiece[,] SpawnAllPieces(NotationString notationString, (int boardSizeX, int boardSizeY) chessBoardSize)
         {
-            PieceArrangementData data = FenUtility.GameDataFromStringFen(gameFen);
+            PieceArrangementData data = notationString.GameDataFromNotationString();
             ChessPiece[,] chessPieces = new ChessPiece[chessBoardSize.boardSizeX, chessBoardSize.boardSizeY];
-            _piecesParentGO = new GameObject(PiecesParent);
+            _piecesParent = new GameObject(PiecesParentName).transform;
 
             for (int x = 0; x < chessBoardSize.boardSizeX; x++)
             for (int y = 0; y < chessBoardSize.boardSizeY; y++)
@@ -99,17 +88,28 @@ namespace SteampunkChess
             return chessPieces;
         }
         
-        public ChessPiece SpawnSinglePiece(ChessPieceType type, Team team)
+        public ChessPiece SpawnSinglePiece(ChessPieceType pieceType, Team team)
         {
-            GameObject pieceGO = Object.Instantiate(_piecesPrefabsSO.piecesPrefabs[(int)type - 1], _piecesParentGO.transform);
-            ChessPiece cp = Pieces[type].Invoke();
-            cp.ChessType = type;
+            var pieceGO = Object.Instantiate(_piecesPrefabsSO.piecesPrefabs[(int)pieceType - 1], _piecesParent);
+          
+            ChessPiece cp = pieceType switch
+            {
+                ChessPieceType.Pawn => new Pawn(),
+                ChessPieceType.Rook => new Rook(),
+                ChessPieceType.Knight => new Knight(),
+                ChessPieceType.Bishop => new Bishop(),
+                ChessPieceType.Queen => new Queen(),
+                ChessPieceType.King => new King(),
+                _ => throw new ArgumentOutOfRangeException(nameof(pieceType), pieceType, null)
+            };
+            
+            cp.ChessType = pieceType;
             cp.Team = team;
             cp.PieceTransform = pieceGO.transform;
 
         
-            if (cp is Knight && team == Team.Black)
-                cp.PieceTransform.rotation = Quaternion.AngleAxis(180f, cp.PieceTransform.up);
+            if (cp is Knight knight && team == Team.Black)
+                knight.PieceTransform.rotation = Quaternion.AngleAxis(180f, knight.PieceTransform.up);
             
             return cp;
         }

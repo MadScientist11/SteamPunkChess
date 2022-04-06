@@ -9,7 +9,7 @@ namespace SteampunkChess
     {
         private readonly INetworkService _networkService;
 
-        public MultiplayerBoard(GameDataSO gameDataSO, MoveListingData moveListingData, INetworkService networkService) : base(gameDataSO, moveListingData)
+        public MultiplayerBoard(ChessBoardData chessBoardData, MoveListingData moveListingData, INetworkService networkService) : base(chessBoardData, moveListingData)
         {
             _networkService = networkService;
             _networkService.PhotonRPCSender.OnMoveToEvent += RPC_MoveTo;

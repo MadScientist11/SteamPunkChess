@@ -1,3 +1,4 @@
+using System;
 using Photon.Realtime;
 using SteampunkChess.PopUps;
 using SteampunkChess.PopUpService;
@@ -20,7 +21,7 @@ namespace SteampunkChess
 
         public void CreateRoom()
         {
-            _popUpService.ShowPopUp(GameConstants.PopUps.RoomCreationWindow);
+            _popUpService.ShowPopUp(GameConstants.PopUps.RoomCreationWindow, Array.Empty<int>());
             _popUpService.HideAll(HideType.Hide);
         }
 

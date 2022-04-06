@@ -12,10 +12,11 @@ namespace SteampunkChess
         [SerializeField] private MoveListingData _moveListingData;
         public override void InstallBindings()
         {
-            BindGameData();
-            BindChessBoardInfo();
+            BindChessBoardData();
             BindGameCameraController();
             BindTimer();
+            BindMoveListingData();
+           
             
             Container
                 .Bind<IGameFactory>()
@@ -27,20 +28,22 @@ namespace SteampunkChess
                 .To<BoardFactory>()
                 .AsSingle();
 
-            Container
-                .Bind<NotationString>()
-                .To<FenNotationString>()
-                .FromInstance(new FenNotationString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
+            
 
             Container
                 .Bind<PlayerFactory>()
                 .AsSingle();
 
+            
+
+        }
+
+        private void BindMoveListingData()
+        {
             Container
                 .Bind<MoveListingData>()
                 .FromInstance(_moveListingData)
                 .AsSingle();
-
         }
 
         private void BindGameCameraController()
@@ -68,21 +71,35 @@ namespace SteampunkChess
                 .AsSingle();
         }
 
-        private void BindGameData()
+        private void BindChessBoardData()
         {
             Container
-                .Bind<GameDataSO>()
-                .FromInstance(_gameDataSO)
+                .Bind<NotationString>()
+                .To<FenNotationString>()
+                .FromInstance(new FenNotationString(_gameDataSO.notationString))
                 .AsSingle();
-        }
 
-        private void BindChessBoardInfo()
-        {
             Container
                 .Bind<ChessBoardInfoSO>()
                 .FromInstance(_gameDataSO.chessBoardInfoSO)
                 .AsSingle();
+
+            Container
+                .Bind<PiecesPrefabsSO>()
+                .FromInstance(_gameDataSO.piecesPrefabsSO)
+                .AsSingle();
+            
+            Container
+                .Bind<TileSelectionInfoSO>()
+                .FromInstance(_gameDataSO.tileSelectionSO)
+                .AsSingle();
+            
+            Container
+                .Bind<ChessBoardData>()
+                .AsSingle();
         }
+
+      
     }
 }
 

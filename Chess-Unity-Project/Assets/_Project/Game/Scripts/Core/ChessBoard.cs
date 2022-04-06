@@ -47,9 +47,9 @@ namespace SteampunkChess
         }
     }
 
-    public class MoveListing : IInitializable
+    public class MoveListing
     {
-        private readonly List<Movement> _moveHistory;
+        private readonly IReadOnlyList<Movement> _moveHistory;
         private readonly List<MoveListingEntry> _moveListingEntries;
         private readonly MoveListingData _moveListingData;
         
@@ -60,31 +60,31 @@ namespace SteampunkChess
             _moveListingEntries = new List<MoveListingEntry>();
             _moveListingData = moveListingData;
         }
-
-        public void Initialize()
+        
+        public void UpdateMoveListing()
         {
-            
-        }
-
-        public void UpdateMoveHistory(Movement move)
-        {
-            _moveHistory.Add(move);
-
+            var lastMove = _moveHistory[_moveHistory.Count - 1];
             if (_moveListingEntries.Count == 0 || _moveListingEntries[_moveListingEntries.Count - 1].IsFilled)
             {
-                GameObject entryPrefab = (_moveHistory.Count & 1) == 0
-                    ? _moveListingData.moveListingDarker
-                    : _moveListingData.moveListingLighter;
-                int fullMoveNumber = 1 + (_moveHistory.Count >> 1);
-                MoveListingEntry listingEntry =
-                    new MoveListingEntry(entryPrefab, _moveListingData.content, fullMoveNumber);
+                var listingEntry = CreateMoveListingEntry();
                 _moveListingEntries.Add(listingEntry);
-                listingEntry.AddMove(move);
+                listingEntry.AddMove(lastMove);
             }
             else
             {
-                _moveListingEntries[_moveListingEntries.Count - 1].AddMove(move);
+                _moveListingEntries[_moveListingEntries.Count - 1].AddMove(lastMove);
             }
+        }
+
+        private MoveListingEntry CreateMoveListingEntry()
+        {
+            GameObject entryPrefab = (_moveHistory.Count & 1) == 0
+                ? _moveListingData.moveListingDarker
+                : _moveListingData.moveListingLighter;
+            int fullMoveNumber = 1 + (_moveHistory.Count >> 1);
+            
+            MoveListingEntry listingEntry = new MoveListingEntry(entryPrefab, _moveListingData.content, fullMoveNumber);
+            return listingEntry;
         }
     }
 
@@ -106,17 +106,17 @@ namespace SteampunkChess
 
         public bool IsFilled => _moves.Count >= 2;
 
-        private void CreateVisual()
+        private GameObject CreateVisual()
         {
-            _listingEntryText = Object.Instantiate(_entryPrefab, _entryParent).transform.GetChild(0)
-                .GetComponent<TextMeshProUGUI>();
+            return Object.Instantiate(_entryPrefab, _entryParent);
         }
 
         public void AddMove(Movement move)
         {
             if (_moves.Count == 0)
             {
-                CreateVisual();
+                GameObject listingEntryGO = CreateVisual();
+                _listingEntryText = listingEntryGO.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
                 _listingEntryText.text = $"{_moveNumber}. {move.GetMovePGN()}";
             }
             else
@@ -128,30 +128,31 @@ namespace SteampunkChess
         }
     }
 
+  
+
     public abstract class ChessBoard 
     {
-        private TileSet _tileSet;
-        private readonly string _gameFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-        private PieceArrangement _pieceArrangement;
+        private readonly TileSet _tileSet;
+        private readonly PieceArrangement _pieceArrangement;
+        private readonly ChessBoardInfoSO _chessBoardInfoSO;
+        private readonly List<Movement> _moveHistory;
+        private readonly MoveListing _moveListing;
+        private readonly TileSelection _tileSelection;
 
         protected ChessPiece ActivePiece;
         private ChessGame _chessGame;
-        private ChessBoardInfoSO _chessBoardInfoSO;
         private List<Movement> _availableMoves;
-        private List<Movement> _moveHistory;
-        private MoveListing _moveListing;
-        private TileSelection _tileSelection;
         private bool _processingMove;
 
 
-        protected ChessBoard(GameDataSO gameDataSO, MoveListingData moveListingData)
+        protected ChessBoard(ChessBoardData chessBoardData, MoveListingData moveListingData)
         {
-            _chessBoardInfoSO = gameDataSO.chessBoardInfoSO;
+            _chessBoardInfoSO = chessBoardData.ChessBoardInfoSO;
             _moveHistory = new List<Movement>();
             _moveListing = new MoveListing(moveListingData, _moveHistory);
-            _tileSelection = new TileSelection(gameDataSO.tileSelectionSO);
+            _tileSelection = new TileSelection(chessBoardData.TileSelectionSO);
             _tileSet = new TileSet(_chessBoardInfoSO);
-            _pieceArrangement = new PieceArrangement(_gameFen, _chessBoardInfoSO, gameDataSO.piecesPrefabsSO);
+            _pieceArrangement = new PieceArrangement(chessBoardData.NotationString, _chessBoardInfoSO, chessBoardData.PiecesPrefabsSO);
         }
 
         public ChessPiece this[int x, int y] => _pieceArrangement[x, y];
@@ -172,7 +173,6 @@ namespace SteampunkChess
             _tileSet.Initialize();
             _pieceArrangement.Initialize();
             _tileSelection.Initialize();
-            _moveListing.Initialize();
         }
         
         protected abstract void MoveTo(Vector2 moveTo);
@@ -187,6 +187,7 @@ namespace SteampunkChess
             ChessPiece cp = _pieceArrangement[hitPosition.x, hitPosition.y];
 
             bool onTileClicked = Input.GetMouseButtonUp(0);
+            
             if (onTileClicked)
             {
                 if (ActivePiece != null)
@@ -212,7 +213,7 @@ namespace SteampunkChess
         {
             for (int i = 0; i < moves.Count; i++)
             {
-                if (moves[i].Destination.x == moveDestination.x && moves[i].Destination.y == moveDestination.y)
+                if (moves[i].Destination == moveDestination)
                 {
                     move = moves[i];
                     return true;
@@ -258,7 +259,8 @@ namespace SteampunkChess
             {
                 _processingMove = true;
                 _tileSelection.ClearSelection();
-                _moveListing.UpdateMoveHistory(move);
+                _moveHistory.Add(move);
+                _moveListing.UpdateMoveListing();
                 await move.Process();
 
                 if (IsCheckmated())

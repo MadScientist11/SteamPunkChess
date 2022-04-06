@@ -1,3 +1,4 @@
+using System;
 using SteampunkChess.CloudService;
 using SteampunkChess.CloudService.Models;
 using SteampunkChess.PopUpService;
@@ -34,7 +35,7 @@ namespace SteampunkChess
             
             if (!_cloudService.IsLoggedIn)
             {
-                _popUpService.ShowPopUp(GameConstants.PopUps.LogInWindow);
+                _popUpService.ShowPopUp(GameConstants.PopUps.LogInWindow,Array.Empty<int>());
             }
             else
             {

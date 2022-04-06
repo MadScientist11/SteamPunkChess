@@ -1,3 +1,4 @@
+using System;
 using SteampunkChess.CloudService;
 using SteampunkChess.CloudService.Models;
 using SteampunkChess.PopUpService;
@@ -73,7 +74,7 @@ namespace SteampunkChess.PopUps
         public void SwitchToLogInPopUp()
         {
             _popUpService.HidePopUp(GameConstants.PopUps.SignUpWindow, HideType.HideDestroyAndRelease);
-            _popUpService.ShowPopUp(GameConstants.PopUps.LogInWindow);
+            _popUpService.ShowPopUp(GameConstants.PopUps.LogInWindow, Array.Empty<int>());
 
         }
     }

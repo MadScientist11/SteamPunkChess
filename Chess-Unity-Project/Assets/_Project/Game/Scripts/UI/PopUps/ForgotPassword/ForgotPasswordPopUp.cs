@@ -1,3 +1,4 @@
+using System;
 using SteampunkChess.CloudService;
 using SteampunkChess.PopUpService;
 using TMPro;
@@ -8,7 +9,6 @@ namespace SteampunkChess.PopUps
 {
     public class ForgotPasswordPopUp : PopUp
     {
-
         [Header("ForgotPasswordPopUp")]
         [SerializeField] private TMP_InputField _emailInputField;
 
@@ -32,7 +32,7 @@ namespace SteampunkChess.PopUps
         private void OnSuccessAccountRecoveryEmail()
         {
             _popUpService.HidePopUp(GameConstants.PopUps.ForgotPasswordWindow, HideType.HideDestroyAndRelease);
-            _popUpService.ShowPopUp(GameConstants.PopUps.LogInWindow);
+            _popUpService.ShowPopUp(GameConstants.PopUps.LogInWindow,Array.Empty<int>());
 
         }
 

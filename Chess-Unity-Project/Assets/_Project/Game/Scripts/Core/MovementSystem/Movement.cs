@@ -25,7 +25,7 @@ namespace SteampunkChess
             Destination = destination;
             _pieceArrangement = pieceArrangement;
             MovePiece = pieceArrangement[Start.x, Start.y];
-            IsAttackMove = _pieceArrangement[Destination.x, Destination.y] != null || _specialMove is EnPassant;
+            IsAttackMove = _pieceArrangement[Destination.x, Destination.y] != null;
         }
         
         public Movement(Vector2Int start, Vector2Int destination, PieceArrangement pieceArrangement, ISpecialMove specialMove)
