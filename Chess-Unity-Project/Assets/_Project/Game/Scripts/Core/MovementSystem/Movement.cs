@@ -120,33 +120,28 @@ namespace SteampunkChess
         
         public string Build()
         {
-            if (_specialMove is Castling)
+            var moveString = _specialMove switch
             {
-                if (_move.Destination.x == 2)
-                    return "O-O-O ";
-                if (_move.Destination.x == 6)
-                    return "O-O";
-            }
-            else if (_specialMove is Promotion)
-            {
-                return BuildPromotionString();
-            }
+                Castling castling when _move.Destination.x == 2 => "O-O-O",
+                Castling castling when _move.Destination.x == 6 => "O-O",
+                Promotion promotion => BuildPromotionString(),
+                _ => BuildGenericString()
+            };
             
-
-            return BuildGenericString();
+            return moveString;
         }
         
         private string BuildGenericString()
         {
             return $"<size=30>{GetUnicodeOfPiece(_move.MovePiece.ChessType, _move.MovePiece.Team)}</size>" +
                    $"{IsAnyPieceEaten(_move.MovePiece, _move.Start, _move.IsAttackMove)}" +
-                   $"{GetBoardMoveNamingFromPosition(_move.Destination.x, _move.Destination.y)} ";
+                   $"{GetBoardMoveNamingFromPosition(_move.Destination.x, _move.Destination.y)}";
         }
         private string BuildPromotionString()
         {
             return $"{IsAnyPieceEaten(_move.MovePiece, _move.Start, _move.IsAttackMove)}" +
                    $"{GetBoardMoveNamingFromPosition(_move.Destination.x, _move.Destination.y)} = <size=30>" +
-                   $"{GetUnicodeOfPiece(ChessPieceType.Queen, _move.MovePiece.Team)}</size> ";
+                   $"{GetUnicodeOfPiece(ChessPieceType.Queen, _move.MovePiece.Team)}</size>";
         }
         
         private string GetBoardMoveNamingFromPosition(int x, int y)
