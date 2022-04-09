@@ -60,7 +60,12 @@ namespace SteampunkChess
             if (moveHistory.Count <= 0) return;
             
             var lastMove = moveHistory[moveHistory.Count - 1];
-            Logger.DebugError(lastMove._pieceArrangement.Eq(pieceArrangement).ToString());
+            
+            if (!lastMove._pieceArrangement.Eq(pieceArrangement))
+            {
+                Logger.DebugError(lastMove._pieceArrangement.GetHashCode().ToString());
+                Logger.DebugError(pieceArrangement.GetHashCode().ToString());
+            }
             if (pieceArrangement[lastMove.Destination.x, lastMove.Destination.y].ChessType == ChessPieceType.Pawn)
             {
                 if (Mathf.Abs(lastMove.Destination.y - lastMove.Start.y) == 2)

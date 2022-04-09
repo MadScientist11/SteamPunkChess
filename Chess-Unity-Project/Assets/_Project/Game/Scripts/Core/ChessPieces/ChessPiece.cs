@@ -17,13 +17,14 @@ namespace SteampunkChess
 
         protected IObjectTweener Tweener;
         
-        public static event Action<ChessPiece> OnDestroyPlayerPiece;
+
         protected ChessPiece()
         {
-            if (this is Knight)
-                Tweener = new ArcTweener(1, .65f);
-            else
-                Tweener = new LineTweener(1);
+            Tweener = this switch
+            {
+                Knight _ => new ArcTweener(1, .65f),
+                _ => new LineTweener(1)
+            };
         }
 
 
@@ -56,7 +57,6 @@ namespace SteampunkChess
         public void Dispose()
         {
             Object.Destroy(PieceTransform.gameObject);
-            OnDestroyPlayerPiece?.Invoke(this);
         }
     }
 }

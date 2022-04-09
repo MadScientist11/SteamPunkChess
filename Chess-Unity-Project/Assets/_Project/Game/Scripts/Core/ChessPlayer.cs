@@ -29,7 +29,6 @@ namespace SteampunkChess
         public void Initialize()
         {
             GetPlayerPieces();
-            ChessPiece.OnDestroyPlayerPiece += RemovePiece;
         }
 
         private void GetPlayerPieces()
@@ -40,21 +39,10 @@ namespace SteampunkChess
                     AddPiece(_board[x, y]);
         }
 
-        public void AddPiece(ChessPiece piece)
+        private void AddPiece(ChessPiece piece)
         {
             if (!ActivePieces.Contains(piece))
                 ActivePieces.Add(piece);
-        }
-
-        public void RemovePiece(ChessPiece piece)
-        {
-            Logger.DebugError($"Entry piece");
-            if (ActivePieces.Contains(piece))
-            {
-                ActivePieces.Remove(piece);
-                Logger.DebugError($"Remove piece {piece.ChessType}");
-            }
-                
         }
 
         public IEnumerable<ChessPiece> GetPiecesOfType<T>() where T : ChessPiece

@@ -120,15 +120,13 @@ namespace SteampunkChess
         
         public string Build()
         {
-            var moveString = _specialMove switch
+            return _specialMove switch
             {
-                Castling castling when _move.Destination.x == 2 => "O-O-O",
-                Castling castling when _move.Destination.x == 6 => "O-O",
-                Promotion promotion => BuildPromotionString(),
+                Castling _ when _move.Destination.x == 2 => "O-O-O",
+                Castling _ when _move.Destination.x == 6 => "O-O",
+                Promotion _ => BuildPromotionString(),
                 _ => BuildGenericString()
             };
-            
-            return moveString;
         }
         
         private string BuildGenericString()

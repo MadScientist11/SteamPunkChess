@@ -299,7 +299,7 @@ namespace SteampunkChess
 
                 
                 PieceArrangement simulation = _pieceArrangement.DeepCopy();
-                
+                Logger.DebugError(_pieceArrangement.Eq(simulation).ToString());
                 var possibleAttackingPieces = _chessGame.ChessPlayers[(int) attackingTeam].ActivePieces;
                
 
@@ -308,6 +308,9 @@ namespace SteampunkChess
                 simulationPiece.CurrentX = simX;
                 simulationPiece.CurrentY = simY;
                 simulation[simX, simY] = simulationPiece;
+
+                List<Movement> simulatedMoveHistory = new List<Movement>(_moveHistory);;
+                simulatedMoveHistory.Add(new Movement(new Vector2Int(simulationPiece.CurrentX, simulationPiece.CurrentY), new Vector2Int(simX, simY), simulation));
 
                 // Did one of the pieces got taken down during  simulation
                 var deadPiece = possibleAttackingPieces.Find(x => x.CurrentX == simX && x.CurrentY == simY);
@@ -320,7 +323,7 @@ namespace SteampunkChess
                 for (int a = 0; a < possibleAttackingPieces.Count; a++)
                 {
                     var pieceMoves = possibleAttackingPieces[a].GetAvailableMoves(simulation, _chessBoardInfoSO.boardSizeX,
-                        _chessBoardInfoSO.boardSizeY, _moveHistory);
+                        _chessBoardInfoSO.boardSizeY, simulatedMoveHistory);
                     for (int b = 0; b < pieceMoves.Count; b++)
                     {
                         simMoves.Add(pieceMoves[b]);
@@ -330,6 +333,7 @@ namespace SteampunkChess
                 //Is that spot safe for king?
                 if (SearchForMoveDestination(simMoves, kingPositionThisSim, out Movement move))
                 {
+                    Logger.DebugError($"Remove move {move.MovePiece.ChessType}");
                     movesToRemove.Add(moves[i]);
                 }
             }
