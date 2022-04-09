@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SteampunkChess
@@ -8,9 +7,9 @@ namespace SteampunkChess
     {
         public Team Team { get; }
         private readonly ChessBoard _board;
+        private readonly List<ChessPiece> _activePieces;
+        public IReadOnlyList<ChessPiece> ActivePieces => _activePieces;
         
-        public List<ChessPiece> ActivePieces { get; }
-
         public bool CanLeftSideCastle { get; set; }
         public bool CanRightSideCastle { get; set; }
 
@@ -20,7 +19,7 @@ namespace SteampunkChess
 
         public ChessPlayer(Team team, ChessBoard board, float matchTime)
         {
-            ActivePieces = new List<ChessPiece>(16);
+            _activePieces = new List<ChessPiece>(32);
             Team = team;
             _board = board;
             PlayerRemainingTime = matchTime;
@@ -28,9 +27,12 @@ namespace SteampunkChess
 
         public void Initialize()
         {
-            GetPlayerPieces();
+            //GetPlayerPieces();
+            ChessPiece.OnPieceSpawned += AddPiece;
+            ChessPiece.OnPieceDestroyed += RemovePiece;
         }
 
+       
         private void GetPlayerPieces()
         {
             for (int x = 0; x < 8; x++)
@@ -41,13 +43,23 @@ namespace SteampunkChess
 
         private void AddPiece(ChessPiece piece)
         {
-            if (!ActivePieces.Contains(piece))
-                ActivePieces.Add(piece);
+            if (!_activePieces.Contains(piece) && piece.Team == Team)
+            {
+                _activePieces.Add(piece);
+            }
+                
         }
 
         public IEnumerable<ChessPiece> GetPiecesOfType<T>() where T : ChessPiece
         {
             return ActivePieces.Where(p => p is T);
+        }
+        
+        
+        private void RemovePiece(ChessPiece piece)
+        {
+            if (_activePieces.Contains(piece))
+                _activePieces.Remove(piece);
         }
 
        

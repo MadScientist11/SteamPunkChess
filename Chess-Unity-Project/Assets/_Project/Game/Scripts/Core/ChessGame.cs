@@ -52,9 +52,11 @@ namespace SteampunkChess
             InitialPieceArrangementData = _notationString.GameDataFromNotationString(); 
             
             ChessBoard chessBoard = _boardFactory.Create();
-            chessBoard.Initialize(this);
             
             CreatePlayers(chessBoard);
+            chessBoard.Initialize(this);
+            
+            
             
             _timer = _timerFactory.Create();
             _timer.InitializeTimer(ChessPlayers[0],ChessPlayers[1], EndOfGame);
@@ -82,9 +84,7 @@ namespace SteampunkChess
         
         public bool CanPerformMove()
         {
-            if (IsActivePlayer)
-                return true;
-            return false;
+            return IsActivePlayer;
         }
 
         public void ChangeActiveTeam()
@@ -114,14 +114,9 @@ namespace SteampunkChess
         {
             _timer.Stop();
             Debug.LogError(_localPlayer.Team ==  winTeam ? "You win" : "Game over");
-            if (_localPlayer.Team == winTeam)
-            {
-                _popUpService.ShowPopUp(GameConstants.PopUps.WinOrLoseWindow, MatchResult.Win);
-            }
-            else
-            {
-                _popUpService.ShowPopUp(GameConstants.PopUps.WinOrLoseWindow, MatchResult.Lose);
-            }
+            MatchResult result = _localPlayer.Team == winTeam ? MatchResult.Win : MatchResult.Lose;
+            _popUpService.ShowPopUp(GameConstants.PopUps.WinOrLoseWindow, result);
+            
         }
 
        
@@ -134,6 +129,7 @@ namespace SteampunkChess
             pieceArrangementData.canBlackCastleQueenSide = ChessPlayers[(int) Team.Black].CanLeftSideCastle;
             pieceArrangementData.canWhiteCastleKingSide = ChessPlayers[(int) Team.White].CanRightSideCastle;
             pieceArrangementData.canWhiteCastleQueenSide = ChessPlayers[(int) Team.White].CanLeftSideCastle;
+          
             return pieceArrangementData;
         }
     }

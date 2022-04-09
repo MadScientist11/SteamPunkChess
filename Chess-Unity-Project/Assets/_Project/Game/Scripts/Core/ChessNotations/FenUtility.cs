@@ -268,7 +268,7 @@ namespace SteampunkChess
             return data;
         }
 
-        private static PieceInfo[,] BoardArrangementFromFen(string[] rows)
+        public static PieceInfo[,] BoardArrangementFromFen(string[] rows)
         {
             var pieceArray = new PieceInfo[8, 8];
     

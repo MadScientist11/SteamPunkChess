@@ -282,6 +282,128 @@ namespace SteampunkChess
 
         private void SimulateForSinglePiece(ChessPiece cp, List<Movement> moves, ChessPiece king)
         {
+            
+            List<Movement> movesToRemove = new List<Movement>();
+            Team attackingTeam = cp.Team == Team.White ? Team.Black : Team.White;
+            
+
+            for (int i = 0; i < moves.Count; i++)
+            {
+                ChessPiece simulationPiece = cp.ShallowCopy();
+                int simX = moves[i].Destination.x;
+                int simY = moves[i].Destination.y;
+
+                Vector2Int kingPositionThisSim = new Vector2Int(king.CurrentX, king.CurrentY);
+                
+                if (cp.ChessType == ChessPieceType.King)
+                    kingPositionThisSim = new Vector2Int(simX, simY);
+
+                
+                PieceArrangement simulation = _pieceArrangement.DeepCopy();
+                var possibleAttackingPieces = new List<ChessPiece>(_chessGame.ChessPlayers[(int) attackingTeam].ActivePieces);
+               
+
+                // Simulate that move
+                simulation[simulationPiece.CurrentX, simulationPiece.CurrentY] = null;
+                simulationPiece.CurrentX = simX;
+                simulationPiece.CurrentY = simY;
+                simulation[simX, simY] = simulationPiece;
+                
+                
+                List<Movement> simulatedMoveHistory = new List<Movement>(_moveHistory);
+                simulatedMoveHistory.Add(new Movement(new Vector2Int(simulationPiece.CurrentX, simulationPiece.CurrentY), new Vector2Int(simX, simY), simulation));
+
+                // Did one of the pieces got taken down during  simulation
+                var deadPiece = possibleAttackingPieces.Find(x => x.CurrentX == simX && x.CurrentY == simY);
+
+                if (deadPiece != null)
+                    possibleAttackingPieces.Remove(deadPiece);
+                
+                // Get all attacking pieces available moves
+                List<Movement> simMoves = new List<Movement>();
+                for (int a = 0; a < possibleAttackingPieces.Count; a++)
+                {
+                    var pieceMoves = possibleAttackingPieces[a].GetAvailableMoves(simulation, _chessBoardInfoSO.boardSizeX,
+                        _chessBoardInfoSO.boardSizeY, simulatedMoveHistory);
+                    for (int b = 0; b < pieceMoves.Count; b++)
+                    {
+                        simMoves.Add(pieceMoves[b]);
+                    }
+                }
+
+                //Is that spot safe for king?
+                if (SearchForMoveDestination(simMoves, kingPositionThisSim, out Movement move))
+                {
+                    movesToRemove.Add(moves[i]);
+                }
+            }
+
+            //Remove  some moves from availableMoves
+            for (int i = 0; i < movesToRemove.Count; i++)
+            {
+                moves.Remove(movesToRemove[i]);
+            }
+        }
+        
+        private bool IsCheckmated()
+        {
+            var lastMove = _moveHistory[_moveHistory.Count - 1];
+            Team attackingTeam = _pieceArrangement[lastMove.Destination.x, lastMove.Destination.y].Team;
+            Team targetTeam = (attackingTeam == Team.White) ? Team.Black : Team.White;
+            
+            IReadOnlyList<ChessPiece> attackingPieces = _chessGame.ChessPlayers[(int) attackingTeam].ActivePieces;
+            IReadOnlyList<ChessPiece> defendingPieces = _chessGame.ChessPlayers[(int) targetTeam].ActivePieces;
+            ChessPiece targetKing = _chessGame.ChessPlayers[(int) targetTeam].GetPiecesOfType<King>().First();
+
+
+           
+            List<Movement> attackingMoves = new List<Movement>();
+            for (int a = 0; a < attackingPieces.Count; a++)
+            {
+                var pieceMoves = attackingPieces[a].GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY, _moveHistory);
+                for (int b = 0; b < pieceMoves.Count; b++)
+                {
+                    attackingMoves.Add(pieceMoves[b]);
+                }
+            }
+           
+            if (SearchForMoveDestination(attackingMoves, new Vector2Int(targetKing.CurrentX, targetKing.CurrentY), out _))
+            {
+                //King is under attack, can we defend him?
+                for (int i = 0; i < defendingPieces.Count; i++)
+                {
+                    var defendingMoves = defendingPieces[i].GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY, _moveHistory);
+                    //Delete moves that give us check
+                    SimulateForSinglePiece(defendingPieces[i], defendingMoves, targetKing);
+                    
+                    if (defendingMoves.Count != 0)
+                        return false;
+                }
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public class Rules
+    {
+        public bool SearchForMoveDestination(List<Movement> moves, Vector2Int moveDestination, out Movement move)
+        {
+            for (int i = 0; i < moves.Count; i++)
+            {
+                if (moves[i].Destination == moveDestination)
+                {
+                    move = moves[i];
+                    return true;
+                }
+            }
+
+            move = null;
+            return false;
+        }
+        
+        private void SimulateForSinglePiece(ChessPiece cp, List<Movement> moves, ChessPiece king, List<Movement> moveHistory, PieceArrangement pieceArrangement, IReadOnlyList<ChessPiece> attackingTeamPieces, ChessBoardInfoSO chessBoardInfoSO)
+        {
             //Save values to reset them in the end
             ChessPiece simulationPiece = cp.ShallowCopy();
             List<Movement> movesToRemove = new List<Movement>();
@@ -298,9 +420,8 @@ namespace SteampunkChess
                     kingPositionThisSim = new Vector2Int(simX, simY);
 
                 
-                PieceArrangement simulation = _pieceArrangement.DeepCopy();
-                Logger.DebugError(_pieceArrangement.Eq(simulation).ToString());
-                var possibleAttackingPieces = _chessGame.ChessPlayers[(int) attackingTeam].ActivePieces;
+                PieceArrangement simulation = pieceArrangement.DeepCopy();
+                var possibleAttackingPieces = new List<ChessPiece>(attackingTeamPieces);
                
 
                 // Simulate that move
@@ -309,7 +430,7 @@ namespace SteampunkChess
                 simulationPiece.CurrentY = simY;
                 simulation[simX, simY] = simulationPiece;
 
-                List<Movement> simulatedMoveHistory = new List<Movement>(_moveHistory);;
+                List<Movement> simulatedMoveHistory = new List<Movement>(moveHistory);;
                 simulatedMoveHistory.Add(new Movement(new Vector2Int(simulationPiece.CurrentX, simulationPiece.CurrentY), new Vector2Int(simX, simY), simulation));
 
                 // Did one of the pieces got taken down during  simulation
@@ -322,8 +443,8 @@ namespace SteampunkChess
                 List<Movement> simMoves = new List<Movement>();
                 for (int a = 0; a < possibleAttackingPieces.Count; a++)
                 {
-                    var pieceMoves = possibleAttackingPieces[a].GetAvailableMoves(simulation, _chessBoardInfoSO.boardSizeX,
-                        _chessBoardInfoSO.boardSizeY, simulatedMoveHistory);
+                    var pieceMoves = possibleAttackingPieces[a].GetAvailableMoves(simulation, chessBoardInfoSO.boardSizeX,
+                        chessBoardInfoSO.boardSizeY, simulatedMoveHistory);
                     for (int b = 0; b < pieceMoves.Count; b++)
                     {
                         simMoves.Add(pieceMoves[b]);
@@ -344,22 +465,22 @@ namespace SteampunkChess
                 moves.Remove(movesToRemove[i]);
             }
         }
-        
-        private bool IsCheckmated()
+        private bool IsCheckmated(List<Movement> moveHistory, PieceArrangement pieceArrangement, ChessGame chessGame, ChessBoardInfoSO chessBoardInfoSO)
         {
-            var lastMove = _moveHistory[_moveHistory.Count - 1];
-            Team attackingTeam = _pieceArrangement[lastMove.Destination.x, lastMove.Destination.y].Team;
+            var lastMove = moveHistory[moveHistory.Count - 1];
+            Team attackingTeam = pieceArrangement[lastMove.Destination.x, lastMove.Destination.y].Team;
             Team targetTeam = (attackingTeam == Team.White) ? Team.Black : Team.White;
             
-            List<ChessPiece> attackingPieces = _chessGame.ChessPlayers[(int) attackingTeam].ActivePieces;
-            List<ChessPiece> defendingPieces = _chessGame.ChessPlayers[(int) targetTeam].ActivePieces;
-            ChessPiece targetKing = _chessGame.ChessPlayers[(int) targetTeam].GetPiecesOfType<King>().First();
+            IReadOnlyList<ChessPiece> attackingPieces = chessGame.ChessPlayers[(int) attackingTeam].ActivePieces;
+            IReadOnlyList<ChessPiece> defendingPieces = chessGame.ChessPlayers[(int) targetTeam].ActivePieces;
+            ChessPiece targetKing = chessGame.ChessPlayers[(int) targetTeam].GetPiecesOfType<King>().First();
+
 
             // Is king attacked right now
             List<Movement> attackingMoves = new List<Movement>();
             for (int a = 0; a < attackingPieces.Count; a++)
             {
-                var pieceMoves = attackingPieces[a].GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY, _moveHistory);
+                var pieceMoves = attackingPieces[a].GetAvailableMoves(pieceArrangement, chessBoardInfoSO.boardSizeX, chessBoardInfoSO.boardSizeY, moveHistory);
                 for (int b = 0; b < pieceMoves.Count; b++)
                 {
                     attackingMoves.Add(pieceMoves[b]);
@@ -371,9 +492,9 @@ namespace SteampunkChess
                 //King is under attack, can we defend him?
                 for (int i = 0; i < defendingPieces.Count; i++)
                 {
-                    var defendingMoves = defendingPieces[i].GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY, _moveHistory);
+                    var defendingMoves = defendingPieces[i].GetAvailableMoves(pieceArrangement, chessBoardInfoSO.boardSizeX, chessBoardInfoSO.boardSizeY, moveHistory);
                     //Delete moves that still give us check
-                    SimulateForSinglePiece(defendingPieces[i], defendingMoves, targetKing);
+                    //SimulateForSinglePiece(defendingPieces[i], defendingMoves, targetKing, moveHistory, pieceArrangement,);
                     
                     if (defendingMoves.Count != 0)
                         return false;

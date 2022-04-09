@@ -8,11 +8,7 @@ namespace SteampunkChess
     {
         private readonly List<Movement> _moveList;
         private readonly PieceArrangement _pieceArrangement;
-
-        //public SpecialMoveStringBuilder GetStringBuilder(MoveInfo moveInfo)
-        //{
-        //    return new EnPassantSpecialMoveStringBuilder(moveInfo);
-        //}
+        
         public Promotion(List<Movement> moveList, PieceArrangement pieceArrangement)
         {
             _moveList = moveList;
@@ -40,15 +36,6 @@ namespace SteampunkChess
                 _pieceArrangement[lastMove.Destination.x, lastMove.Destination.y] = promQueen;
                 promQueen.PositionPiece(lastMove.Destination.x, lastMove.Destination.y, true);
             }
-        }
-        //public SpecialMoveStringBuilder GetStringBuilder(MoveInfo moveInfo)
-        //{
-        //    return new PromotionSpecialMoveStringBuilder(moveInfo);
-        //}
-
-        public void ProcessSpecialMove(List<Movement> moveList, PieceArrangement pieceArrangement)
-        {
-            throw new System.NotImplementedException();
         }
     }
     

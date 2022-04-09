@@ -106,6 +106,7 @@ namespace SteampunkChess
             cp.ChessType = pieceType;
             cp.Team = team;
             cp.PieceTransform = pieceGO.transform;
+            cp.Initialize();
 
         
             if (cp is Knight knight && team == Team.Black)

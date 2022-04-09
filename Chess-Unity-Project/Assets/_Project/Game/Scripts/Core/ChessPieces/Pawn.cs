@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using ModestTree;
-using SteampunkChess;
 using UnityEngine;
 
 namespace SteampunkChess
@@ -42,30 +40,28 @@ namespace SteampunkChess
             return r;
         }
         
-        public void UpdateWithSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
+        private void UpdateWithSpecialMove(PieceArrangement pieceArrangement, List<Movement> moveHistory, List<Movement> availableMoves)
         {
             int direction = Team == 0 ? 1 : -1;
             if (Team == Team.White && CurrentY == 6 || Team == Team.Black && CurrentY == 1)
             {
                 int promotionMoveIndex = availableMoves.FindIndex(x => x.Destination.y == 7 || x.Destination.y == 0);
-                Debug.Assert(promotionMoveIndex != -1, "Cannot find available move for promotion");
-                var promotion = new Promotion(moveHistory, pieceArrangement);
-                availableMoves[promotionMoveIndex] = new Movement(new Vector2Int(CurrentX, CurrentY), 
-                    new Vector2Int(availableMoves[promotionMoveIndex].Destination.x, availableMoves[promotionMoveIndex].Destination.y), 
-                    pieceArrangement,
-                    promotion
+                if (promotionMoveIndex != -1)
+                {
+                    var promotion = new Promotion(moveHistory, pieceArrangement);
+                    availableMoves[promotionMoveIndex] = new Movement(new Vector2Int(CurrentX, CurrentY),
+                        new Vector2Int(availableMoves[promotionMoveIndex].Destination.x,
+                            availableMoves[promotionMoveIndex].Destination.y),
+                        pieceArrangement,
+                        promotion
                     );
+                }
             }
             
             if (moveHistory.Count <= 0) return;
             
             var lastMove = moveHistory[moveHistory.Count - 1];
             
-            if (!lastMove._pieceArrangement.Eq(pieceArrangement))
-            {
-                Logger.DebugError(lastMove._pieceArrangement.GetHashCode().ToString());
-                Logger.DebugError(pieceArrangement.GetHashCode().ToString());
-            }
             if (pieceArrangement[lastMove.Destination.x, lastMove.Destination.y].ChessType == ChessPieceType.Pawn)
             {
                 if (Mathf.Abs(lastMove.Destination.y - lastMove.Start.y) == 2)

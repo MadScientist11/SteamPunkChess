@@ -45,6 +45,32 @@ namespace SteampunkChess.Tests
                 .Bind<ChessBoardData>()
                 .AsSingle();
         }
+        
+        [Test]
+        public void WhenGiveFenString_AndInitializePieceArrangement_ThenXYTh()
+        {
+            //Arrange
+            var notationString = new FenNotationString("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2");
+            var chessBoardInfoSO = Container.Resolve<ChessBoardInfoSO>();
+            var piecesPrefabsSO = Container.Resolve<PiecesPrefabsSO>();
+            var pieceArrangement = new PieceArrangement(notationString, chessBoardInfoSO, piecesPrefabsSO);
+            var tileSet = new TileSet(chessBoardInfoSO);
+            tileSet.Initialize();
+            pieceArrangement.Initialize();
+            
+        
+            //Act
+            //Spawning pieces according to given notation string and position them
+            
+            
+            
+
+            
+            
+        
+            //Assert
+            //pieceArrangement.
+        }
 
 
         [Test]
@@ -105,7 +131,5 @@ namespace SteampunkChess.Tests
             //Assert
             movePGN.Should().Be("<size=30>♞</size>c3");
         }
-    
-    
     }
 }

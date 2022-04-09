@@ -8,6 +8,7 @@ namespace SteampunkChess
  
         public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY, List<Movement> moveHistory)
         {
+            //TODO: throw if there is no this piece in given pieceArrangement
             List<Movement> r = new List<Movement>();
 
             //Down
