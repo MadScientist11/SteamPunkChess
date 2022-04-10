@@ -53,6 +53,10 @@ MonoBehaviour:
     m_Address: WindowWinOrLoss
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 63453f795a5283d4c9e533af1b1adfb2
+    m_Address: WindowPawnPromotion
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9e45ba45cf167064f8d2632052821566, type: 2}
   m_SchemaSet:

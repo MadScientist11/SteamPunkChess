@@ -1,10 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SteampunkChess
 {
+    public static class ListExtensions
+    {
+        public static List<int> FindAllIndexes<T>(this List<T> source, Func<T, bool> condition)
+        {
+            return source
+                .Where(v => condition.Invoke(v))
+                .Select((item, index) => new { Item = item, Index = index })
+                .Select(v => v.Index)
+                .ToList();
+        }
+    }
     public class Pawn : ChessPiece
     {
+        private readonly ISpecialMoveFactory _specialMoveFactory;
+
+        public Pawn(ISpecialMoveFactory specialMoveFactory)
+        {
+            _specialMoveFactory = specialMoveFactory;
+        }
+        
         public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY, List<Movement> moveHistory)
         {
             //one in front
@@ -45,13 +65,14 @@ namespace SteampunkChess
             int direction = Team == 0 ? 1 : -1;
             if (Team == Team.White && CurrentY == 6 || Team == Team.Black && CurrentY == 1)
             {
-                int promotionMoveIndex = availableMoves.FindIndex(x => x.Destination.y == 7 || x.Destination.y == 0);
-                if (promotionMoveIndex != -1)
+               
+                List<int> promotionMoveIndexes = availableMoves.FindAllIndexes(x => x.Destination.y == 7 || x.Destination.y == 0);
+                foreach (var index in promotionMoveIndexes)
                 {
-                    var promotion = new Promotion(moveHistory, pieceArrangement);
-                    availableMoves[promotionMoveIndex] = new Movement(new Vector2Int(CurrentX, CurrentY),
-                        new Vector2Int(availableMoves[promotionMoveIndex].Destination.x,
-                            availableMoves[promotionMoveIndex].Destination.y),
+                    var promotion = _specialMoveFactory.CreateSpecialMove(SpecialMoveType.Promotion, moveHistory, pieceArrangement);
+                    availableMoves[index] = new Movement(new Vector2Int(CurrentX, CurrentY),
+                        new Vector2Int(availableMoves[index].Destination.x,
+                            availableMoves[index].Destination.y),
                         pieceArrangement,
                         promotion
                     );
@@ -73,7 +94,7 @@ namespace SteampunkChess
                                 
                             if (lastMove.Destination.x == CurrentX - 1)
                             {
-                                var enPassant = new EnPassant(moveHistory, pieceArrangement);
+                                var enPassant = _specialMoveFactory.CreateSpecialMove(SpecialMoveType.EnPassant, moveHistory, pieceArrangement);
                                 var movement = new Movement(new Vector2Int(CurrentX, CurrentY),
                                     new Vector2Int(CurrentX - 1, CurrentY + direction), 
                                     pieceArrangement, 
@@ -83,7 +104,7 @@ namespace SteampunkChess
                             }
                             if (lastMove.Destination.x == CurrentX + 1)
                             {
-                                var enPassant = new EnPassant(moveHistory, pieceArrangement);
+                                var enPassant = _specialMoveFactory.CreateSpecialMove(SpecialMoveType.EnPassant, moveHistory, pieceArrangement);
                                 Movement movement = new Movement(new Vector2Int(CurrentX, CurrentY),
                                     new Vector2Int(CurrentX + 1, CurrentY + direction), 
                                     pieceArrangement, 

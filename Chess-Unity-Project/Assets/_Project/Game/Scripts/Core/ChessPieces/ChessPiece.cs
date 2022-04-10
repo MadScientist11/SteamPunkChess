@@ -25,8 +25,8 @@ namespace SteampunkChess
         {
             Tweener = this switch
             {
-                Knight _ => new ArcTweener(1, .65f),
-                _ => new LineTweener(1)
+                Knight _ => new ArcTweener(1.75f, .65f),
+                _ => new LineTweener(1.75f)
             };
             OnPieceSpawned?.Invoke(this);
         }

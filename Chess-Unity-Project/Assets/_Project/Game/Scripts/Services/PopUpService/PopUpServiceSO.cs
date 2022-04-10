@@ -46,8 +46,8 @@ namespace SteampunkChess.PopUpService
             if (_asyncOperationHandles.ContainsKey(popUpKey))
             {
                 GameObject go = _instantiator.InstantiatePrefab(_asyncOperationHandles[popUpKey].Result, FindObjectOfType<Canvas>().transform);
-                go.GetComponent<IPopUp>().Show(data);
                 _popUpsInstances[popUpKey] = go;
+                go.GetComponent<IPopUp>().Show(data);
                 return;
             }
 
@@ -58,8 +58,8 @@ namespace SteampunkChess.PopUpService
                 _asyncOperationHandles.Add(popUpKey, loadOp);
 
                 GameObject go = _instantiator.InstantiatePrefab(loadOp.Result, FindObjectOfType<Canvas>().transform);
-                go.GetComponent<IPopUp>().Show(data);
                 _popUpsInstances.Add(popUpKey, go);
+                go.GetComponent<IPopUp>().Show(data);
             }
             else
             {

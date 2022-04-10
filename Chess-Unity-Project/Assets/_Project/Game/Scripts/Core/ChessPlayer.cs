@@ -27,7 +27,6 @@ namespace SteampunkChess
 
         public void Initialize()
         {
-            //GetPlayerPieces();
             ChessPiece.OnPieceSpawned += AddPiece;
             ChessPiece.OnPieceDestroyed += RemovePiece;
         }

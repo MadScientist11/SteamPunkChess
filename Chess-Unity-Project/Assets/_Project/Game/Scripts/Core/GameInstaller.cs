@@ -1,8 +1,31 @@
+using System;
 using UnityEngine;
 using Zenject;
 
 namespace SteampunkChess
 {
+    public class ChessPieceFactory
+    {
+        private readonly IInstantiator _instantiator;
+
+        public ChessPieceFactory(IInstantiator instantiator)
+        {
+            _instantiator = instantiator;
+        }
+        public ChessPiece CreatePiece(ChessPieceType pieceType)
+        {
+            return pieceType switch
+            {
+                ChessPieceType.Pawn => _instantiator.Instantiate<Pawn>(),
+                ChessPieceType.Rook => _instantiator.Instantiate<Rook>(),
+                ChessPieceType.Knight => _instantiator.Instantiate<Knight>(),
+                ChessPieceType.Bishop => _instantiator.Instantiate<Bishop>(),
+                ChessPieceType.Queen => _instantiator.Instantiate<Queen>(),
+                ChessPieceType.King => _instantiator.Instantiate<King>(),
+                _ => throw new ArgumentOutOfRangeException(nameof(pieceType), pieceType, null)
+            };
+        }
+    }
     public class GameInstaller : MonoInstaller
     {
         [SerializeField] private GameDataSO _gameDataSO;
@@ -28,6 +51,10 @@ namespace SteampunkChess
                 .To<BoardFactory>()
                 .AsSingle();
 
+            Container
+                .Bind<ChessPieceFactory>()
+                .AsSingle();
+
             
 
             Container
@@ -35,6 +62,13 @@ namespace SteampunkChess
                 .AsSingle();
 
             
+
+            Container
+                .Bind<ISpecialMoveFactory>()
+                .To<SpecialMoveFactory>()
+                .AsSingle();
+
+
 
         }
 

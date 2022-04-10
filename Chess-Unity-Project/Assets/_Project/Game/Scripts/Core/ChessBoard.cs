@@ -145,14 +145,14 @@ namespace SteampunkChess
         private bool _processingMove;
 
 
-        protected ChessBoard(ChessBoardData chessBoardData, MoveListingData moveListingData)
+        protected ChessBoard(ChessBoardData chessBoardData, MoveListingData moveListingData, ChessPieceFactory chessPieceFactory)
         {
             _chessBoardInfoSO = chessBoardData.ChessBoardInfoSO;
             _moveHistory = new List<Movement>();
             _moveListing = new MoveListing(moveListingData, _moveHistory);
             _tileSelection = new TileSelection(chessBoardData.TileSelectionSO);
             _tileSet = new TileSet(_chessBoardInfoSO);
-            _pieceArrangement = new PieceArrangement(chessBoardData.NotationString, _chessBoardInfoSO, chessBoardData.PiecesPrefabsSO);
+            _pieceArrangement = new PieceArrangement(chessBoardData.NotationString, _chessBoardInfoSO, chessBoardData.PiecesPrefabsSO, chessPieceFactory);
         }
 
         public ChessPiece this[int x, int y] => _pieceArrangement[x, y];

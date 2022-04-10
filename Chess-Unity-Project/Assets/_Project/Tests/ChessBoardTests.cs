@@ -1,9 +1,8 @@
-using System.Reflection;
+using System.Collections.Generic;
 using FluentAssertions;
-using Zenject;
 using NUnit.Framework;
 using UnityEngine;
-using Logger = SteampunkChess.Logger;
+using Zenject;
 
 namespace SteampunkChess.Tests
 {
@@ -15,6 +14,17 @@ namespace SteampunkChess.Tests
         public void SetUp()
         {
             BindChessBoardData();
+            
+            Container
+                .Bind<ChessPieceFactory>()
+                .AsSingle();
+
+            Container
+                .Bind<ISpecialMoveFactory>()
+                .To<SpecialMoveFactory>()
+                .AsSingle();
+            
+            
         }
 
         private void BindChessBoardData()
@@ -41,37 +51,12 @@ namespace SteampunkChess.Tests
                 .FromInstance(data.tileSelectionSO)
                 .AsSingle();
 
+           
+
             Container
                 .Bind<ChessBoardData>()
                 .AsSingle();
         }
-        
-        [Test]
-        public void WhenGiveFenString_AndInitializePieceArrangement_ThenXYTh()
-        {
-            //Arrange
-            var notationString = new FenNotationString("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2");
-            var chessBoardInfoSO = Container.Resolve<ChessBoardInfoSO>();
-            var piecesPrefabsSO = Container.Resolve<PiecesPrefabsSO>();
-            var pieceArrangement = new PieceArrangement(notationString, chessBoardInfoSO, piecesPrefabsSO);
-            var tileSet = new TileSet(chessBoardInfoSO);
-            tileSet.Initialize();
-            pieceArrangement.Initialize();
-            
-        
-            //Act
-            //Spawning pieces according to given notation string and position them
-            
-            
-            
-
-            
-            
-        
-            //Assert
-            //pieceArrangement.
-        }
-
 
         [Test]
         public void WhenSpawningChessPiece_AndPositionPieceXY55_ThenXYShouldBe55()
@@ -80,34 +65,40 @@ namespace SteampunkChess.Tests
             var notationString = Container.Resolve<NotationString>();
             var chessBoardInfoSO = Container.Resolve<ChessBoardInfoSO>();
             var piecesPrefabsSO = Container.Resolve<PiecesPrefabsSO>();
-            var pieceArrangement = new PieceArrangement(notationString, chessBoardInfoSO, piecesPrefabsSO);
+            var chessPieceFactory = Container.Resolve<ChessPieceFactory>();
+            var pieceArrangement = new PieceArrangement(notationString, chessBoardInfoSO, piecesPrefabsSO, chessPieceFactory);
             var tileSet = new TileSet(chessBoardInfoSO);
-        
+            
             //Act
             var king = pieceArrangement.SpawnSinglePiece(ChessPieceType.King, Team.White);
             king.PositionPiece(5, 5);
-        
+            
             //Assert
             king.CurrentX.Should().Be(5);
             king.CurrentY.Should().Be(5);
         }
     
         [Test]
-        public void WhenCreatingTiles_AndLookupTileWithIndex25_ThenTileIndexShouldBe25()
+        public void WhenCreatingTiles_AndLookupTileIndex_ThenTileIndexShouldBeAsStated()
         {
             //Arrange
             var notationString = Container.Resolve<NotationString>();
             var chessBoardInfoSO = Container.Resolve<ChessBoardInfoSO>();
             var piecesPrefabsSO = Container.Resolve<PiecesPrefabsSO>();
             var tileSet = new TileSet(chessBoardInfoSO);
+            var tile = Object.Instantiate(chessBoardInfoSO.tileInfoSO.tilePrefab);
             tileSet.Initialize();
         
             //Act
             var tileIndex = tileSet.LookupTileIndex(tileSet[2, 5]);
+            var tileIndex2 = tileSet.LookupTileIndex(tileSet[5, 7]);
+            var tileIndex3 = tileSet.LookupTileIndex(tile);
 
 
             //Assert
             tileIndex.Should().Be(new Vector2Int(2, 5));
+            tileIndex2.Should().Be(new Vector2Int(5, 7));
+            tileIndex3.Should().Be(new Vector2Int(-1, -1));
         }
     
         [Test]
@@ -117,19 +108,42 @@ namespace SteampunkChess.Tests
             var notationString = Container.Resolve<NotationString>();
             var chessBoardInfoSO = Container.Resolve<ChessBoardInfoSO>();
             var piecesPrefabsSO = Container.Resolve<PiecesPrefabsSO>();
-            var pieceArrangement = new PieceArrangement(notationString, chessBoardInfoSO, piecesPrefabsSO);
+            var chessPieceFactory = Container.Resolve<ChessPieceFactory>();
+            var pieceArrangement = new PieceArrangement(notationString, chessBoardInfoSO, piecesPrefabsSO, chessPieceFactory);
             var tileSet = new TileSet(chessBoardInfoSO);
             tileSet.Initialize();
             pieceArrangement.Initialize();
             Movement move = new Movement(new Vector2Int(1, 0), new Vector2Int(2, 2), pieceArrangement);
-        
-        
+            
+            
             //Act
             var movePGN = move.GetMovePGN();
+            
+            
+            //Assert
+            movePGN.Should().Be("<size=30>♞</size>c3");
+        }
+        
+        [Test]
+        public void FindAllIndexesListExtensionTest()
+        {
+            //Arrange
+            var list = new List<int>
+            {
+                10, 15, 10, 20, 30, 10, 40, 60
+            };
+            
+            //Act
+            var findAllIndexes = list.FindAllIndexes(x => x == 10);
+            var findAllIndexes2 = list.FindAllIndexes(x => x == 15);
+            var findAllIndexes3 = list.FindAllIndexes(x => x == -110);
 
 
             //Assert
-            movePGN.Should().Be("<size=30>♞</size>c3");
+            findAllIndexes.Count.Should().Be(3);
+            findAllIndexes2.Count.Should().Be(1);
+            findAllIndexes3.Count.Should().Be(0);
+
         }
     }
 }

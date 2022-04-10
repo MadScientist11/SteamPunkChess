@@ -43,11 +43,15 @@ namespace SteampunkChess
         {
             ChessPiece pieceToMove = MovePiece;
             ChessPiece enemy = _pieceArrangement[Destination.x, Destination.y];
+            enemy?.Dispose();
             _pieceArrangement[Start.x, Start.y] = null;
             _pieceArrangement[Destination.x, Destination.y] = pieceToMove;
             await pieceToMove.PositionPiece(Destination.x, Destination.y);
-            _specialMove?.ProcessSpecialMove();
-            enemy?.Dispose();
+            
+            if(_specialMove != null)
+                await _specialMove.ProcessSpecialMove();
+            
+            
         }
 
         public string GetMovePGN()

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -12,16 +11,18 @@ namespace SteampunkChess
         private readonly NotationString _notationString;
         private readonly ChessBoardInfoSO _chessBoardInfoSO;
         private readonly PiecesPrefabsSO _piecesPrefabsSO;
-        
+        private readonly ChessPieceFactory _chessPieceFactory;
+
         private const string PiecesParentName = "Pieces";
         private Transform _piecesParent;
        
 
-        public PieceArrangement(NotationString notationString, ChessBoardInfoSO chessBoardInfoSO, PiecesPrefabsSO piecesPrefabsSO) 
+        public PieceArrangement(NotationString notationString, ChessBoardInfoSO chessBoardInfoSO, PiecesPrefabsSO piecesPrefabsSO, ChessPieceFactory chessPieceFactory) 
         {
             _notationString = notationString;
             _chessBoardInfoSO = chessBoardInfoSO;
             _piecesPrefabsSO = piecesPrefabsSO;
+            _chessPieceFactory = chessPieceFactory;
             _chessPieces = new ChessPiece[chessBoardInfoSO.boardSizeX, chessBoardInfoSO.boardSizeY];
         }
         
@@ -34,7 +35,7 @@ namespace SteampunkChess
 
         public PieceArrangement DeepCopy()
         {
-            PieceArrangement pieceArrangement = new PieceArrangement(_notationString, _chessBoardInfoSO, _piecesPrefabsSO);
+            PieceArrangement pieceArrangement = new PieceArrangement(_notationString, _chessBoardInfoSO, _piecesPrefabsSO, _chessPieceFactory);
   
             for (int x = 0; x < _chessBoardInfoSO.boardSizeX; x++)
             {
@@ -91,17 +92,8 @@ namespace SteampunkChess
         public ChessPiece SpawnSinglePiece(ChessPieceType pieceType, Team team)
         {
             var pieceGO = Object.Instantiate(_piecesPrefabsSO.piecesPrefabs[(int)pieceType - 1], _piecesParent);
-          
-            ChessPiece cp = pieceType switch
-            {
-                ChessPieceType.Pawn => new Pawn(),
-                ChessPieceType.Rook => new Rook(),
-                ChessPieceType.Knight => new Knight(),
-                ChessPieceType.Bishop => new Bishop(),
-                ChessPieceType.Queen => new Queen(),
-                ChessPieceType.King => new King(),
-                _ => throw new ArgumentOutOfRangeException(nameof(pieceType), pieceType, null)
-            };
+
+            ChessPiece cp = _chessPieceFactory.CreatePiece(pieceType);
             
             cp.ChessType = pieceType;
             cp.Team = team;

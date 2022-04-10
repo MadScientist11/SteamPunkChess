@@ -17,23 +17,26 @@ namespace SteampunkChess
         private readonly IPopUpService _popUpService;
 
         public ChessPlayer ActivePlayer { get; private set; }
-        
+
         public ChessPlayer[] ChessPlayers { get; }
 
         private ChessPlayer _localPlayer;
 
         private GameTimer _timer;
-        
+
         public PieceArrangementData InitialPieceArrangementData { get; private set; }
 
         public bool IsActivePlayer => ActivePlayer == _localPlayer;
-        
-        
+
+
         public Team WhoseTurn { get; private set; }
 
+        public bool WaitingForUserInput { get; set; }
 
-        public ChessGame(NotationString notationString, IBoardFactory boardFactory, INetworkService networkService, GameCameraController gameCameraController
-        , PlayerFactory playerFactory, TimerFactory timerFactory, IPopUpService popUpService)
+
+        public ChessGame(NotationString notationString, IBoardFactory boardFactory, INetworkService networkService,
+            GameCameraController gameCameraController
+            , PlayerFactory playerFactory, TimerFactory timerFactory, IPopUpService popUpService)
         {
             _notationString = notationString;
             _boardFactory = boardFactory;
@@ -43,48 +46,46 @@ namespace SteampunkChess
             _timerFactory = timerFactory;
             _popUpService = popUpService;
             ChessPlayers = new ChessPlayer[2];
-            
         }
 
 
         public void Initialize()
         {
-            InitialPieceArrangementData = _notationString.GameDataFromNotationString(); 
-            
+            InitialPieceArrangementData = _notationString.GameDataFromNotationString();
+
             ChessBoard chessBoard = _boardFactory.Create();
-            
+
             CreatePlayers(chessBoard);
             chessBoard.Initialize(this);
-            
-            
-            
+
+
             _timer = _timerFactory.Create();
-            _timer.InitializeTimer(ChessPlayers[0],ChessPlayers[1], EndOfGame);
-            
-            
+            _timer.InitializeTimer(ChessPlayers[0], ChessPlayers[1], EndOfGame);
+
+
             WhoseTurn = (Team) InitialPieceArrangementData.whoseTurn;
             ActivePlayer = ChessPlayers[(int) WhoseTurn];
             _localPlayer = GetLocalPlayer();
-           
-            _gameCameraController.Initialize(_localPlayer.Team);
-            
-            _timer.Start();
 
-            
+            _gameCameraController.Initialize(_localPlayer.Team);
+
+            _timer.Start();
         }
 
-       
-        
+
         private ChessPlayer GetLocalPlayer()
         {
             int team = _networkService.LocalPlayer.PlayerTeam;
             Logger.DebugError($"Local player is from team {team}");
             return ChessPlayers[team];
         }
-        
+
         public bool CanPerformMove()
         {
-            return IsActivePlayer;
+            if (IsActivePlayer && !WaitingForUserInput)
+                return true;
+            
+            return false;
         }
 
         public void ChangeActiveTeam()
@@ -93,7 +94,7 @@ namespace SteampunkChess
             ActivePlayer = ChessPlayers[(int) WhoseTurn];
             _timer.SwitchPlayer();
         }
-        
+
         public bool IsTeamTurnActive(Team team)
         {
             return ActivePlayer.Team == team;
@@ -103,33 +104,30 @@ namespace SteampunkChess
         {
             for (int i = 0; i < 2; i++)
             {
-                ChessPlayers[i] = _playerFactory.Create(chessBoard, (Team) i, InitialPieceArrangementData, 
+                ChessPlayers[i] = _playerFactory.Create(chessBoard, (Team) i, InitialPieceArrangementData,
                     _networkService.LocalPlayer.MatchTimeLimitInSeconds);
                 ChessPlayers[i].Initialize();
             }
-            
         }
 
         public void EndOfGame(Team winTeam)
         {
             _timer.Stop();
-            Debug.LogError(_localPlayer.Team ==  winTeam ? "You win" : "Game over");
+            Debug.LogError(_localPlayer.Team == winTeam ? "You win" : "Game over");
             MatchResult result = _localPlayer.Team == winTeam ? MatchResult.Win : MatchResult.Lose;
             _popUpService.ShowPopUp(GameConstants.PopUps.WinOrLoseWindow, result);
-            
         }
 
-       
-        
+
         public PieceArrangementData AssembleCurrentGameData()
         {
             PieceArrangementData pieceArrangementData = new PieceArrangementData();
-            pieceArrangementData.whoseTurn = (int)WhoseTurn;
+            pieceArrangementData.whoseTurn = (int) WhoseTurn;
             pieceArrangementData.canBlackCastleKingSide = ChessPlayers[(int) Team.Black].CanRightSideCastle;
             pieceArrangementData.canBlackCastleQueenSide = ChessPlayers[(int) Team.Black].CanLeftSideCastle;
             pieceArrangementData.canWhiteCastleKingSide = ChessPlayers[(int) Team.White].CanRightSideCastle;
             pieceArrangementData.canWhiteCastleQueenSide = ChessPlayers[(int) Team.White].CanLeftSideCastle;
-          
+
             return pieceArrangementData;
         }
     }
@@ -142,6 +140,7 @@ namespace SteampunkChess
         {
             _instantiator = instantiator;
         }
+
         public GameTimer Create()
         {
             var playerTimer = _instantiator.Instantiate<GameTimer>();

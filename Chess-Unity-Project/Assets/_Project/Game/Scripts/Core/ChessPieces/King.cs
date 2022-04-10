@@ -7,7 +7,12 @@ namespace SteampunkChess
 {
     public class King : ChessPiece
     {
-        //[SerializeField] private SOGameFenDataSO gameFenDataSO;
+        private readonly ISpecialMoveFactory _specialMoveFactory;
+
+        public King(ISpecialMoveFactory specialMoveFactory)
+        {
+            _specialMoveFactory = specialMoveFactory;
+        }
       
         public override List<Movement> GetAvailableMoves(PieceArrangement pieceArrangement, int tileCountX, int tileCountY, List<Movement> moveHistory)
         {
@@ -82,26 +87,26 @@ namespace SteampunkChess
                 if (Team == 0)
                 {
                     if (leftRook == null)
-                        if (pieceArrangement[0, ourY].ChessType == ChessPieceType.Rook)
+                        if (pieceArrangement[0, ourY]?.ChessType == ChessPieceType.Rook)
                             if (pieceArrangement[0, ourY].Team == Team.White)
                                 if (pieceArrangement[3, ourY] == null && pieceArrangement[2, ourY] == null && pieceArrangement[1, ourY] == null)
                                 {
                                     var movement = new Movement(new Vector2Int(CurrentX, CurrentY),
                                         new Vector2Int(2, ourY), 
                                         pieceArrangement, 
-                                        new Castling(moveHistory, pieceArrangement));
+                                        _specialMoveFactory.CreateSpecialMove(SpecialMoveType.Castling, moveHistory, pieceArrangement));
                                     availableMoves.Add(movement);
                                      
                                 }
                     if (rightRook == null)
-                        if (pieceArrangement[7, ourY].ChessType == ChessPieceType.Rook)
+                        if (pieceArrangement[7, ourY]?.ChessType == ChessPieceType.Rook)
                             if (pieceArrangement[7, ourY].Team == Team.White   )
                                 if (pieceArrangement[5, ourY] == null && pieceArrangement[6, ourY] == null)
                                 {
                                     var movement = new Movement(new Vector2Int(CurrentX, CurrentY),
                                         new Vector2Int(6, ourY), 
                                         pieceArrangement, 
-                                        new Castling(moveHistory, pieceArrangement));
+                                        _specialMoveFactory.CreateSpecialMove(SpecialMoveType.Castling, moveHistory, pieceArrangement));
                                     availableMoves.Add(movement);
                                    
                                 }
@@ -109,25 +114,25 @@ namespace SteampunkChess
                 else
                 {
                     if (leftRook == null)
-                        if (pieceArrangement[0, ourY].ChessType == ChessPieceType.Rook)
+                        if (pieceArrangement[0, ourY]?.ChessType == ChessPieceType.Rook)
                             if (pieceArrangement[0, ourY].Team == Team.Black)
                                 if (pieceArrangement[3, ourY] == null && pieceArrangement[2, ourY] == null && pieceArrangement[1, ourY] == null)
                                 {
                                     var movement = new Movement(new Vector2Int(CurrentX, CurrentY),
                                         new Vector2Int(2, ourY), 
                                         pieceArrangement, 
-                                        new Castling(moveHistory, pieceArrangement));
+                                        _specialMoveFactory.CreateSpecialMove(SpecialMoveType.Castling, moveHistory, pieceArrangement));
                                     availableMoves.Add(movement);
                                 }
                     if (rightRook == null)
-                        if (pieceArrangement[7, ourY].ChessType == ChessPieceType.Rook)
+                        if (pieceArrangement[7, ourY]?.ChessType == ChessPieceType.Rook)
                             if (pieceArrangement[7, ourY].Team == Team.Black)
                                 if (pieceArrangement[5, ourY] == null && pieceArrangement[6, ourY] == null)
                                 {
                                     var movement = new Movement(new Vector2Int(CurrentX, CurrentY),
                                         new Vector2Int(6, ourY), 
                                         pieceArrangement, 
-                                        new Castling(moveHistory, pieceArrangement));
+                                        _specialMoveFactory.CreateSpecialMove(SpecialMoveType.Castling, moveHistory, pieceArrangement));
                                     availableMoves.Add(movement);
                                 }
 

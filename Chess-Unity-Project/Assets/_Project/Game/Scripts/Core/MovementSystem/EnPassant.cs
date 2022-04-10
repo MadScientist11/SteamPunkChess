@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SteampunkChess
 {
@@ -13,7 +14,7 @@ namespace SteampunkChess
            _pieceArrangement = pieceArrangement;
        }
 
-        public void ProcessSpecialMove()
+        public Task ProcessSpecialMove()
         {
             Movement newMove = _moveHistory[_moveHistory.Count - 1];
             ChessPiece myPawn = _pieceArrangement[newMove.Destination.x, newMove.Destination.y];
@@ -27,6 +28,7 @@ namespace SteampunkChess
                     targetPawn.Dispose();
                 }
             }
+            return Task.CompletedTask;
         }
     }
 }

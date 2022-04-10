@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SteampunkChess
@@ -14,7 +15,7 @@ namespace SteampunkChess
             _pieceArrangement = pieceArrangement;
         }
         
-        public void ProcessSpecialMove()
+        public Task ProcessSpecialMove()
         {
             Movement lastMove = _moveList[_moveList.Count - 1];
 
@@ -59,6 +60,8 @@ namespace SteampunkChess
    
                 }
             }
+
+            return Task.CompletedTask;
         }
     }
 }
