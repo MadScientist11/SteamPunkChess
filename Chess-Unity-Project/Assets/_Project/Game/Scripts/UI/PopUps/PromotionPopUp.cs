@@ -5,6 +5,8 @@ using Photon.Pun;
 using Photon.Realtime;
 using SteampunkChess.PopUps;
 using SteampunkChess.PopUpService;
+using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace SteampunkChess
