@@ -16,7 +16,8 @@ MonoBehaviour:
     m_Code: en
   m_SharedData: {fileID: 11400000, guid: a93613f3218ca6f47ade975f8287f92e, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - id: 0
   m_TableData:
   - m_Id: 247994505977856
     m_Localized: Hello
@@ -58,5 +59,194 @@ MonoBehaviour:
     m_Localized: Send
     m_Metadata:
       m_Items: []
+  - m_Id: 29199799919394816
+    m_Localized: Play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560640
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560641
+    m_Localized: Exit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560642
+    m_Localized: Incorrect password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560643
+    m_Localized: Connecting to the server...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560644
+    m_Localized: Establishing connection to the cloud...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560645
+    m_Localized: Initializing game services...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560646
+    m_Localized: You have successfully logged in
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560647
+    m_Localized: You have successfully signed in
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406207315968
+    m_Localized: Continue as Guest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064704
+    m_Localized: Enter room password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064705
+    m_Localized: Join game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064706
+    m_Localized: 'Name:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064707
+    m_Localized: 'Time:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064708
+    m_Localized: Join
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064709
+    m_Localized: Create game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064710
+    m_Localized: Random game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064711
+    m_Localized: Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064712
+    m_Localized: Team
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064713
+    m_Localized: Time
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064714
+    m_Localized: Create room
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064715
+    m_Localized: '{time} min'
+    m_Metadata:
+      m_Items:
+      - id: 0
+  - m_Id: 29272406245064716
+    m_Localized: Exit the game?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064717
+    m_Localized: Yes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064718
+    m_Localized: No
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064719
+    m_Localized: 'You score:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064720
+    m_Localized: Win
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064721
+    m_Localized: Loss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064722
+    m_Localized: Press space
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29277494380412928
+    m_Localized: Guest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576450801664
+    m_Localized: Video
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356096
+    m_Localized: Audio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356097
+    m_Localized: Game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356098
+    m_Localized: Size Window
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356099
+    m_Localized: Vertical sync
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356100
+    m_Localized: Texture quality
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356101
+    m_Localized: Post processing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356102
+    m_Localized: Volume Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576488550400
+    m_Localized: Volume Effects
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576488550401
+    m_Localized: Logout
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576488550402
+    m_Localized: Change nickname
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29634033498800128
+    m_Localized: No limit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29684133629607936
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29684133663162368
+    m_Localized: Hight
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29684133663162369
+    m_Localized: Medium
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29684133663162370
+    m_Localized: Low
+    m_Metadata:
+      m_Items: []
   references:
     version: 1
+    00000000:
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 0b40f52f19ff6700

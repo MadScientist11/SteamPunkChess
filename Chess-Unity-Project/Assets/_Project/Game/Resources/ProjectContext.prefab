@@ -76,3 +76,6 @@ MonoBehaviour:
   _popUpService: {fileID: 11400000, guid: 72aeecdc8a1b7084e8380a385945e36b, type: 2}
   _playFabService: {fileID: 11400000, guid: 6ba6dc385ac93c24698a55c3dba3e664, type: 2}
   _photonService: {fileID: 11400000, guid: 2c49257d3f3b1c142b53eb60d2373aff, type: 2}
+  _localizationSystem: {fileID: 11400000, guid: 58814964fe5233f438ee96d31e35791a, type: 2}
+  _inputSystem: {fileID: 11400000, guid: 388dcd549b4942347b94e5ceee6bbf04, type: 2}
+  _audioSystem: {fileID: 11400000, guid: 4e6b7c9beb98b2d4eaaf1cd5076775d3, type: 2}

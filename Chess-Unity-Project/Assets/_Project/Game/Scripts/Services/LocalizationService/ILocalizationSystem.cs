@@ -1,7 +1,7 @@
 ﻿namespace SteampunkChess.LocalizationSystem
 {
-    public interface ILocalizationSystem
+    public interface ILocalizationSystem : IService
     {
-
+        void ChangeLanguage(string languageIdentifier);
     }
 }

@@ -55,6 +55,190 @@ MonoBehaviour:
     m_Key: send_text
     m_Metadata:
       m_Items: []
+  - m_Id: 29199799919394816
+    m_Key: play_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560640
+    m_Key: settings_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560641
+    m_Key: exit_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406207315968
+    m_Key: continue_as_guest_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560642
+    m_Key: incorrectpassword_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560643
+    m_Key: connectingtotheserver_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560644
+    m_Key: establishingconnectiontothecloud_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560645
+    m_Key: initializinggameservices_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560646
+    m_Key: youhavesuccessfullylogged_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29199799944560647
+    m_Key: youhavesuccessfullysigned_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064704
+    m_Key: enterroompassword_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064705
+    m_Key: joingame_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064706
+    m_Key: nametext
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064707
+    m_Key: timetext
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064708
+    m_Key: jointext
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064709
+    m_Key: createtext
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064710
+    m_Key: randomgame_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064711
+    m_Key: nameroom_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064712
+    m_Key: team_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064713
+    m_Key: time_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064714
+    m_Key: createroom_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064715
+    m_Key: gametiming_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29634033498800128
+    m_Key: gametimenolimit_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064716
+    m_Key: exitthegame_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064717
+    m_Key: yes_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064718
+    m_Key: no_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064719
+    m_Key: youscore_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064720
+    m_Key: win_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064721
+    m_Key: loss_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29272406245064722
+    m_Key: pressanykey_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29277494380412928
+    m_Key: guest_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576450801664
+    m_Key: video_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356096
+    m_Key: audio_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356097
+    m_Key: game_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356098
+    m_Key: sizewindow_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356099
+    m_Key: verticalsync_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356100
+    m_Key: texturequality_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356101
+    m_Key: postprocessing_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576484356102
+    m_Key: volumemusic_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576488550400
+    m_Key: volumeeffects_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576488550401
+    m_Key: logout_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29617576488550402
+    m_Key: "\u0441hangenickname_text"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29684133629607936
+    m_Key: language_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29684133663162368
+    m_Key: high_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29684133663162369
+    m_Key: medium_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29684133663162370
+    m_Key: low_text
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

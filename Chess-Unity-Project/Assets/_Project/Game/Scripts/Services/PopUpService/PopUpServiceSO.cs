@@ -1,6 +1,7 @@
 using System;
 using SteampunkChess.PopUps;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -26,14 +27,14 @@ namespace SteampunkChess.PopUpService
             _instantiator = instantiator;
             serviceContainer.ServiceList.Add(this);
         }
-        
-        public string InitializationMessage => "PopUp initialization";
-        
+
+        public string InitializationMessage => "Initializing game services";
+
         public async Task Initialize()
         {
             await Task.Delay(2000);
         }
-        
+
 
         public async void ShowPopUp(string popUpKey, params object[] data)
         {
@@ -45,7 +46,8 @@ namespace SteampunkChess.PopUpService
 
             if (_asyncOperationHandles.ContainsKey(popUpKey))
             {
-                GameObject go = _instantiator.InstantiatePrefab(_asyncOperationHandles[popUpKey].Result, FindObjectOfType<Canvas>().transform);
+                GameObject go = _instantiator.InstantiatePrefab(_asyncOperationHandles[popUpKey].Result,
+                    FindObjectOfType<Canvas>().transform);
                 _popUpsInstances[popUpKey] = go;
                 go.GetComponent<IPopUp>().Show(data);
                 return;
@@ -79,7 +81,6 @@ namespace SteampunkChess.PopUpService
                     break;
                 case HideType.HideAndDestroy:
                     popUp.Hide(true);
-                    _popUpsInstances.Remove(popUpKey);
                     break;
                 case HideType.HideDestroyAndRelease:
                     popUp.OnDestroyed += () =>
@@ -88,9 +89,15 @@ namespace SteampunkChess.PopUpService
                         _asyncOperationHandles.Remove(popUpKey);
                     };
                     popUp.Hide(true);
-                    _popUpsInstances.Remove(popUpKey);
                     break;
             }
+        }
+
+        public void RemoveInstanceFromInternalPool(string instanceKey)
+        {
+            
+            if (_popUpsInstances.ContainsKey(instanceKey))
+                _popUpsInstances.Remove(instanceKey);
         }
 
         public void HideAll(HideType hideType)
@@ -119,8 +126,6 @@ namespace SteampunkChess.PopUpService
             }
 
             _popUpsInstances.Clear();
-
         }
-        
     }
 }

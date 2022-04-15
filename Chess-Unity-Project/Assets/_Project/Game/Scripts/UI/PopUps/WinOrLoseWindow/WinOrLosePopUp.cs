@@ -1,11 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using SteampunkChess.NetworkService;
-using SteampunkChess.PopUps;
 using TMPro;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Zenject;
 
 namespace SteampunkChess.PopUps
@@ -25,23 +21,30 @@ namespace SteampunkChess.PopUps
         [SerializeField] private TextMeshProUGUI _scoreText;
         
         private INetworkService _networkService;
+        private IAudioSystem _audioSystem;
+
+        public override string PopUpKey { get; set; } = GameConstants.PopUps.WinOrLoseWindow;
 
         [Inject]
-        private void Construct(INetworkService networkService)
+        private void Construct(INetworkService networkService, IAudioSystem audioSystem)
         {
+            _audioSystem = audioSystem;
             _networkService = networkService;
         }
         
         public override void Show(params object[] data)
         {
             base.Show(data);
+            
             MatchResult matchResult = (MatchResult) data[0];
             switch (matchResult)
             {
                 case MatchResult.Win:
+                    _audioSystem.PlaySound(Sounds.WinSound);
                     DisplayAsWinPopUp();
                     break;
                 case MatchResult.Lose:
+                    _audioSystem.PlaySound(Sounds.LoseSound);
                     DisplayAsLosePopUp();
                     break;
                 case MatchResult.Draw:
@@ -54,7 +57,7 @@ namespace SteampunkChess.PopUps
 
         public void ToLobby()
         {
-            Addressables.LoadSceneAsync("Lobby");
+            _networkService.LeaveRoom();
         }
 
         private void DisplayAsWinPopUp()

@@ -4,6 +4,7 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace SteampunkChess.NetworkService
 {
@@ -25,10 +26,15 @@ namespace SteampunkChess.NetworkService
         private void OnDisable()
         {
             PhotonNetwork.RemoveCallbackTarget(this);
+            ClearRoomCallbackEvents();
+        }
+
+        public void ClearRoomCallbackEvents()
+        {
             OnPlayerEnteredRoomEvent = null;
             OnCreatedRoomEvent = null;
             OnJoinedRoomEvent = null;
-           
+            OnPlayerPropertiesUpdateEvent = null;
         }
 
         #region InRoomCallbacks
@@ -92,6 +98,7 @@ namespace SteampunkChess.NetworkService
         public void OnLeftRoom()
         {
             gameObject.SetActive(false);
+            Addressables.LoadSceneAsync("Lobby");
             Logger.Debug("Room left, destroying room callbacks dispatcher");
         }
 

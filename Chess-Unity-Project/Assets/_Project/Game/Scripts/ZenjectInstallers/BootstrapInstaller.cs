@@ -1,4 +1,5 @@
 using SteampunkChess.CloudService;
+using SteampunkChess.LocalizationSystem;
 using SteampunkChess.NetworkService;
 using SteampunkChess.PopUpService;
 using UnityEngine;
@@ -12,14 +13,22 @@ namespace SteampunkChess
         [SerializeField] private PopUpServiceSO _popUpService;
         [SerializeField] private PlayFabServiceSO _playFabService;
         [SerializeField] private PhotonServiceSO _photonService;
+        [SerializeField] private LocalizationSystemSO _localizationSystem;
+        [SerializeField] private InputSystem _inputSystem;
+        [SerializeField] private AudioSystem _audioSystem;
        
         public override void InstallBindings()
         {
             BindPopUpService();
             BindCloudService();
             BindNetworkService();
+            BindLocalizationService();
+            BindInputSystem();
+            BindAudioSystem();
+            
             BindInstallerInterfaces();
             BindServiceContainer();
+            
             Container
                 .Bind<PlayFabPlayerData>()
                 .AsSingle();
@@ -37,8 +46,30 @@ namespace SteampunkChess
                 .Inject(_playFabService);
             Container
                 .Inject(_popUpService);
+            Container
+                .Inject(_localizationSystem);
+            Container
+                .Inject(_inputSystem);
+            Container
+                .Inject(_audioSystem);
         }
-
+        
+        private void BindAudioSystem()
+        {
+            Container
+                .Bind<IAudioSystem>()
+                .To<AudioSystem>()
+                .FromInstance(_audioSystem)
+                .AsSingle();
+        }
+        private void BindInputSystem()
+        {
+            Container
+                .Bind<IInputSystem>()
+                .To<InputSystem>()
+                .FromInstance(_inputSystem)
+                .AsSingle();
+        }
         private void BindServiceContainer()
         {
             Container
@@ -59,6 +90,15 @@ namespace SteampunkChess
             Container
                 .BindInterfacesAndSelfTo<PhotonServiceSO>()
                 .FromInstance(_photonService)
+                .AsSingle();
+        }
+        
+        private void BindLocalizationService()
+        {
+            Container
+                .Bind<ILocalizationSystem>()
+                .To<LocalizationSystemSO>()
+                .FromInstance(_localizationSystem)
                 .AsSingle();
         }
 

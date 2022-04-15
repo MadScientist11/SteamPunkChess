@@ -143,10 +143,12 @@ namespace SteampunkChess
         private ChessGame _chessGame;
         private List<Movement> _availableMoves;
         private bool _processingMove;
+        private IAudioSystem _audioSystem;
 
 
-        protected ChessBoard(ChessBoardData chessBoardData, MoveListingData moveListingData, ChessPieceFactory chessPieceFactory)
+        protected ChessBoard(ChessBoardData chessBoardData, MoveListingData moveListingData, ChessPieceFactory chessPieceFactory, IAudioSystem audioSystem)
         {
+            _audioSystem = audioSystem;
             _chessBoardInfoSO = chessBoardData.ChessBoardInfoSO;
             _moveHistory = new List<Movement>();
             _moveListing = new MoveListing(moveListingData, _moveHistory);
@@ -262,6 +264,7 @@ namespace SteampunkChess
                 _moveHistory.Add(move);
                 _moveListing.UpdateMoveListing();
                 await move.Process();
+                _audioSystem.PlaySound(Sounds.PieceMoveSound);
 
                 if (IsCheckmated())
                 {

@@ -198,8 +198,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9a6a5ebe1cb1724693ebe5adb0a2306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainMenuScene:
-    m_AssetGUID: d56fcbe2307e8e942bdb9e7bf42797dd
+  _signInScene:
+    m_AssetGUID: fd711fb6dff098b4294ec3c1447e9625
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
@@ -898,6 +898,30 @@ PrefabInstance:
     - target: {fileID: 2793842037039953329, guid: fe9b211919f46b042a9203a05f70f8f5, type: 3}
       propertyPath: m_Name
       value: SplashScreenMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631254086873126161, guid: fe9b211919f46b042a9203a05f70f8f5, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 1080
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631254086873126161, guid: fe9b211919f46b042a9203a05f70f8f5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.043
+      objectReference: {fileID: 0}
+    - target: {fileID: 5433870029584022614, guid: fe9b211919f46b042a9203a05f70f8f5, type: 3}
+      propertyPath: m_text
+      value: Press any key
+      objectReference: {fileID: 0}
+    - target: {fileID: 5433870029584022614, guid: fe9b211919f46b042a9203a05f70f8f5, type: 3}
+      propertyPath: m_fontSize
+      value: 25.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5433870029584022614, guid: fe9b211919f46b042a9203a05f70f8f5, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5433870029584022614, guid: fe9b211919f46b042a9203a05f70f8f5, type: 3}
+      propertyPath: m_enableWordWrapping
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe9b211919f46b042a9203a05f70f8f5, type: 3}

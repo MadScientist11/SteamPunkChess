@@ -6,6 +6,8 @@ namespace SteampunkChess.NetworkService
     public interface INetworkService : IService
     {
         event Action<(string playerName, string playerScore)[]> OnReadyToStartGame;
+
+        event Action OnConnectedToMasterEvent;
         bool OfflineMode { get; }
         PhotonServiceSO.NetworkPlayer LocalPlayer { get; }
         
@@ -19,6 +21,8 @@ namespace SteampunkChess.NetworkService
         void CreateRoom(string roomName, int timeLimitInSeconds, int playerTeam, string password = null);
 
         void LoadGame();
+
+        void LeaveRoom();
 
         void JoinLobby();
         void JoinRoom(string roomName = null);

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using SteampunkChess.CloudService;
 using SteampunkChess.NetworkService;
 using SteampunkChess.PopUps;
 using SteampunkChess.PopUpService;
@@ -15,6 +17,7 @@ namespace SteampunkChess
         private readonly PlayerFactory _playerFactory;
         private readonly TimerFactory _timerFactory;
         private readonly IPopUpService _popUpService;
+        private readonly ICloudService _cloudService;
 
         public ChessPlayer ActivePlayer { get; private set; }
 
@@ -36,7 +39,8 @@ namespace SteampunkChess
 
         public ChessGame(NotationString notationString, IBoardFactory boardFactory, INetworkService networkService,
             GameCameraController gameCameraController
-            , PlayerFactory playerFactory, TimerFactory timerFactory, IPopUpService popUpService)
+            , PlayerFactory playerFactory, TimerFactory timerFactory, IPopUpService popUpService,
+            ICloudService cloudService)
         {
             _notationString = notationString;
             _boardFactory = boardFactory;
@@ -45,6 +49,7 @@ namespace SteampunkChess
             _playerFactory = playerFactory;
             _timerFactory = timerFactory;
             _popUpService = popUpService;
+            _cloudService = cloudService;
             ChessPlayers = new ChessPlayer[2];
         }
 
@@ -84,7 +89,7 @@ namespace SteampunkChess
         {
             if (IsActivePlayer && !WaitingForUserInput)
                 return true;
-            
+
             return false;
         }
 
@@ -115,6 +120,15 @@ namespace SteampunkChess
             _timer.Stop();
             Debug.LogError(_localPlayer.Team == winTeam ? "You win" : "Game over");
             MatchResult result = _localPlayer.Team == winTeam ? MatchResult.Win : MatchResult.Lose;
+            if (result == MatchResult.Win && _cloudService.IsLoggedIn)
+            {
+                int newPlayerScore = _networkService.LocalPlayer.PlayerScore + 20;
+                _cloudService.UpdateUserData(new Dictionary<string, string>()
+                {
+                    [GameConstants.PlayerDataKeys.PlayerScoreKey] = newPlayerScore.ToString(),
+                }); 
+            }
+                
             _popUpService.ShowPopUp(GameConstants.PopUps.WinOrLoseWindow, result);
         }
 

@@ -21,12 +21,11 @@ namespace SteampunkChess.CloudService
         private PlayFabPlayerData _playFabPlayerData;
 
         public bool IsLoggedIn =>  PlayFabClientAPI.IsClientLoggedIn();
-        public string InitializationMessage => "Initializing cloud service";
+        public string InitializationMessage => "Establishing connection to the cloud...";
         
         public async Task Initialize()
         {
             await Task.Delay(2000);
-
         }
         
         [Inject]
@@ -72,6 +71,18 @@ namespace SteampunkChess.CloudService
 
         public void UpdateUserData(Dictionary<string, string> data)
         {
+            foreach (var dataKey in data.Keys)
+            {
+                switch (dataKey)
+                {
+                    case GameConstants.PlayerDataKeys.PlayerScoreKey:
+                    {
+                        _playFabPlayerData.PlayerScore = Convert.ToInt32(data[dataKey]);
+                        break;
+                    }
+                }
+            }
+            
             var request = new UpdateUserDataRequest()
             {
                 Data = data,
@@ -98,6 +109,11 @@ namespace SteampunkChess.CloudService
 
         }
 
+        public void Logout()
+        {
+            PlayFabClientAPI.ForgetAllCredentials();
+        }
+
         private void OnSendAccountRecoveryEmailSuccess(SendAccountRecoveryEmailResult recoveryEmailResult)
         {
             _onSuccess?.Invoke();
@@ -109,7 +125,7 @@ namespace SteampunkChess.CloudService
         {
             _onSuccess?.Invoke();
             _onSuccess = null;
-            UpdateUserData(new Dictionary<string, string>()
+            UpdateUserData(new Dictionary<string, string>
             {
                 [GameConstants.PlayerDataKeys.PlayerScoreKey] = "100",
             });

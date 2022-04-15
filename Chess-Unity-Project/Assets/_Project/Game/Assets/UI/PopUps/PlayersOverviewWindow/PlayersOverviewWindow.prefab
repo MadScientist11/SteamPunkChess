@@ -369,7 +369,7 @@ MonoBehaviour:
   _tweenTransform: {fileID: 58062909117847171}
   _easeType: 0
   _showDuration: 0
-  _hideDuration: 0.5
+  _hideDuration: 0
   _popUpGO: {fileID: 3784742513726713121}
   _playersNameTexts:
   - {fileID: 1503192300878742876}

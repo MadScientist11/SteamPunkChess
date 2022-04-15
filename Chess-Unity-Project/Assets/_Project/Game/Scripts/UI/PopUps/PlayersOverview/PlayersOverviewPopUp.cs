@@ -12,15 +12,18 @@ namespace SteampunkChess
 {
     public class PlayersOverviewPopUp : PopUp
     {
+        [Header("PlayersOverviewPopUp")]
         [SerializeField] private GameObject _popUpGO;
         
         [SerializeField] private TextMeshProUGUI[] _playersNameTexts;
         [SerializeField] private TextMeshProUGUI[] _playersScoreTexts;
         
         [SerializeField] private TextMeshProUGUI _countdownText;
-        private float _countDownTime = 5f;
+        private const float _countDownTime = 5f;
         private IPopUpService _popUpService;
         private INetworkService _networkService;
+
+        public override string PopUpKey { get; set; } = GameConstants.PopUps.PlayersOverviewWindow;
 
         [Inject]
         private void Construct(IPopUpService popUpService, INetworkService networkService)
@@ -48,11 +51,13 @@ namespace SteampunkChess
 
         private void InitializePlayersUI(List<PlayerInfoDTO> playerInfo)
         {
-            for (int i = 0; i < 2; i++)
-            {
-                _playersNameTexts[i].text = playerInfo[i].PlayerName;
-                _playersScoreTexts[i].text = playerInfo[i].PlayerScore.ToString();
-            }
+            PlayerInfoDTO whitePlayer = playerInfo[0].PlayerTeam == Team.White ? playerInfo[0] : playerInfo[1];
+            PlayerInfoDTO blackPlayer = playerInfo[0].PlayerTeam == Team.Black ? playerInfo[0] : playerInfo[1];
+            
+            _playersNameTexts[0].text = whitePlayer.PlayerName;
+            _playersScoreTexts[0].text = whitePlayer.PlayerScore.ToString();
+            _playersNameTexts[1].text = blackPlayer.PlayerName;
+            _playersScoreTexts[1].text = blackPlayer.PlayerScore.ToString();
         }
 
         private IEnumerator StartCountdownToStartGame()
@@ -70,15 +75,15 @@ namespace SteampunkChess
                 }
                 else
                 {
-                    StopCoroutine(StartCountdownToStartGame());
+                    _popUpService.HidePopUp(GameConstants.PopUps.PlayersOverviewWindow, HideType.HideAndDestroy);
                     _networkService.LoadGame();
-                    _popUpService.HidePopUp(GameConstants.PopUps.PlayersOverviewWindow, HideType.HideDestroyAndRelease);
                     yield break;
                 }
 
                 yield return null;
-
             }
         }
+        
+        
     }
 }

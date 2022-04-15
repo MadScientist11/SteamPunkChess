@@ -12,5 +12,6 @@ namespace SteampunkChess.CloudService
         void RegisterUser(RegisterUserParams userParams, Action onSuccess, Action<string> onError);
         void LogInUser(LogInUserParams userParams, Action onSuccess, Action<string> onError);
         void SendAccountRecoveryEmail(ResetPasswordUserParams userParams, Action onSuccess, Action<string> onError);
+        void Logout();
     }
 }

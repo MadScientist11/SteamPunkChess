@@ -9,5 +9,7 @@ namespace SteampunkChess.PopUpService
         void HidePopUp(string popUpKey, HideType hideType);
         void HideAll(HideType hideType);
 
+        void RemoveInstanceFromInternalPool(string instanceKey);
+
     }
 }

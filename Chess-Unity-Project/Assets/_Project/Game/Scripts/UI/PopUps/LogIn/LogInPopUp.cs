@@ -22,6 +22,8 @@ namespace SteampunkChess.PopUps
         private IPopUpService _popUpService;
         private ICloudService _cloudService;
 
+        public override string PopUpKey { get; set; } = GameConstants.PopUps.LogInWindow;
+
         [Inject]
         private void Construct(IPopUpService popUpService, ICloudService cloudService)
         {

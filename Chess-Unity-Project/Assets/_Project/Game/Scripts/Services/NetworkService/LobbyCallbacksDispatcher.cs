@@ -18,6 +18,11 @@ namespace SteampunkChess.NetworkService
         private void OnDisable()
         {
             PhotonNetwork.RemoveCallbackTarget(this);
+            ClearLobbyCallbacksEvents();
+        }
+
+        public void ClearLobbyCallbacksEvents()
+        {
             OnRoomListUpdateEvent = null;
         }
 

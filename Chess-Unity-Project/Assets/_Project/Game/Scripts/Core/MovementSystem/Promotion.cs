@@ -21,8 +21,7 @@ namespace SteampunkChess
             _popUpService = popUpService;
             _gameFactory = gameFactory;
         }
-
-        //TODO: Choose promotion peace
+        
         public async Task ProcessSpecialMove()
         {
             Movement lastMove = _moveList[_moveList.Count - 1];
@@ -32,9 +31,7 @@ namespace SteampunkChess
                 targetPawn.Team == Team.Black && lastMove.Destination.y == 0)
             {
                 _gameFactory.CachedGame.WaitingForUserInput = true;
-                Debug.Log("Promotion");
                 _popUpService.ShowPopUp(GameConstants.PopUps.PromotionWindow, _gameFactory, _moveList, _pieceArrangement);
-
                 await TaskEx.WaitUntil(() => _gameFactory.CachedGame.WaitingForUserInput == false);
             }
             

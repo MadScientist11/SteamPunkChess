@@ -854,7 +854,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f443a37086d1c8643bbba646335a299b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cb5a2cbfc47e966499b5f1434b588e6d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -957,6 +957,10 @@ PrefabInstance:
       propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2467050650888858979, guid: 382496ef1cd3ceb4bb56076c825766b1, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3014047935168829190, guid: 382496ef1cd3ceb4bb56076c825766b1, type: 3}
       propertyPath: m_Name
       value: RoomListing
@@ -971,7 +975,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7930671719913466656, guid: 382496ef1cd3ceb4bb56076c825766b1, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7930671719913466656, guid: 382496ef1cd3ceb4bb56076c825766b1, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1086,6 +1090,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WindowCreateOrRandomGame
       objectReference: {fileID: 0}
+    - target: {fileID: 5298349492937218979, guid: d95046426cb6c6245a32f5a6b19962ca, type: 3}
+      propertyPath: m_StringReference.m_TableEntryReference.m_KeyId
+      value: 29272406245064709
+      objectReference: {fileID: 0}
     - target: {fileID: 6222941319289842210, guid: d95046426cb6c6245a32f5a6b19962ca, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1096,7 +1104,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6222941319289842210, guid: d95046426cb6c6245a32f5a6b19962ca, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6222941319289842210, guid: d95046426cb6c6245a32f5a6b19962ca, type: 3}
       propertyPath: m_AnchorMax.x

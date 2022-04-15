@@ -3,7 +3,6 @@ using SteampunkChess.PopUps;
 using SteampunkChess.PopUpService;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 namespace SteampunkChess
@@ -16,10 +15,14 @@ namespace SteampunkChess
         private string _roomName;
         private INetworkService _networkService;
         private IPopUpService _popUpService;
+        private IAudioSystem _audioSystem;
+
+        public override string PopUpKey { get; set; } = GameConstants.PopUps.RoomPasswordWindow;
 
         [Inject]
-        private void Construct(INetworkService networkService, IPopUpService popUpService)
+        private void Construct(INetworkService networkService, IPopUpService popUpService, IAudioSystem audioSystem)
         {
+            _audioSystem = audioSystem;
             _popUpService = popUpService;
             _networkService = networkService;
         }
@@ -33,14 +36,16 @@ namespace SteampunkChess
 
         public void JoinRoom()
         {
+            _popUpService.HidePopUp(GameConstants.PopUps.RoomPasswordWindow, HideType.Hide);
             if (_passwordInputField.text == _roomPassword)
             {
                 _networkService.JoinRoom(_roomName);
             }
             else
             {
+                _audioSystem.PlaySound(Sounds.IncorrectPasswordSound);
                 _popUpService.ShowPopUp(GameConstants.PopUps.ErrorToast, "Incorrect password");
-                _popUpService.HidePopUp(GameConstants.PopUps.RoomPasswordWindow, HideType.Hide);
+                
             }
         }
     }

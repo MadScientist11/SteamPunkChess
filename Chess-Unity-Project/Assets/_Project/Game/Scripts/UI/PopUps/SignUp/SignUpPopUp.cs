@@ -28,6 +28,8 @@ namespace SteampunkChess.PopUps
             "@" + 
             @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))\z";
 
+        public override string PopUpKey { get; set; } = GameConstants.PopUps.SignUpWindow;
+
         [Inject]
         private void Construct(IPopUpService popUpService, ICloudService cloudService)
         {

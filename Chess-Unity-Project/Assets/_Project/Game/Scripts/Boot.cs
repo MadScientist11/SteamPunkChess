@@ -1,29 +1,46 @@
 using System;
 using System.Threading.Tasks;
+using SteampunkChess.LocalizationSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Zenject;
 
-
-
 namespace SteampunkChess
 {
     public class Boot : MonoBehaviour
     {
-        [SerializeField] private AssetReference _mainMenuScene;
+        [SerializeField] private AssetReference _signInScene;
         [SerializeField] private TextMeshProUGUI _loadingText;
         
         private ServiceContainer _serviceContainer;
         private bool _isInitialized;
-       
+        private ILocalizationSystem _localizationSystem;
+        private IAudioSystem _audioSystem;
+
+
         [Inject]
-        private void Construct(ServiceContainer serviceContainer)
+        private void Construct(ServiceContainer serviceContainer, ILocalizationSystem localizationSystem, IAudioSystem audioSystem)
         {
+            _audioSystem = audioSystem;
+            _localizationSystem = localizationSystem;
             _serviceContainer = serviceContainer;
-            
         }
-       
+
+        private void Start()
+        {
+            ScreenResolution screenResolution = (ScreenResolution) Prefs.Settings.WindowSize;
+
+            (int width, int height, bool fullScreen) resolutionInfo = screenResolution switch
+            {
+                ScreenResolution.XGA => (1024, 768, false),
+                ScreenResolution.HD => (1366, 768, false),
+                ScreenResolution.FullHD => (1920, 1080, true),
+                ScreenResolution.QHD => (2560, 1440, true),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            Screen.SetResolution(resolutionInfo.width, resolutionInfo.height, resolutionInfo.fullScreen);
+        }
 
         private async Task InitializeServices()
         {
@@ -42,9 +59,21 @@ namespace SteampunkChess
                 _loadingText.gameObject.SetActive(true);
                 _isInitialized = true;
                 await InitializeServices();
-                _mainMenuScene.LoadSceneAsync();
+                _signInScene.LoadSceneAsync();
+                ApplySettings();
             }
         }
+
+        private void ApplySettings()
+        {
+            _localizationSystem.ChangeLanguage(Prefs.Settings.Language);
+            _audioSystem.SetMusicVolume();
+            _audioSystem.SetSoundsVolume();
+            QualitySettings.vSyncCount = Convert.ToInt32(Prefs.Settings.Vsync);
+            QualitySettings.masterTextureLimit = Prefs.Settings.TextureQuality;
+        }
+        
+     
     }
 
 

@@ -14,7 +14,9 @@ namespace SteampunkChess
         [SerializeField] private int _popUpLifetimeMs = 5000;
         [SerializeField] private string _addressableToastName;
         private string _message;
-        
+
+        public override string PopUpKey { get; set; }
+
         private IPopUpService _popUpService;
 
         [Inject]
@@ -25,6 +27,7 @@ namespace SteampunkChess
 
         public override async void Start()
         {
+            PopUpKey = _addressableToastName;
             base.Start();
             await Task.Delay(_popUpLifetimeMs);
             _popUpService.HidePopUp(_addressableToastName, HideType.HideDestroyAndRelease);

@@ -15,7 +15,7 @@ namespace SteampunkChess
        
         private void SetPlayerStartingView()
         {
-            if(_playerTeam == Team.Black)
+            if(_playerTeam == Team.White)
                 _cameraPivot.Rotate(Vector3.up, 180f);
         }
     }

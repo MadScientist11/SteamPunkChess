@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e3d14847d474b00820db46f9c0588d5, type: 3}
   m_Name: ChessBoardInfo
   m_EditorClassIdentifier: 
-  boardPrefab: {fileID: 4464227730072253838, guid: b86d4da409fc15740be69c0245117ed8, type: 3}
+  boardPrefab: {fileID: 719502015763156132, guid: db4a46abb463a1e4bb4d54c63a8b3c6b, type: 3}
   boardSizeX: 8
   boardSizeY: 8
   tileInfoSO: {fileID: 11400000, guid: 5afb43f8387c1ae4bb2748aa1e8a0eb2, type: 2}

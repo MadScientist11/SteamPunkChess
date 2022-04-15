@@ -1,25 +1,30 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using SteampunkChess;
 using UnityEngine;
 using Zenject;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Object = UnityEngine.Object;
 
 public class PlayerInfoDTO
 {
-    public PlayerInfoDTO(int playerID, string playerName, int playerScore)
+    public PlayerInfoDTO(int playerID, string playerName, int playerScore, Team playerTeam)
     {
         PlayerID = playerID;
         PlayerName = playerName;
         PlayerScore = playerScore;
+        PlayerTeam = playerTeam;
     }
 
     public int PlayerID { get; }
     public string PlayerName { get; }
     public int PlayerScore { get; }
+
+    public Team PlayerTeam { get; }
 }
 
 namespace SteampunkChess.NetworkService
@@ -163,8 +168,9 @@ namespace SteampunkChess.NetworkService
                 foreach (var player in PhotonNetwork.PlayerList)
                 {
                     int score = (int) player.CustomProperties[GameConstants.CustomProperties.Score];
+                    int team = (int) player.CustomProperties[GameConstants.CustomProperties.Team];
                     _playersInfo.Add(
-                        new PlayerInfoDTO(player.ActorNumber, player.NickName, score)
+                        new PlayerInfoDTO(player.ActorNumber, player.NickName, score, (Team)team)
                     );
                 }
 
@@ -173,6 +179,8 @@ namespace SteampunkChess.NetworkService
         }
 
         private List<PlayerInfoDTO> _playersInfo;
+
+        public event Action OnConnectedToMasterEvent;
 
         [Inject]
         private void Construct(ServiceContainer serviceContainer, PlayFabPlayerData playFabPlayerData)
@@ -195,6 +203,8 @@ namespace SteampunkChess.NetworkService
             };
             
             await Task.Delay(000);
+            
+            
         }
 
         public void JoinLobby()
@@ -212,6 +222,13 @@ namespace SteampunkChess.NetworkService
 
 
             PhotonNetwork.JoinRoom(roomName);
+        }
+
+        public void LeaveRoom()
+        {
+            PhotonNetwork.LeaveRoom();
+            RoomCallbacksDispatcher.ClearRoomCallbackEvents();
+            LobbyCallbacksDispatcher.ClearLobbyCallbacksEvents();
         }
 
         public void CreateRoom(string roomName, int timeLimitInSeconds, int playerTeam, string password = null)
@@ -246,6 +263,7 @@ namespace SteampunkChess.NetworkService
                 if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
                 {
                     PhotonNetwork.CurrentRoom.IsOpen = false;
+                    PhotonNetwork.CurrentRoom.IsVisible = false;
                 }
             }
 
@@ -256,13 +274,14 @@ namespace SteampunkChess.NetworkService
         {
             if (PhotonNetwork.IsMasterClient)
                 PhotonNetwork.LoadLevel(GameSceneIndex);
+            
         }
+        
+        
 
         private void OnDestroy()
         {
             PhotonNetwork.RemoveCallbackTarget(this);
-            
-
         }
 
 
@@ -275,7 +294,9 @@ namespace SteampunkChess.NetworkService
 
         public void OnConnectedToMaster()
         {
+            OnConnectedToMasterEvent?.Invoke();
             Logger.DebugError("Client connected to master");
+            OnConnectedToMasterEvent = null;
         }
 
         public void OnDisconnected(DisconnectCause cause)

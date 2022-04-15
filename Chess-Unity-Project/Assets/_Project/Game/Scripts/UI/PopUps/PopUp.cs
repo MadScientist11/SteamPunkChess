@@ -1,22 +1,36 @@
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using System;
+using SteampunkChess.PopUpService;
 using UnityEngine;
+using Zenject;
+
 namespace SteampunkChess.PopUps
 {
-    public class PopUp : MonoBehaviour, IPopUp
+    public abstract class PopUp : MonoBehaviour, IPopUp
     {
         [SerializeField] private Vector2 _startLocation;
         [SerializeField] private Vector2 _locationTo;
 
         [SerializeField] private RectTransform _tweenTransform;
 
-        [Header("Animation Tweaks")]
+        [Header("Animation Tweaks")] 
         [SerializeField] private Ease _easeType;
+
         [SerializeField] private float _showDuration;
         [SerializeField] private float _hideDuration;
+        private IPopUpService _popUpService;
 
         public event Action OnDestroyed;
+
+
+        public abstract string PopUpKey { get; set; }
+
+        [Inject]
+        private void Construct(IPopUpService popUpService)
+        {
+            _popUpService = popUpService;
+        }
 
 
         public virtual void Start()
@@ -51,6 +65,7 @@ namespace SteampunkChess.PopUps
 
         private void OnDestroy()
         {
+            _popUpService.RemoveInstanceFromInternalPool(PopUpKey);
             OnDestroyed?.Invoke();
         }
     }

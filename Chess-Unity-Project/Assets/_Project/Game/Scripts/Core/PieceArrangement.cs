@@ -15,7 +15,6 @@ namespace SteampunkChess
 
         private const string PiecesParentName = "Pieces";
         private Transform _piecesParent;
-       
 
         public PieceArrangement(NotationString notationString, ChessBoardInfoSO chessBoardInfoSO, PiecesPrefabsSO piecesPrefabsSO, ChessPieceFactory chessPieceFactory) 
         {
@@ -50,22 +49,6 @@ namespace SteampunkChess
 
             return pieceArrangement;
         }
-
-        public bool Eq(PieceArrangement pA)
-        {
-            for (int x = 0; x < _chessBoardInfoSO.boardSizeX; x++)
-            {
-                for (int y = 0; y < _chessBoardInfoSO.boardSizeY; y++)
-                {
-                    if (pA[x, y] != this[x, y])
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
         
         public void Initialize()
         {
@@ -91,7 +74,8 @@ namespace SteampunkChess
         
         public ChessPiece SpawnSinglePiece(ChessPieceType pieceType, Team team)
         {
-            var pieceGO = Object.Instantiate(_piecesPrefabsSO.piecesPrefabs[(int)pieceType - 1], _piecesParent);
+            var prefabIndex = ((int)pieceType - 1) + ((int)team * 6);
+            var pieceGO = Object.Instantiate(_piecesPrefabsSO.piecesPrefabs[prefabIndex], _piecesParent);
 
             ChessPiece cp = _chessPieceFactory.CreatePiece(pieceType);
             
@@ -99,10 +83,6 @@ namespace SteampunkChess
             cp.Team = team;
             cp.PieceTransform = pieceGO.transform;
             cp.Initialize();
-
-        
-            if (cp is Knight knight && team == Team.Black)
-                knight.PieceTransform.rotation = Quaternion.AngleAxis(180f, knight.PieceTransform.up);
             
             return cp;
         }

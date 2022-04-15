@@ -1,7 +1,3 @@
-using System;
-using SteampunkChess.CloudService;
-using SteampunkChess.CloudService.Models;
-using SteampunkChess.PopUpService;
 using UnityEngine;
 using Zenject;
 
@@ -9,40 +5,20 @@ namespace SteampunkChess
 {
     public class MenuEntryPoint : MonoBehaviour
     {
-        [SerializeField] private RegisterUserMenu _registerUserMenu;
-        private IPopUpService _popUpService;
-        private ICloudService _cloudService;
+        private IAudioSystem _audioSystem;
 
         [Inject]
-        private void Construct(IPopUpService popUpService, ICloudService cloudService)
+        private void Construct(IAudioSystem audioSystem)
         {
-            _cloudService = cloudService;
-            _popUpService = popUpService;
+            _audioSystem = audioSystem;
         }
 
         private void Awake()
         {
-            ProcessUserValidation();
+            _audioSystem.StartBackgroundMusicLoop();
         }
         
-        private void ProcessUserValidation()
-        {
-            if (Prefs.RememberMe)
-            {
-                var userParams = new LogInUserParams(Prefs.Username, Prefs.Password);
-                _cloudService.LogInUser(userParams, null, null);
-            }
-            
-            if (!_cloudService.IsLoggedIn)
-            {
-                _popUpService.ShowPopUp(GameConstants.PopUps.LogInWindow,Array.Empty<int>());
-            }
-            else
-            {
-                Debug.LogError("Logged in");
-                _registerUserMenu.SwitchToMainMenu();
-            }
-        }
+       
        
     }
 }

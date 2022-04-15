@@ -1,12 +1,26 @@
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
+using Zenject;
 
 namespace SteampunkChess.LocalizationSystem
 {
     [CreateAssetMenu(fileName = "LocalizationSystem", menuName = "Services/LocalizationSystem")]
     public class LocalizationSystemSO : ScriptableObject, ILocalizationSystem
     {
+        public string InitializationMessage { get; } = "Initialize localization service...";
+
+        [Inject]
+        private void Construct(ServiceContainer serviceContainer)
+        {
+            serviceContainer.ServiceList.Add(this);
+        }
+        public async Task Initialize()
+        {
+            await LocalizationSettings.InitializationOperation.Task;
+        }
+        
         public void GetLocalizedString(string tableName, string localizationKey)
         {
             LocalizationSettings.StringDatabase.GetLocalizedString(tableName, localizationKey);
@@ -14,7 +28,8 @@ namespace SteampunkChess.LocalizationSystem
         }
         public void GetLocalizedString(string tableName, string localizationKey, params object[] arguments)
         {
-            LocalizationSettings.StringDatabase.GetLocalizedString(tableName, localizationKey, arguments);         
+            LocalizationSettings.StringDatabase.GetLocalizedString(tableName, localizationKey, arguments);  
+            
         }
 
         public void ChangeLanguage(string languageIdentifier)
@@ -32,5 +47,6 @@ namespace SteampunkChess.LocalizationSystem
             }
         }
 
+        
     }
 }

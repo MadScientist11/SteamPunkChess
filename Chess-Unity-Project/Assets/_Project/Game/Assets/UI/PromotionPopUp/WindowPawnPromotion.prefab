@@ -184,7 +184,7 @@ MonoBehaviour:
   _tweenTransform: {fileID: 798540592990530948}
   _easeType: 2
   _showDuration: 0.5
-  _hideDuration: 0.5
+  _hideDuration: 0
 --- !u!1 &3716331948322564310
 GameObject:
   m_ObjectHideFlags: 0

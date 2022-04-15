@@ -8,6 +8,6 @@ namespace SteampunkChess
     {
         [SerializeField] private PromotionPopUp _promotionPopUp;
 
-        public void OnClick_ChoosePiecePromoteTo(int pieceIndex) => _promotionPopUp.RPC_ProcessPromotion(pieceIndex);
+        public void OnClick_ChoosePiecePromoteTo(int pieceIndex) => _promotionPopUp.ChoosePieceAndProcessPromotion(pieceIndex);
     }
 }

@@ -25,6 +25,10 @@ MonoBehaviour:
     m_Address: Lobby
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: fd711fb6dff098b4294ec3c1447e9625
+    m_Address: SignInScene
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9e45ba45cf167064f8d2632052821566, type: 2}
   m_SchemaSet:

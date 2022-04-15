@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace SteampunkChess
@@ -10,6 +8,7 @@ namespace SteampunkChess
         public void Disable()
         {
             gameObject.SetActive(false);
+            _loadingUI.SetActive(false);
         }
 
         public void SwitchToLoading()
@@ -17,5 +16,7 @@ namespace SteampunkChess
             Disable();
             _loadingUI.SetActive(true);
         }
+
+       
     }
 }

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df80cb06f4bc4cf49af5f89fd3a11128, type: 3}
+  m_Name: AudioSystem
+  m_EditorClassIdentifier: 
+  _audioMixer: {fileID: 24100000, guid: 0e413e3a6d9288949b5c1b0045bbba0e, type: 2}
+  _backgroundMusic:
+  - {fileID: 8300000, guid: df6ac6920fe458a4e904afc3df785630, type: 3}
+  - {fileID: 8300000, guid: 3c035f3862cf0f54c95fc4eac27a8b11, type: 3}
+  - {fileID: 8300000, guid: da2c4df0f0c383c4c914bcad9d551d45, type: 3}
+  - {fileID: 8300000, guid: a1798981cd515e44e8ede693a6a6801b, type: 3}
+  - {fileID: 8300000, guid: 29b35ecdd9954454897f55d2842516f1, type: 3}
+  _incorrectPasswordSound: {fileID: 8300000, guid: 7590b714f63c1484a9af73411e8d4db3, type: 3}
+  _loseSound: {fileID: 8300000, guid: 57f33b809069d934d95556523eb40edc, type: 3}
+  _winSound: {fileID: 8300000, guid: 134ccf9ae1889754191caab0e80d2f21, type: 3}
+  _pieceMoveSound: {fileID: 8300000, guid: a395f847c7bc34d449e203dbdb31771a, type: 3}

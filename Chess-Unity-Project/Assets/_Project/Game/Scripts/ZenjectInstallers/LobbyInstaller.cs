@@ -18,7 +18,7 @@ namespace SteampunkChess
             Container
                 .Bind<LobbyUI>()
                 .FromInstance(_lobbyUI)
-                .AsSingle();
+                .AsTransient();
         }
 
         private void BindRoomListingFactory()
@@ -40,7 +40,7 @@ namespace SteampunkChess
         {
             Container
                 .Bind<Lobby>()
-                .AsSingle();
+                .AsTransient();
         }
 
         private void BindRoomListingMenu()

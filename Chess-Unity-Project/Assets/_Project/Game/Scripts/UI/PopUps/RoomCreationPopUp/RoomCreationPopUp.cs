@@ -22,7 +22,9 @@ namespace SteampunkChess
         
         private int _playerTeam;
         private int _matchTimeLimitInSeconds;
-        
+
+        public override string PopUpKey { get; set; } = GameConstants.PopUps.RoomCreationWindow;
+
 
         [Inject]
         private void Construct(INetworkService networkService, IPopUpService popUpService)
