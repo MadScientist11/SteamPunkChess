@@ -16,6 +16,8 @@ namespace SteampunkChess.NetworkService
         
         public event Action<Player, Hashtable> OnPlayerPropertiesUpdateEvent;
         
+        public event Action<Player> OnPlayerLeftRoomEvent;
+        
         
 
         private void OnEnable()
@@ -35,6 +37,7 @@ namespace SteampunkChess.NetworkService
             OnCreatedRoomEvent = null;
             OnJoinedRoomEvent = null;
             OnPlayerPropertiesUpdateEvent = null;
+            OnPlayerLeftRoomEvent = null;
         }
 
         #region InRoomCallbacks
@@ -47,7 +50,7 @@ namespace SteampunkChess.NetworkService
 
         public void OnPlayerLeftRoom(Player otherPlayer)
         {
-            
+            OnPlayerLeftRoomEvent?.Invoke(otherPlayer);
         }
 
         public void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)

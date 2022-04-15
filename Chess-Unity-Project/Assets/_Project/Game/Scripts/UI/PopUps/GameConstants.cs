@@ -17,6 +17,7 @@ namespace SteampunkChess
             public const string PromotionWindow = "WindowPawnPromotion";
             public const string LoadingPopUp = "LoadingPopUp";
             public const string SettingsPopUp = "SettingsPopUp";
+            public const string ExitGamePopUp = "WindowExitTheGame";
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using SteampunkChess.CloudService;
 using SteampunkChess.CloudService.Models;
+using SteampunkChess.LocalizationSystem;
 using SteampunkChess.PopUpService;
 using SteampunkChess.SignalSystem;
 using TMPro;
@@ -21,12 +22,14 @@ namespace SteampunkChess.PopUps
 
         private IPopUpService _popUpService;
         private ICloudService _cloudService;
+        private ILocalizationSystem _localizationSystem;
 
         public override string PopUpKey { get; set; } = GameConstants.PopUps.LogInWindow;
 
         [Inject]
-        private void Construct(IPopUpService popUpService, ICloudService cloudService)
+        private void Construct(IPopUpService popUpService, ICloudService cloudService, ILocalizationSystem localizationSystem)
         {
+            _localizationSystem = localizationSystem;
             _popUpService = popUpService;
             _cloudService = cloudService;
         }
@@ -48,7 +51,7 @@ namespace SteampunkChess.PopUps
                 Prefs.Password = _passwordInputField.text;
             }
             _popUpService.HidePopUp(GameConstants.PopUps.LogInWindow, HideType.HideDestroyAndRelease);
-            _popUpService.ShowPopUp(GameConstants.PopUps.SuccessToast, "You have successfully logged in");
+            _popUpService.ShowPopUp(GameConstants.PopUps.SuccessToast, _localizationSystem.GetLocalizedString("UI Text","youhavesuccessfullylogged_text"));
             _onLogInSignal?.Raise();
 
         }

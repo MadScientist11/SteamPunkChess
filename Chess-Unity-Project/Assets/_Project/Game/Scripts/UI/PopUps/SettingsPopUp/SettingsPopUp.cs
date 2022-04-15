@@ -105,6 +105,7 @@ namespace SteampunkChess
         public void ToggleMusic(bool value)
         {
             Prefs.Settings.Music = value;
+            _audioSystem.StartBackgroundMusicLoop();
             _audioSystem.SetMusicVolume();
         }
 

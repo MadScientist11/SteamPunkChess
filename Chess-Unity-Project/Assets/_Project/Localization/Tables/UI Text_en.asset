@@ -209,19 +209,15 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 29617576484356102
-    m_Localized: Volume Music
+    m_Localized: Music
     m_Metadata:
       m_Items: []
   - m_Id: 29617576488550400
-    m_Localized: Volume Effects
+    m_Localized: Sounds
     m_Metadata:
       m_Items: []
   - m_Id: 29617576488550401
     m_Localized: Logout
-    m_Metadata:
-      m_Items: []
-  - m_Id: 29617576488550402
-    m_Localized: Change nickname
     m_Metadata:
       m_Items: []
   - m_Id: 29634033498800128
@@ -233,7 +229,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 29684133663162368
-    m_Localized: Hight
+    m_Localized: High
     m_Metadata:
       m_Items: []
   - m_Id: 29684133663162369
@@ -242,6 +238,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 29684133663162370
     m_Localized: Low
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29948976760700928
+    m_Localized: Finding opponent...
     m_Metadata:
       m_Items: []
   references:

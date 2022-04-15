@@ -65,6 +65,10 @@ MonoBehaviour:
     m_Address: SettingsPopUp
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: e6c3c37762ea0c34998292de5501ba6a
+    m_Address: WindowExitTheGame
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 9e45ba45cf167064f8d2632052821566, type: 2}
   m_SchemaSet:

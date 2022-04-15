@@ -219,10 +219,6 @@ MonoBehaviour:
     m_Key: logout_text
     m_Metadata:
       m_Items: []
-  - m_Id: 29617576488550402
-    m_Key: "\u0441hangenickname_text"
-    m_Metadata:
-      m_Items: []
   - m_Id: 29684133629607936
     m_Key: language_text
     m_Metadata:
@@ -237,6 +233,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 29684133663162370
     m_Key: low_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29948976760700928
+    m_Key: findingopponent_text
     m_Metadata:
       m_Items: []
   m_Metadata:

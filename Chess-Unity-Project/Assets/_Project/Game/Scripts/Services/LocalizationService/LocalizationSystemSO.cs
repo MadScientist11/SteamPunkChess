@@ -16,20 +16,20 @@ namespace SteampunkChess.LocalizationSystem
         {
             serviceContainer.ServiceList.Add(this);
         }
+
         public async Task Initialize()
         {
             await LocalizationSettings.InitializationOperation.Task;
         }
-        
-        public void GetLocalizedString(string tableName, string localizationKey)
+
+        public string GetLocalizedString(string tableName, string localizationKey)
         {
-            LocalizationSettings.StringDatabase.GetLocalizedString(tableName, localizationKey);
-           
+            return LocalizationSettings.StringDatabase.GetLocalizedString(tableName, localizationKey);
         }
+
         public void GetLocalizedString(string tableName, string localizationKey, params object[] arguments)
         {
-            LocalizationSettings.StringDatabase.GetLocalizedString(tableName, localizationKey, arguments);  
-            
+            LocalizationSettings.StringDatabase.GetLocalizedString(tableName, localizationKey, arguments);
         }
 
         public void ChangeLanguage(string languageIdentifier)
@@ -46,7 +46,5 @@ namespace SteampunkChess.LocalizationSystem
                 }
             }
         }
-
-        
     }
 }

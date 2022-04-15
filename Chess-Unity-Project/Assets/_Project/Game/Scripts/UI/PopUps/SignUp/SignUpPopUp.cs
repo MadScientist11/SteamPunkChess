@@ -4,6 +4,7 @@ using SteampunkChess.CloudService.Models;
 using SteampunkChess.PopUpService;
 using SteampunkChess.SignalSystem;
 using System.Text.RegularExpressions;
+using SteampunkChess.LocalizationSystem;
 using TMPro;
 using UnityEngine;
 using Zenject;
@@ -22,6 +23,7 @@ namespace SteampunkChess.PopUps
 
         private IPopUpService _popUpService;
         private ICloudService _cloudService;
+        private ILocalizationSystem _localizationSystem;
 
         private const string EmailPattern = 
             @"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*" + 
@@ -31,8 +33,9 @@ namespace SteampunkChess.PopUps
         public override string PopUpKey { get; set; } = GameConstants.PopUps.SignUpWindow;
 
         [Inject]
-        private void Construct(IPopUpService popUpService, ICloudService cloudService)
+        private void Construct(IPopUpService popUpService, ICloudService cloudService, ILocalizationSystem localizationSystem)
         {
+            _localizationSystem = localizationSystem;
             _popUpService = popUpService;
             _cloudService = cloudService;
         }
@@ -64,7 +67,7 @@ namespace SteampunkChess.PopUps
         private void OnRegisterSuccess()
         {
             _popUpService.HidePopUp(GameConstants.PopUps.SignUpWindow, HideType.HideDestroyAndRelease);
-            _popUpService.ShowPopUp(GameConstants.PopUps.SuccessToast, "You have successfully signed in");
+            _popUpService.ShowPopUp(GameConstants.PopUps.SuccessToast, _localizationSystem.GetLocalizedString("UI Text","youhavesuccessfullysigned_text"));
             _onLogInSignal?.Raise();
         }
         

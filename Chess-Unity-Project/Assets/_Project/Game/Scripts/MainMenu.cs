@@ -1,5 +1,6 @@
 using System;
 using SteampunkChess.CloudService;
+using SteampunkChess.LocalizationSystem;
 using SteampunkChess.NetworkService;
 using SteampunkChess.PopUps;
 using SteampunkChess.PopUpService;
@@ -16,10 +17,12 @@ namespace SteampunkChess
         private ICloudService _cloudService;
         private IPopUpService _popUpService;
         private IInputSystem _inputSystem;
+        private ILocalizationSystem _localizationSystem;
 
         [Inject]
-        private void Construct(INetworkService networkService, ICloudService cloudService, IPopUpService popUpService, IInputSystem inputSystem)
+        private void Construct(INetworkService networkService, ICloudService cloudService, IPopUpService popUpService, IInputSystem inputSystem, ILocalizationSystem localizationSystem)
         {
+            _localizationSystem = localizationSystem;
             _inputSystem = inputSystem;
             _popUpService = popUpService;
             _cloudService = cloudService;
@@ -54,6 +57,7 @@ namespace SteampunkChess
 
         private void BackFromLobby()
         {
+            _popUpService.HideAll(HideType.HideDestroyAndRelease);
             Addressables.LoadSceneAsync("MainMenu");
         }
 

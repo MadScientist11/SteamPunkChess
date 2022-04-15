@@ -18,6 +18,7 @@ namespace SteampunkChess
         private readonly TimerFactory _timerFactory;
         private readonly IPopUpService _popUpService;
         private readonly ICloudService _cloudService;
+        private readonly IInputSystem _inputSystem;
 
         public ChessPlayer ActivePlayer { get; private set; }
 
@@ -26,6 +27,7 @@ namespace SteampunkChess
         private ChessPlayer _localPlayer;
 
         private GameTimer _timer;
+        
 
         public PieceArrangementData InitialPieceArrangementData { get; private set; }
 
@@ -40,8 +42,9 @@ namespace SteampunkChess
         public ChessGame(NotationString notationString, IBoardFactory boardFactory, INetworkService networkService,
             GameCameraController gameCameraController
             , PlayerFactory playerFactory, TimerFactory timerFactory, IPopUpService popUpService,
-            ICloudService cloudService)
+            ICloudService cloudService, IInputSystem inputSystem)
         {
+            _inputSystem = inputSystem;
             _notationString = notationString;
             _boardFactory = boardFactory;
             _networkService = networkService;
@@ -73,6 +76,15 @@ namespace SteampunkChess
             _localPlayer = GetLocalPlayer();
 
             _gameCameraController.Initialize(_localPlayer.Team);
+            _inputSystem.OnBackButtonPressed += () =>
+            {
+                _popUpService.ShowPopUp(GameConstants.PopUps.ExitGamePopUp);
+            };
+
+            _networkService.RoomCallbacksDispatcher.OnPlayerLeftRoomEvent += _ =>
+            {
+                EndOfGame(_localPlayer.Team);
+            };
 
             _timer.Start();
         }
