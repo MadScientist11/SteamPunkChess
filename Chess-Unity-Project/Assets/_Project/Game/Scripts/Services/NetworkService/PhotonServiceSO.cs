@@ -1,31 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Photon.Pun;
 using Photon.Realtime;
-using SteampunkChess;
 using UnityEngine;
 using Zenject;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
-using Object = UnityEngine.Object;
-
-public class PlayerInfoDTO
-{
-    public PlayerInfoDTO(int playerID, string playerName, int playerScore, Team playerTeam)
-    {
-        PlayerID = playerID;
-        PlayerName = playerName;
-        PlayerScore = playerScore;
-        PlayerTeam = playerTeam;
-    }
-
-    public int PlayerID { get; }
-    public string PlayerName { get; }
-    public int PlayerScore { get; }
-
-    public Team PlayerTeam { get; }
-}
 
 namespace SteampunkChess.NetworkService
 {
@@ -276,15 +256,12 @@ namespace SteampunkChess.NetworkService
                 PhotonNetwork.LoadLevel(GameSceneIndex);
             
         }
-        
-        
 
         private void OnDestroy()
         {
             PhotonNetwork.RemoveCallbackTarget(this);
         }
-
-
+        
         #region ConnectionCallbacks
 
         public void OnConnected()
