@@ -16,13 +16,13 @@ namespace SteampunkChess
             _networkService.PhotonRPCSender.OnSelectAndShowAvailableMovesEvent += RPC_SelectPieceAndShowAvailableMoves;
         }
 
-        protected override void MoveTo(Vector2 coords)
+        public override void MoveTo(Vector2 coords)
         {
             object[] content = {coords};
             _networkService.PhotonRPCSender.SendRPC(GameConstants.RPCMethodsByteCodes.OnMoveToCode, content, ReceiverGroup.All, SendOptions.SendReliable);
         }
 
-        protected override void SelectPieceAndShowAvailableMoves(Vector2 coords)
+        public override void SelectPieceAndShowAvailableMoves(Vector2 coords)
         {
             object[] content = {coords};
             _networkService.PhotonRPCSender.SendRPC(GameConstants.RPCMethodsByteCodes.OnSelectAndShowAvailableMovesCode, content, ReceiverGroup.All, SendOptions.SendReliable);

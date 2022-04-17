@@ -20,6 +20,7 @@ namespace SteampunkChess.LocalizationSystem
         public async Task Initialize()
         {
             await LocalizationSettings.InitializationOperation.Task;
+            ChangeLanguage(Prefs.Settings.Language);
         }
 
         public string GetLocalizedString(string tableName, string localizationKey)

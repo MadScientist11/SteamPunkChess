@@ -7,24 +7,6 @@ using Zenject;
 
 namespace SteampunkChess
 {
-    public enum Sounds
-    {
-        IncorrectPasswordSound,
-        LoseSound,
-        WinSound,
-        PieceMoveSound
-    }
-
-    public interface IAudioSystem : IService
-    {
-        void StartBackgroundMusicLoop();
-        void PlaySound(Sounds sounds);
-
-        void SetMusicVolume();
-
-        void SetSoundsVolume();
-    }
-
     [CreateAssetMenu(fileName = "AudioSystem", menuName = "Services/AudioSystem")]
     public class AudioSystem : ScriptableObject, IAudioSystem
     {
@@ -48,6 +30,8 @@ namespace SteampunkChess
         private void Construct(ServiceContainer serviceContainer)
         {
             serviceContainer.ServiceList.Add(this);
+            SetMusicVolume();
+            SetSoundsVolume();
         }
 
         public async Task Initialize()

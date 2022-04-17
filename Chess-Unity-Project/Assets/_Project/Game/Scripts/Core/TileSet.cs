@@ -21,13 +21,12 @@ namespace SteampunkChess
             _tiles = new GameObject[_chessBoardInfoSO.boardSizeX, _chessBoardInfoSO.boardSizeY];
             _tilesParentTransform = new GameObject(TilesParent).transform;
             CreateTilesGO();
-            Debug.Log("Init tile");
         }
         
         public GameObject this[int x, int y]
         {
             get => _tiles[x, y];
-            set => _tiles[x, y] = value;
+            private set => _tiles[x, y] = value;
         }
         
         private void CreateTilesGO()
@@ -39,7 +38,7 @@ namespace SteampunkChess
 
         private GameObject CreateTile(int x, int y)
         {
-            float tileSize = _tileInfoSO.tileDimensionSize * 2;
+            float tileSize = _tileInfoSO.tileDimensionSize * 2f;
             GameObject tile = Object.Instantiate(
                 _tileInfoSO.tilePrefab, 
                 _tileInfoSO.startingSpawnPoint + new Vector3((x * tileSize) + (_tileInfoSO.zOffset * x), _tileInfoSO.yOffset, (y * tileSize) + (_tileInfoSO.zOffset * y)),

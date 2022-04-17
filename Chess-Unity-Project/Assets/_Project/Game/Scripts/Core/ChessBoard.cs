@@ -7,29 +7,39 @@ using Object = UnityEngine.Object;
 
 namespace SteampunkChess
 {
-    //public class MockChessBoard : ChessBoard
-    //{
-    //    public MockChessBoard(ChessBoardInfoSO chessBoardInfoSO, PiecesPrefabsSO piecesPrefabsSO) : base(chessBoardInfoSO, piecesPrefabsSO)
-    //    {
-    //    }
-//
-    //    public MockChessBoard(TileSet tileSet, PieceArrangement pieceArrangement) : base(tileSet, pieceArrangement)
-    //    {
-    //    }
-//
-    //    public MockChessBoard(ChessBoard chessBoard) : base(chessBoard)
-    //    {
-    //    }
-    //}
-//
+    public class MockChessBoard : ChessBoard
+    {
+
+        public ChessPiece ActivePieceM => ActivePiece;
+        
+        
+        public MockChessBoard(ChessBoardData chessBoardData, MoveListingData moveListingData, ChessPieceFactory chessPieceFactory, IAudioSystem audioSystem) : base(chessBoardData, moveListingData, chessPieceFactory, audioSystem)
+        {
+        }
+
+        public override void MoveTo(Vector2 moveTo)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SelectPieceAndShowAvailableMoves(Vector2 hitPosition)
+        {
+            Vector2Int intCoords = new Vector2Int(Mathf.RoundToInt(hitPosition.x), Mathf.RoundToInt(hitPosition.y));
+            OnSelectPieceAndShowAvailableMoves(intCoords);
+        }
+    }
+    
     [Serializable]
     public abstract class NotationString
     {
+
+        public string NotationStringText { get; }
         protected readonly string _notationString;
 
         protected NotationString(string notationString)
         {
             _notationString = notationString;
+            NotationStringText = notationString;
         }
 
         public abstract PieceArrangementData GameDataFromNotationString();
@@ -139,9 +149,9 @@ namespace SteampunkChess
         private readonly MoveListing _moveListing;
         private readonly TileSelection _tileSelection;
 
-        protected ChessPiece ActivePiece;
-        private ChessGame _chessGame;
-        private List<Movement> _availableMoves;
+        public ChessPiece ActivePiece { get; private set; }
+        private IChessGame _chessGame;
+        public List<Movement> AvailableMoves{ get; private set; }
         private bool _processingMove;
         private IAudioSystem _audioSystem;
 
@@ -159,12 +169,7 @@ namespace SteampunkChess
 
         public ChessPiece this[int x, int y] => _pieceArrangement[x, y];
 
-
-        private void DeepCopy()
-        {
-        }
-
-        public virtual void Initialize(ChessGame chessGame)
+        public virtual void Initialize(IChessGame chessGame)
         {
             _chessGame = chessGame;
             InitializeBoardComponents();
@@ -177,8 +182,8 @@ namespace SteampunkChess
             _tileSelection.Initialize();
         }
         
-        protected abstract void MoveTo(Vector2 moveTo);
-        protected abstract void SelectPieceAndShowAvailableMoves(Vector2 hitPosition);
+        public abstract void MoveTo(Vector2 moveTo);
+        public abstract void SelectPieceAndShowAvailableMoves(Vector2 hitPosition);
 
         public void OnTileHover(GameObject tile)
         {
@@ -198,7 +203,7 @@ namespace SteampunkChess
                     {
                         SelectPieceAndShowAvailableMoves(hitPosition);
                     }
-                    else if (SearchForMoveDestination(_availableMoves, hitPosition, out Movement move))
+                    else if (SearchForMoveDestination(AvailableMoves, hitPosition, out Movement move))
                     {
                         MoveTo(move.Destination);
                     }
@@ -229,7 +234,7 @@ namespace SteampunkChess
         protected void OnSelectPieceAndShowAvailableMoves(Vector2Int hitPosition)
         {
             ActivePiece = _pieceArrangement[hitPosition.x, hitPosition.y];
-            _availableMoves = ActivePiece.GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX,
+            AvailableMoves = ActivePiece.GetAvailableMoves(_pieceArrangement, _chessBoardInfoSO.boardSizeX,
                 _chessBoardInfoSO.boardSizeY, _moveHistory);
             RemoveMovesToPreventCheck();
             //byte[] bytes = SerializationUtility.SerializeValue(_availableMoves[0], DataFormat.JSON);
@@ -244,11 +249,11 @@ namespace SteampunkChess
         private void ShowAvailableMoves()
         {
             List<(Vector3, bool)> tileData = new List<(Vector3, bool)>();
-            for (int i = 0; i < _availableMoves.Count; i++)
+            for (int i = 0; i < AvailableMoves.Count; i++)
             {
                 Vector3 tileCenter =
-                    TileSet.GetTileCenter(_availableMoves[i].Destination.x, _availableMoves[i].Destination.y);
-                tileData.Add((tileCenter, _availableMoves[i].IsAttackMove));
+                    TileSet.GetTileCenter(AvailableMoves[i].Destination.x, AvailableMoves[i].Destination.y);
+                tileData.Add((tileCenter, AvailableMoves[i].IsAttackMove));
             }
             
             _tileSelection.ShowSelection(tileData);
@@ -257,7 +262,7 @@ namespace SteampunkChess
 
         protected async void OnMoveTo(Vector2Int moveTo)
         {
-            if (SearchForMoveDestination(_availableMoves, moveTo, out Movement move))
+            if (SearchForMoveDestination(AvailableMoves, moveTo, out Movement move))
             {
                 _processingMove = true;
                 _tileSelection.ClearSelection();
@@ -280,7 +285,7 @@ namespace SteampunkChess
         private void RemoveMovesToPreventCheck()
         {
             ChessPiece targetKing = _chessGame.ActivePlayer.GetPiecesOfType<King>().First();
-            SimulateForSinglePiece(ActivePiece, _availableMoves, targetKing);
+            SimulateForSinglePiece(ActivePiece, AvailableMoves, targetKing);
         }
 
         private void SimulateForSinglePiece(ChessPiece cp, List<Movement> moves, ChessPiece king)

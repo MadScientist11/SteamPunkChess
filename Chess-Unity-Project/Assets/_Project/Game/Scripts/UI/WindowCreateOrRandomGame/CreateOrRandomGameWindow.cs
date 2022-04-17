@@ -22,7 +22,7 @@ namespace SteampunkChess
         public void CreateRoom()
         {
             _popUpService.ShowPopUp(GameConstants.PopUps.RoomCreationWindow, Array.Empty<int>());
-            _popUpService.HideAll(HideType.Hide);
+           // _popUpService.HideAll(HideType.Hide);
         }
 
         public void JoinRandomGame()

@@ -42,7 +42,7 @@ namespace SteampunkChess
                 _popUpService.ShowPopUp(GameConstants.PopUps.ErrorToast, "You are not logged in, progress will not be saved!");
             }
 
-            _inputSystem.OnBackButtonPressed += BackFromLobby;
+            _inputSystem.OnBackButtonPressed = BackFromLobby;
 
             _lobbyScene.LoadSceneAsync();
         }
@@ -51,7 +51,7 @@ namespace SteampunkChess
         {
             gameObject.SetActive(false);
             _popUpService.ShowPopUp(GameConstants.PopUps.SettingsPopUp, Array.Empty<int>());
-            _inputSystem.OnBackButtonPressed += BackFromSettings;
+            _inputSystem.OnBackButtonPressed = BackFromSettings;
 
         }
 

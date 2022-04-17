@@ -8,7 +8,21 @@ using Zenject;
 
 namespace SteampunkChess
 {
-    public class ChessGame : IInitializable
+    public interface IChessGame
+    {
+        ChessPlayer ActivePlayer { get; }
+        
+        ChessPlayer[] ChessPlayers { get; }
+
+        bool CanPerformMove();
+
+        bool IsTeamTurnActive(Team team);
+
+        void EndOfGame(Team winTeam);
+
+        void ChangeActiveTeam();
+    }
+    public class ChessGame : IInitializable, IChessGame
     {
         private readonly NotationString _notationString;
         private readonly IBoardFactory _boardFactory;
@@ -76,17 +90,22 @@ namespace SteampunkChess
             _localPlayer = GetLocalPlayer();
 
             _gameCameraController.Initialize(_localPlayer.Team);
-            _inputSystem.OnBackButtonPressed += () =>
-            {
-                _popUpService.ShowPopUp(GameConstants.PopUps.ExitGamePopUp);
-            };
-
-            _networkService.RoomCallbacksDispatcher.OnPlayerLeftRoomEvent += _ =>
-            {
-                EndOfGame(_localPlayer.Team);
-            };
+            SubscribeToLeftGameEvents();
 
             _timer.Start();
+        }
+
+        private void SubscribeToLeftGameEvents()
+        {
+            _inputSystem.OnBackButtonPressed = () => { _popUpService.ShowPopUp(GameConstants.PopUps.ExitGamePopUp); };
+
+            _networkService.RoomCallbacksDispatcher.OnPlayerLeftRoomEvent += _ => { EndOfGame(_localPlayer.Team); };
+
+            _networkService.RoomCallbacksDispatcher.OnLeftRoomEvent += () =>
+            {
+                _inputSystem.OnBackButtonPressed = null;
+                _inputSystem.OnCameraViewChanged = null;
+            };
         }
 
 
@@ -157,6 +176,8 @@ namespace SteampunkChess
             return pieceArrangementData;
         }
     }
+
+  
 
     public class TimerFactory
     {

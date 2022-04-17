@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 581e97c07caa4445bce87b013b6f13cf, type: 3}
   m_Name: TileSelectionInfo
   m_EditorClassIdentifier: 
-  freeSquareMaterial: {fileID: 2100000, guid: b6c3d9945af17604abb8a7b40b07a8a8, type: 2}
-  enemySquareMaterial: {fileID: 2100000, guid: 53fc39e6bd104204faac904be626826d, type: 2}
-  selectionPrefab: {fileID: 7482480306917092985, guid: fb3936e08be3cb04b8ea1b4855e1d1d4, type: 3}
+  freeSquareMaterial: {fileID: 2100000, guid: 9315e4a78f2f2fe4f9665cb9c13ab79a, type: 2}
+  enemySquareMaterial: {fileID: 2100000, guid: 5b749eb7ab253624689ab85b8591cc3b, type: 2}
+  selectionPrefab: {fileID: 4952625416188554586, guid: d26ccf1070bde564dae0da907d1e2def, type: 3}

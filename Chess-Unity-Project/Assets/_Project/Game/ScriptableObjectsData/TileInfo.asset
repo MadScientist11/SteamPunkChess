@@ -15,5 +15,5 @@ MonoBehaviour:
   tilePrefab: {fileID: 3536395989746451100, guid: c24bd1f6a78c83245890d709b9ae0518, type: 3}
   tileDimensionSize: 0.115
   yOffset: 0.01
-  zOffset: 0.02
+  zOffset: 0.019
   startingSpawnPoint: {x: -0.9846895, y: 0.3339299, z: -0.9846898}

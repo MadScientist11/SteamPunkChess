@@ -17,6 +17,8 @@ namespace SteampunkChess.NetworkService
         public event Action<Player, Hashtable> OnPlayerPropertiesUpdateEvent;
         
         public event Action<Player> OnPlayerLeftRoomEvent;
+
+        public event Action OnLeftRoomEvent;
         
         
 
@@ -100,6 +102,7 @@ namespace SteampunkChess.NetworkService
 
         public void OnLeftRoom()
         {
+            OnLeftRoomEvent?.Invoke();
             gameObject.SetActive(false);
             Addressables.LoadSceneAsync("Lobby");
             Logger.Debug("Room left, destroying room callbacks dispatcher");

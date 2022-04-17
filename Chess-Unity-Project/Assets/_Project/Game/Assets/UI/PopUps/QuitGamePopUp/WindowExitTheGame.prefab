@@ -177,7 +177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2df6c05e74d11745b28ebf23789ba36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _exitGamePopUp: {fileID: 0}
+  _exitGamePopUp: {fileID: 5533511501500486459}
 --- !u!1 &3603069092841256164
 GameObject:
   m_ObjectHideFlags: 0

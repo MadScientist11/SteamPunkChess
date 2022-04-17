@@ -1,7 +1,5 @@
-using System;
 using SteampunkChess.PopUps;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -38,9 +36,14 @@ namespace SteampunkChess.PopUpService
 
         public async void ShowPopUp(string popUpKey, params object[] data)
         {
+            
             if (_popUpsInstances.ContainsKey(popUpKey))
             {
-                _popUpsInstances[popUpKey].GetComponent<IPopUp>().Show(data);
+                IPopUp popUp = _popUpsInstances[popUpKey].GetComponent<IPopUp>();
+                
+                if (!popUp.IsVisible)
+                    popUp.Show(data);
+                
                 return;
             }
 
@@ -59,7 +62,7 @@ namespace SteampunkChess.PopUpService
             {
                 _asyncOperationHandles.Add(popUpKey, loadOp);
 
-                GameObject go = _instantiator.InstantiatePrefab(loadOp.Result, FindObjectOfType<Canvas>().transform);
+                GameObject go = _instantiator.InstantiatePrefab(loadOp.Result, FindObjectOfType<UICanvas>().transform);
                 _popUpsInstances.Add(popUpKey, go);
                 go.GetComponent<IPopUp>().Show(data);
             }
@@ -95,7 +98,6 @@ namespace SteampunkChess.PopUpService
 
         public void RemoveInstanceFromInternalPool(string instanceKey)
         {
-            
             if (_popUpsInstances.ContainsKey(instanceKey))
                 _popUpsInstances.Remove(instanceKey);
         }

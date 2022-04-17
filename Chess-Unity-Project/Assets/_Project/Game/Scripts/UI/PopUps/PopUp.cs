@@ -21,6 +21,8 @@ namespace SteampunkChess.PopUps
         [SerializeField] private float _hideDuration;
         private IPopUpService _popUpService;
 
+        public bool IsVisible { get; private set; }
+
         public event Action OnDestroyed;
 
 
@@ -47,8 +49,10 @@ namespace SteampunkChess.PopUps
         [Button, DisableInEditorMode]
         public virtual void Show(params object[] data)
         {
+            IsVisible = true;
             ResetLocationAndScale();
             _tweenTransform.DOAnchorPos(_locationTo, _showDuration).SetEase(_easeType);
+            
         }
 
         [Button, DisableInEditorMode]

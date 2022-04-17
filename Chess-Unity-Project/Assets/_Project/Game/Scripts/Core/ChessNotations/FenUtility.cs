@@ -168,7 +168,6 @@ namespace SteampunkChess
 
 
             data.piecesInfo = BoardArrangementFromFen(rows);
-            Debug.Log(parts[1]);
 
             if (parts[1] == "w")
             {

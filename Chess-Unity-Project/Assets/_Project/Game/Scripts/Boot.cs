@@ -15,15 +15,11 @@ namespace SteampunkChess
         
         private ServiceContainer _serviceContainer;
         private bool _isInitialized;
-        private ILocalizationSystem _localizationSystem;
-        private IAudioSystem _audioSystem;
 
 
         [Inject]
-        private void Construct(ServiceContainer serviceContainer, ILocalizationSystem localizationSystem, IAudioSystem audioSystem)
+        private void Construct(ServiceContainer serviceContainer)
         {
-            _audioSystem = audioSystem;
-            _localizationSystem = localizationSystem;
             _serviceContainer = serviceContainer;
         }
 
@@ -66,9 +62,6 @@ namespace SteampunkChess
 
         private void ApplySettings()
         {
-            _localizationSystem.ChangeLanguage(Prefs.Settings.Language);
-            _audioSystem.SetMusicVolume();
-            _audioSystem.SetSoundsVolume();
             QualitySettings.vSyncCount = Convert.ToInt32(Prefs.Settings.Vsync);
             QualitySettings.masterTextureLimit = Prefs.Settings.TextureQuality;
         }

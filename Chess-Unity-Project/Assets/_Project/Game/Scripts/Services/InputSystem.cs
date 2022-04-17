@@ -11,15 +11,18 @@ namespace SteampunkChess
     {
         public bool CheckForInput { get; }
 
-        public event Action OnBackButtonPressed;
+        public Action OnBackButtonPressed { get; set; }
+        public Action<KeyCode> OnCameraViewChanged { get; set; }
     }
     
     [CreateAssetMenu(fileName = "InputSystem", menuName = "Services/InputSystem")]
     public class InputSystem : ScriptableObject, IInputSystem
     {
         public bool CheckForInput { get; } = true;
+
+        public Action OnBackButtonPressed { get; set; }
         
-        public event Action OnBackButtonPressed;
+        public Action<KeyCode> OnCameraViewChanged { get; set; }
         public string InitializationMessage { get; } = "Initializing game services";
         
         [Inject]
@@ -43,6 +46,16 @@ namespace SteampunkChess
                 {
                     OnBackButtonPressed?.Invoke();
                     OnBackButtonPressed = null;
+                }
+
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    OnCameraViewChanged?.Invoke(KeyCode.Alpha1);
+                }
+                
+                if(Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    OnCameraViewChanged?.Invoke(KeyCode.Alpha2);
                 }
                 yield return null;
             }
