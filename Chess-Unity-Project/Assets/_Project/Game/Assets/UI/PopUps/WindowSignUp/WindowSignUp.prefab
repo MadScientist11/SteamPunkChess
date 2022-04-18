@@ -2722,8 +2722,8 @@ MonoBehaviour:
   _startLocation: {x: 1600, y: 0}
   _locationTo: {x: 0, y: 0}
   _tweenTransform: {fileID: 2870186449498158296}
-  _easeType: 30
-  _showDuration: 2
+  _easeType: 27
+  _showDuration: 0.39
   _hideDuration: 0.5
   _emailInputField: {fileID: 2870186448908631311}
   _passwordInputField: {fileID: 2870186448827864206}

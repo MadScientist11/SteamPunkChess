@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32016ceaede3de542840f9dd249977d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _signUpPopUp: {fileID: 6145343778467416686}
+  _logInPopUp: {fileID: 6145343778467416686}
 --- !u!1 &8495276210163167533
 GameObject:
   m_ObjectHideFlags: 0
@@ -1074,8 +1074,8 @@ MonoBehaviour:
   _startLocation: {x: 1600, y: 0}
   _locationTo: {x: 0, y: 0}
   _tweenTransform: {fileID: 8495276210750977084}
-  _easeType: 30
-  _showDuration: 2
+  _easeType: 27
+  _showDuration: 0.39
   _hideDuration: 0.5
   _usernameInputField: {fileID: 8495276211953925224}
   _passwordInputField: {fileID: 8495276210235604054}

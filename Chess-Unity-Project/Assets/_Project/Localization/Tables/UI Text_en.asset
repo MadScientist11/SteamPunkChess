@@ -244,6 +244,14 @@ MonoBehaviour:
     m_Localized: Finding opponent...
     m_Metadata:
       m_Items: []
+  - m_Id: 31052501960048640
+    m_Localized: You are not logged in, progress will not be saved!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31052501976825856
+    m_Localized: Cannot load lobby, check internet connection and restart the game
+    m_Metadata:
+      m_Items: []
   references:
     version: 1
     00000000:
