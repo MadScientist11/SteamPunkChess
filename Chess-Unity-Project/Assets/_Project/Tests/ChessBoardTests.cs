@@ -195,6 +195,7 @@ namespace SteampunkChess.Tests
         [Test]
         public void WhenKingAndRookH1DidntMove_AndThereIsNoObstacleToThem_ThenAvailableMovesShouldIncludeCastling()
         {
+            //Arrange
             var notationString = new FenNotationString("rnbqkbnr/pp1p1ppp/2p5/1B2p3/8/4PN2/PPPP1PPP/RNBQK2R b KQkq - 1 3");
             var chessBoardInfoSO = Container.Resolve<ChessBoardInfoSO>();
             var piecesPrefabsSO = Container.Resolve<PiecesPrefabsSO>();

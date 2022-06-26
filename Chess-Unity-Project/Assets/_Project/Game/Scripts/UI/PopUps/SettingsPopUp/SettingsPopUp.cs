@@ -34,11 +34,13 @@ namespace SteampunkChess
         private IAudioSystem _audioSystem;
         private ILocalizationSystem _localizationSystem;
         private ICloudService _cloudService;
+        private IInputSystem _inputSystem;
         public override string PopUpKey { get; set; } = GameConstants.PopUps.SettingsPopUp;
 
         [Inject]
-        private void Construct(IAudioSystem audioSystem, ILocalizationSystem localizationSystem, ICloudService cloudService)
+        private void Construct(IAudioSystem audioSystem, ILocalizationSystem localizationSystem, ICloudService cloudService, IInputSystem inputSystem)
         {
+            _inputSystem = inputSystem;
             _cloudService = cloudService;
             _localizationSystem = localizationSystem;
             _audioSystem = audioSystem;
@@ -135,6 +137,7 @@ namespace SteampunkChess
         {
             _cloudService.Logout();
             Prefs.RememberMe = false;
+            _inputSystem.OnBackButtonPressed = null;
             Addressables.LoadSceneAsync("SignInScene");
             
         }

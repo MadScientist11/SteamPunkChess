@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using SteampunkChess.LocalizationSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Localization;
 using Zenject;
 
 namespace SteampunkChess
@@ -12,7 +12,7 @@ namespace SteampunkChess
     {
         [SerializeField] private AssetReference _signInScene;
         [SerializeField] private TextMeshProUGUI _loadingText;
-        
+        public LocalizedString _LocalizedString;
         private ServiceContainer _serviceContainer;
         private bool _isInitialized;
 

@@ -33,11 +33,9 @@ namespace SteampunkChess
             _camera = GetComponent<Camera>();
             _chessBoard = FindObjectOfType<BoardInputHandler>().transform;
             _cinemachineBrain = GetComponent<CinemachineBrain>();
-            _freeLookCamera.Follow = _chessBoard;
-            _freeLookCamera.LookAt = _chessBoard;
-            
-            
             SetPlayerStartingView();
+         
+            
             _inputSystem.OnCameraViewChanged += ChangeCameraView;
 
         }
@@ -81,8 +79,16 @@ namespace SteampunkChess
        
         private void SetPlayerStartingView()
         {
-            if(_playerTeam == Team.Black)
-                _cameraPivot.Rotate(Vector3.up, 180f);
+           if (_playerTeam == Team.White)
+           {
+               _cameraPivot.Rotate(Vector3.up, 180f);
+               _freeLookCamera.m_XAxis.Value = 180f;
+           }
+           _freeLookCamera.Follow = _chessBoard;
+           _freeLookCamera.LookAt = _chessBoard;
+           _topViewVirtualCamera.Priority = 15;
+           _freeLookCamera.Priority = 10;
+            
         }
     }
 }

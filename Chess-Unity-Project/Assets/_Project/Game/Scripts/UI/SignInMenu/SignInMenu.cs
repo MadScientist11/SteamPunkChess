@@ -33,6 +33,7 @@ namespace SteampunkChess
         
         public void LoadMainMenu()
         {
+            Logger.DebugError("LoadMainMenu");
             Addressables.LoadSceneAsync("MainMenu");
         }
 

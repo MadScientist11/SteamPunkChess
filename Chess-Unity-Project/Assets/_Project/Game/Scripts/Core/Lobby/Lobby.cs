@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using SteampunkChess.NetworkService;
 using SteampunkChess.PopUpService;
+using UnityEngine.AddressableAssets;
 
 namespace SteampunkChess
 {
@@ -21,10 +22,12 @@ namespace SteampunkChess
         private readonly LobbyUI _lobbyUI;
         private readonly INetworkService _networkService;
         private readonly IPopUpService _popUpService;
+        private IInputSystem _inputSystem;
 
-        public Lobby(INetworkService networkService, IPopUpService popUpService, RoomListingMenu roomListingMenu,
+        public Lobby(INetworkService networkService, IPopUpService popUpService, RoomListingMenu roomListingMenu, IInputSystem inputSystem,
             LobbyUI lobbyUI)
         {
+            _inputSystem = inputSystem;
             _popUpService = popUpService;
             _networkService = networkService;
             _roomListingMenu = roomListingMenu;
@@ -72,8 +75,15 @@ namespace SteampunkChess
         private void ShowLoadingScreen()
         {
             //loading and waiting for opponent
+            _inputSystem.OnBackButtonPressed = () =>
+            {
+                _networkService.LeaveRoom();
+                _lobbyUI.SwitchToLobby();
+              
+            };
             _lobbyUI.SwitchToLoading();
         }
+        
 
         public void JoinRoom()
         {

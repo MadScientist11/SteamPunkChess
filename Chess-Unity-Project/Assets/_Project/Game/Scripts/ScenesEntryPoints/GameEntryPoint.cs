@@ -10,11 +10,15 @@ namespace SteampunkChess
     {
         [SerializeField] private Volume _postProcessingVolume;
         private IGameFactory _gameFactory;
-   
+        private INetworkService _networkService;
+        private IInputSystem _inputSystem;
+
 
         [Inject]
-        public void Construct(IGameFactory gameFactory)
+        public void Construct(IGameFactory gameFactory, INetworkService networkService, IInputSystem inputSystem)
         {
+            _inputSystem = inputSystem;
+            _networkService = networkService;
             _gameFactory = gameFactory;
         }
 
@@ -28,6 +32,13 @@ namespace SteampunkChess
             ChessGame game = _gameFactory.Create();
            game.Initialize();
            Debug.Log("Entry");
+        }
+
+        private void OnDisable()
+        {
+            _networkService.RoomCallbacksDispatcher.ClearRoomCallbackEvents();
+            _networkService.LobbyCallbacksDispatcher.ClearLobbyCallbacksEvents();
+            _inputSystem.OnCameraViewChanged = null;
         }
     }
 

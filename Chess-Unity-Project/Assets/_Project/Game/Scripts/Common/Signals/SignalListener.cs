@@ -10,6 +10,7 @@ namespace SteampunkChess.SignalSystem
 
         public void OnSignalRaised()
         {
+            Logger.DebugError(_signalEvent.ToString());
             _signalEvent.Invoke();
         }
         private void OnEnable()

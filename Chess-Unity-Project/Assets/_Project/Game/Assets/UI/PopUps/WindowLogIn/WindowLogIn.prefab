@@ -1080,7 +1080,7 @@ MonoBehaviour:
   _usernameInputField: {fileID: 8495276211953925224}
   _passwordInputField: {fileID: 8495276210235604054}
   _rememberMeToggle: {fileID: 418922233557559589}
-  _onLogInSignal: {fileID: 11400000, guid: bee21f990add1a24c8b5e76e389fa372, type: 2}
+  _onLogInSignal: {fileID: 11400000, guid: 1c9deb3baa0173046b29da1fcb2688c7, type: 2}
 --- !u!1 &8495276210770531676
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ namespace SteampunkChess
 
         public Action OnBackButtonPressed { get; set; }
         
+        
         public Action<KeyCode> OnCameraViewChanged { get; set; }
         public string InitializationMessage { get; } = "Initializing game services";
         

@@ -87,7 +87,7 @@ namespace SteampunkChess
         private string ParseTime(float time)
         {
             TimeSpan fromSeconds = TimeSpan.FromSeconds(time);
-            Logger.DebugError("Display time");
+            ;
             if (time > 60)
                 return $"{fromSeconds.Minutes:00}:{fromSeconds.Seconds:00}";
             else if (time < 60 && time > 15)

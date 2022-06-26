@@ -19,9 +19,8 @@ namespace SteampunkChess.NetworkService
         public event Action<Player> OnPlayerLeftRoomEvent;
 
         public event Action OnLeftRoomEvent;
-        
-        
 
+        
         private void OnEnable()
         {
             PhotonNetwork.AddCallbackTarget(this);
