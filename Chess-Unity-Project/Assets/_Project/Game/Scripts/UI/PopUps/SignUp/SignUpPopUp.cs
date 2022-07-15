@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using SteampunkChess.LocalizationSystem;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Zenject;
 
 namespace SteampunkChess.PopUps
@@ -68,7 +69,7 @@ namespace SteampunkChess.PopUps
         {
             _popUpService.HidePopUp(GameConstants.PopUps.SignUpWindow, HideType.HideDestroyAndRelease);
             _popUpService.ShowPopUp(GameConstants.PopUps.SuccessToast, _localizationSystem.GetLocalizedString("UI Text","youhavesuccessfullysigned_text"));
-            _onLogInSignal?.Raise();
+            Addressables.LoadSceneAsync("MainMenu");
         }
         
         private void OnRegisterError(string error)

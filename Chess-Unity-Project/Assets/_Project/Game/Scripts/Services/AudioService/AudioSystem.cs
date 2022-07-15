@@ -62,7 +62,7 @@ namespace SteampunkChess
 
         public void SetSoundsVolume()
         {
-            int newValue = Prefs.Settings.Music ? 0 : -80;
+            int newValue = Prefs.Settings.Sounds ? 0 : -80;
             _audioMixer.SetFloat("SoundsVolume", newValue);
         }
 

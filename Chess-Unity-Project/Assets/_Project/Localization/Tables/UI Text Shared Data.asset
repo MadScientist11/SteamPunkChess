@@ -239,6 +239,14 @@ MonoBehaviour:
     m_Key: findingopponent_text
     m_Metadata:
       m_Items: []
+  - m_Id: 31052501960048640
+    m_Key: youarenotlogged_text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31052501976825856
+    m_Key: cannotloadloobby_text
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

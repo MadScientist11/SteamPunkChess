@@ -156,7 +156,7 @@ namespace SteampunkChess.CloudService
             _onSuccess?.Invoke();
             _onSuccess = null;
             
-            Logger.Debug("LogIn success");
+            Logger.DebugError("LogIn success");
             
             PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), result =>
             {

@@ -85,7 +85,11 @@ namespace SteampunkChess
         {
             _inputSystem.OnBackButtonPressed = () => { _popUpService.ShowPopUp(GameConstants.PopUps.ExitGamePopUp); };
 
-            _networkService.RoomCallbacksDispatcher.OnPlayerLeftRoomEvent += _ => { EndOfGame(_localPlayer.Team); };
+            _networkService.RoomCallbacksDispatcher.OnPlayerLeftRoomEvent += _ =>
+            {
+                _popUpService.ShowPopUp(GameConstants.PopUps.ErrorToast, "Player left the room!");
+                EndOfGame(_localPlayer.Team);
+            };
 
             _networkService.RoomCallbacksDispatcher.OnLeftRoomEvent += () =>
             {

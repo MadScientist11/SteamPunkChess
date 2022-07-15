@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace SteampunkChess
 {
@@ -6,10 +7,8 @@ namespace SteampunkChess
     {
         [SerializeField] private MainMenu _mainMenu;
 
-        public void OnClick_Play() => _mainMenu.SwitchToLobby();
-        
-        public void OnClick_Settings() => _mainMenu.SwitchToSettings();
-
-        public void OnClick_Exit() => Application.Quit();
+        [DisableInEditorMode, Button] public void OnClick_Play() => _mainMenu.SwitchToLobby();
+        [DisableInEditorMode, Button] public void OnClick_Settings() => _mainMenu.SwitchToSettings();
+        [DisableInEditorMode, Button] public void OnClick_Exit() => Application.Quit();
     }
 }

@@ -80,6 +80,7 @@ namespace SteampunkChess.NetworkService
         public class NetworkPlayer
         {
             public int PlayerID => PhotonNetwork.LocalPlayer.ActorNumber;
+
             public string PlayerName
             {
                 get => PhotonNetwork.NickName;
@@ -120,10 +121,7 @@ namespace SteampunkChess.NetworkService
 
             public int PlayerScore
             {
-                get
-                {
-                    return (int) PhotonNetwork.LocalPlayer.CustomProperties[GameConstants.CustomProperties.Score];
-                }
+                get { return (int) PhotonNetwork.LocalPlayer.CustomProperties[GameConstants.CustomProperties.Score]; }
                 set
                 {
                     Hashtable properties = new Hashtable()
@@ -137,20 +135,20 @@ namespace SteampunkChess.NetworkService
 
         public NetworkPlayer LocalPlayer { get; private set; }
 
-        public List<PlayerInfoDTO>  PlayersInfo
+        public List<PlayerInfoDTO> PlayersInfo
         {
             get
             {
                 if (_playersInfo != null) return _playersInfo;
-                
+
                 _playersInfo = new List<PlayerInfoDTO>();
-            
+
                 foreach (var player in PhotonNetwork.PlayerList)
                 {
                     int score = (int) player.CustomProperties[GameConstants.CustomProperties.Score];
                     int team = (int) player.CustomProperties[GameConstants.CustomProperties.Team];
                     _playersInfo.Add(
-                        new PlayerInfoDTO(player.ActorNumber, player.NickName, score, (Team)team)
+                        new PlayerInfoDTO(player.ActorNumber, player.NickName, score, (Team) team)
                     );
                 }
 
@@ -175,16 +173,14 @@ namespace SteampunkChess.NetworkService
 
             PhotonNetwork.ConnectUsingSettings();
             LocalPlayer = new NetworkPlayer();
-            
+
             _playFabPlayerData.OnPlayerDataChanged += _playerData =>
             {
                 LocalPlayer.PlayerName = _playerData.PlayerName;
                 LocalPlayer.PlayerScore = _playerData.PlayerScore;
             };
-            
+
             await Task.Delay(000);
-            
-            
         }
 
         public void JoinLobby()
@@ -206,7 +202,8 @@ namespace SteampunkChess.NetworkService
 
         public void LeaveRoom()
         {
-            PhotonNetwork.LeaveRoom();
+            if (PhotonNetwork.InRoom)
+                PhotonNetwork.LeaveRoom();
             RoomCallbacksDispatcher.ClearRoomCallbackEvents();
             LobbyCallbacksDispatcher.ClearLobbyCallbacksEvents();
         }
@@ -216,7 +213,7 @@ namespace SteampunkChess.NetworkService
             LocalPlayer.PlayerTeam = playerTeam;
 
             RoomCallbacksDispatcher.OnPlayerEnteredRoomEvent += SetEnteredPlayerTeamAndCloseGame;
-            
+
 
             RoomOptions roomOptions = new RoomOptions()
             {
@@ -226,7 +223,8 @@ namespace SteampunkChess.NetworkService
                     [GameConstants.CustomProperties.RoomPassword] = password,
                     [GameConstants.CustomProperties.MatchTime] = timeLimitInSeconds,
                 },
-                CustomRoomPropertiesForLobby = new[] {GameConstants.CustomProperties.RoomPassword, GameConstants.CustomProperties.MatchTime},
+                CustomRoomPropertiesForLobby = new[]
+                    {GameConstants.CustomProperties.RoomPassword, GameConstants.CustomProperties.MatchTime},
             };
 
             PhotonNetwork.CreateRoom(roomName, roomOptions, TypedLobby.Default);
@@ -246,22 +244,19 @@ namespace SteampunkChess.NetworkService
                     PhotonNetwork.CurrentRoom.IsVisible = false;
                 }
             }
-
-            
         }
 
         public void LoadGame()
         {
             if (PhotonNetwork.IsMasterClient)
                 PhotonNetwork.LoadLevel(GameSceneIndex);
-            
         }
 
         private void OnDestroy()
         {
             PhotonNetwork.RemoveCallbackTarget(this);
         }
-        
+
         #region ConnectionCallbacks
 
         public void OnConnected()

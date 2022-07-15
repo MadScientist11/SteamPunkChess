@@ -22,19 +22,21 @@ namespace SteampunkChess
         private const float _countDownTime = 5f;
         private IPopUpService _popUpService;
         private INetworkService _networkService;
+        private IInputSystem _inputSystem;
 
         public override string PopUpKey { get; set; } = GameConstants.PopUps.PlayersOverviewWindow;
 
         [Inject]
-        private void Construct(IPopUpService popUpService, INetworkService networkService)
+        private void Construct(IPopUpService popUpService, INetworkService networkService, IInputSystem inputSystem)
         {
+            _inputSystem = inputSystem;
             _networkService = networkService;
             _popUpService = popUpService;
         }
        
         public override void Start()
         {
-            
+            _inputSystem.OnBackButtonPressed = null;
         }
 
         private void StartCountdown_AnimationEvent()

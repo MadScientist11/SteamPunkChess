@@ -55,13 +55,9 @@ namespace SteampunkChess
                 .Bind<ChessPieceFactory>()
                 .AsSingle();
 
-            
-
             Container
                 .Bind<PlayerFactory>()
                 .AsSingle();
-
-            
 
             Container
                 .Bind<ISpecialMoveFactory>()

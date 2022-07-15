@@ -10,14 +10,17 @@ namespace SteampunkChess.SignalSystem
 
         public void Raise()
         {
+            
             for (int i = 0; i < Listeners.Count; i++)
             {
+                Logger.DebugError(Listeners[i].ToString());
                 Listeners[i].OnSignalRaised();
             }
         }
 
         public void RegisterSignal(ISignalListener signalListener)
         {
+            Logger.DebugError(signalListener.ToString());
             Listeners.Add(signalListener);
         }
 

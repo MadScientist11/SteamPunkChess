@@ -6,6 +6,7 @@ using SteampunkChess.PopUpService;
 using SteampunkChess.SignalSystem;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using Zenject;
 
@@ -13,12 +14,12 @@ namespace SteampunkChess.PopUps
 {
     public class LogInPopUp : PopUp
     {
-        [Header("LogInPopUp")]
-        [SerializeField] private TMP_InputField _usernameInputField;
+        [Header("LogInPopUp")] [SerializeField]
+        private TMP_InputField _usernameInputField;
+
         [SerializeField] private TMP_InputField _passwordInputField;
         [SerializeField] private Toggle _rememberMeToggle;
 
-        [SerializeField] private Signal _onLogInSignal;
 
         private IPopUpService _popUpService;
         private ICloudService _cloudService;
@@ -27,7 +28,8 @@ namespace SteampunkChess.PopUps
         public override string PopUpKey { get; set; } = GameConstants.PopUps.LogInWindow;
 
         [Inject]
-        private void Construct(IPopUpService popUpService, ICloudService cloudService, ILocalizationSystem localizationSystem)
+        private void Construct(IPopUpService popUpService, ICloudService cloudService,
+            ILocalizationSystem localizationSystem)
         {
             _localizationSystem = localizationSystem;
             _popUpService = popUpService;
@@ -37,9 +39,8 @@ namespace SteampunkChess.PopUps
         public void LogIn()
         {
             _cloudService.LogInUser(new LogInUserParams(_usernameInputField.text, _passwordInputField.text),
-               OnLogInSuccess,
-               OnLogInError);
-
+                OnLogInSuccess,
+                OnLogInError);
         }
 
         private void OnLogInSuccess()
@@ -50,10 +51,12 @@ namespace SteampunkChess.PopUps
                 Prefs.Username = _usernameInputField.text;
                 Prefs.Password = _passwordInputField.text;
             }
-            _popUpService.HidePopUp(GameConstants.PopUps.LogInWindow, HideType.HideDestroyAndRelease);
-            _popUpService.ShowPopUp(GameConstants.PopUps.SuccessToast, _localizationSystem.GetLocalizedString("UI Text","youhavesuccessfullylogged_text"));
-            _onLogInSignal?.Raise();
 
+            _popUpService.HidePopUp(GameConstants.PopUps.LogInWindow, HideType.HideDestroyAndRelease);
+            _popUpService.ShowPopUp(GameConstants.PopUps.SuccessToast,
+                _localizationSystem.GetLocalizedString("UI Text", "youhavesuccessfullylogged_text"));
+
+            Addressables.LoadSceneAsync("MainMenu");
         }
 
         private void OnLogInError(string error)
