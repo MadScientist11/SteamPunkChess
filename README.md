@@ -4,6 +4,7 @@
 Steampunk chess is 3d online chess game built using Unity 3D.
 
 ![image](https://user-images.githubusercontent.com/63862082/163717329-efab33b0-4ad5-414b-92c2-668fc06072d8.png)
+Gameplay video: https://www.youtube.com/watch?v=KaDrhqV3UGo
 
 ## Development setup
 
